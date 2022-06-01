@@ -1,81 +1,121 @@
-/************************************************************************************************************** 
-* I dati di accesso dell'utente vengono memorizzati come hash alla Blockchain tramite questo smart contract,  *
-* infatti, ogni volta che un utente effettua il login ad una WebApp, l'hash ricavato dalle credenziali        *
-* fornite dall'utente viene confrontato con l'hash memorizzato nello smart contract:                          *
-*                                                                                                             *
-*   - se c'è una corrispondenza, l'utente è autorizzato ad accedere al sito Web;                              *
-*   - in caso contrario, l'accesso è negato.                                                                  *
-*                                                                                                             *
-***************************************************************************************************************/
+// SPDX-License-Identifier: MIT
+
+/********************************************************************************************** 
+* Questo smart contract implementa una configurazione tradizionale tra admin e utenti:        *
+*                                                                                             *
+* -  DEFAULT_ADMIN_ROLE è il ruolo di admin di USER (default);                                *
+* -  l'inidirizzo passato al costruttore è l'admin iniziale;                                  *
+* -  gli admin possono aggiungere altri amministratori;                                       *
+* -  gli admin possono concedere e revocare le autorizzazioni utente a qualsiasi account;     *
+* -  l'unico modo per un admin di perdere il proprio ruolo di admin è rinunciarvi.            *
+*                                                                                             *
+***********************************************************************************************/
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract Authentication is ERC20, AccessControl {
-
+contract Authentication is AccessControl {
+    bytes32 public constant USER_ROLE = keccak256("USER");
+    
     struct User {
         address addr;
         string name;
-        string password;
-        string ipfsImageHash;
+        bytes32 password;
         bool isUserLoggedIn;
     }
 
     mapping(address => User) user;
+    mapping(address => Admin) admin;
 
-    address adminAddress;
+    constructor(address root) {
+        _setupRole(DEFAULT_ADMIN_ROLE, root);
+        _setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
+    }
 
-    constructor() ERC20("UnisaToken", "UTK"){
-        adminAddress = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
+    /*Ristretto ai membri che hanno l'admin role.*/
+    modifier onlyAdmin(){
+        require(isAdmin(msg.sender), "Restricted to admins.");
+        _;
+    }
+
+    /*Ristretto ai membri che hanno l'user role.*/
+    modifier onlyUser(){
+        require(isUser(msg.sender), "Restricted to users.");
+        _;
+    }
+
+    /*Ritorna 'true' se l'account ha il ruolo di admin.*/
+    function isAdmin(address account) public virtual view returns (bool) {
+        return hasRole(DEFAULT_ADMIN_ROLE, account);
+    }
+    
+    /*Ritorna 'true' se l'account ha il ruolo di user.*/
+    function isUser(address account) public virtual view returns (bool) {
+        return hasRole(USER_ROLE, account);
+    }
+
+    /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
+    function addUser(address account) public virtual onlyAdmin {
+        grantRole(USER_ROLE, account);
+    }
+
+    /*Aggiunge un account con il ruolo di admin (lo possono fare solo gli admin).*/
+    function addAdmin(address account) public virtual onlyAdmin {
+        grantRole(DEFAULT_ADMIN_ROLE, account);
+    }
+
+    /*Rimuove un account dal ruolo di user (lo possono fare solo gli admin).*/
+    function removeUser(address account) public virtual onlyAdmin {
+        revokeRole(USER_ROLE, account);
+    }
+    
+    /*Un admin rinucia ad esserlo.*/
+    function renounceAdmin() public virtual {
+        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     /*
-    * Nella funzione di registrazione dell'utente, l'utente può effettuare la transazione su Meta Mask.
-    * La funzione verifica che se l'utente non si sia già registrato richiedendo il controllo:
-    * se l'utente non si registra già, i dati dell'utente vengono registrati sulla blockchain.
+    * Nella funzione di registrazione dell'utente, se l'utente non si è già 
+    * registrato i suoi dati vengono registrati sulla blockchain.
     */
     function registerUser(
         address _address,
         string memory _name,
-        string memory _password,
-        string memory _ipfsImageHash
-    ) public notAdmin returns (bool) {
-        //require(user[_address].addr != msg.sender);
+        string memory _password
+    ) public onlyUser returns (bool) {
         require(
-            user[_address].addr ==
-                address(0x0000000000000000000000000000000000000000), // indirizzo eth nullo
+            user[_address].addr == address(0x0000000000000000000000000000000000000000), // indirizzo eth nullo
             "already registered"
         );
         user[_address].addr = _address;
         user[_address].name = _name;
-        user[_address].password = _password;
-        user[_address].ipfsImageHash = _ipfsImageHash;
+        user[_address].password = keccak256(abi.encodePacked(_password));
         user[_address].isUserLoggedIn = false;
+        addUser(_address);
         return true;
     }
 
     
     /**
-    * La funzione di login fornisce la possibilità di accedere alla Dapp e
+    * La funzione di login fornisce la possibilità di accedere alla DApp e
     * la modifica del campo isUserLoggedIn su true: questo significa che 
     * l'utente accede correttamente. 
     */
     function loginUser(address _address, string memory _password) public returns (bool) {
-        if (keccak256(abi.encodePacked(user[_address].password)) == keccak256(abi.encodePacked(_password))) {
+        if (user[_address].password == keccak256(abi.encodePacked(_password))) {
             user[_address].isUserLoggedIn = true;
             return user[_address].isUserLoggedIn;
         } else 
             return false;
     }
 
-    // check the user logged In or not
-    function checkIsUserLogged(address _address) public view returns (bool, string memory){
-        return (user[_address].isUserLoggedIn, user[_address].ipfsImageHash);
+    // verifica se l'utente è loggato o meno.
+    function checkIsUserLogged(address _address) public view returns (bool){
+        return user[_address].isUserLoggedIn;
     }
 
-    // logout the user
+    // logout dell'utente
     function logoutUser(address _address) public {
         user[_address].isUserLoggedIn = false;
     }
@@ -84,64 +124,42 @@ contract Authentication is ERC20, AccessControl {
     struct Admin {
         address adminAddress;
         string name;
-        string password;
-        string ipfsImageHash;
+        bytes32 password;
         bool isAdminLoggedIn;
     }
     
-    mapping(address => Admin) admin;
-    // admin registration function
-
-    modifier onlyAdmin() {
-        require(msg.sender == adminAddress);
-        _;
-    }
-
-    modifier notAdmin() {
-        require(msg.sender != adminAddress);
-        _;
-    }
-
     function registerAdmin(
         address _address,
         string memory _name,
-        string memory _password,
-        string memory _ipfsImageHash
+        string memory _password
     ) public onlyAdmin returns (bool) {
-        //require(admin[_address].adminAddress != msg.sender);
         require(
-            admin[_address].adminAddress ==
-                address(0x0000000000000000000000000000000000000000), // indirizzo eth nullo
+            admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), // indirizzo eth nullo
             "already registered"
         );
         admin[_address].adminAddress = _address;
         admin[_address].name = _name;
-        admin[_address].password = _password;
-        admin[_address].ipfsImageHash = _ipfsImageHash;
+        admin[_address].password = keccak256(abi.encodePacked(_password));
         admin[_address].isAdminLoggedIn = false;
+        addAdmin(_address);
         return true;
     }
 
-    // admin login function
     function loginAdmin(address _address, string memory _password) public returns (bool) {
-        if (keccak256(abi.encodePacked(admin[_address].password)) == keccak256(abi.encodePacked(_password))) {
+        if (admin[_address].password == keccak256(abi.encodePacked(_password))) {
             admin[_address].isAdminLoggedIn = true;
             return admin[_address].isAdminLoggedIn;
         } else 
             return false;
     }
 
-    // check the admin logged In or not
-    function checkIsAdminLogged(address _address) public view returns (bool, string memory) {
-        return (admin[_address].isAdminLoggedIn, admin[_address].ipfsImageHash);
+    // verifica se l'admin è loggato o meno.
+    function checkIsAdminLogged(address _address) public view returns (bool) {
+        return admin[_address].isAdminLoggedIn;
     }
 
-    // logout the admin
+    // logout dell'admin
     function logoutAdmin(address _address) public {
         admin[_address].isAdminLoggedIn = false;
-    }
-
-    function getAdminBalance(address _address) public view returns (uint256) {
-        return (admin[_address].adminAddress.balance);
     }
 }
