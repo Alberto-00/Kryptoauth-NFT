@@ -7,7 +7,7 @@
 * -  l'inidirizzo passato al costruttore è l'admin iniziale;                                  *
 * -  gli admin possono aggiungere altri amministratori;                                       *
 * -  gli admin possono concedere e revocare le autorizzazioni utente a qualsiasi account;     *
-* -  l'unico modo per un admin di perdere il proprio ruolo di admin è rinunciarvi.            *
+* -  l'unico modo per un admin di perdere il proprio ruolo di admin è di rinunciarvi.            *
 *                                                                                             *
 ***********************************************************************************************/
 
