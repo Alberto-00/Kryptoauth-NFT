@@ -1,30 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Krypton</title>
-
+    <title>Kryptoauth</title>
     <link rel="icon" type="image/png" href="img/favicon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
-
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
-
 <body>
-
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
     <div id="infraloader" class="infraloader is-active"></div>    
     <div class="dark-wrapper">
         <!-- Landing page Hero -->
         <section class="hero is-fullheight is-transparent">
             <div class="hero-head">
-    
                 <!-- Cloned navbar -->
                 <!-- Cloned navbar that comes in on scroll -->
                 <nav x-data="initNavbar()"  x-on:scroll.window="scroll()" id="navbar-clone" class="navbar is-fixed is-dark" :class="{
@@ -35,8 +29,8 @@
                         <!-- Brand -->
                         <div class="navbar-brand">
                             <a href="index.html" class="navbar-item">
-                                <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
-                                <span class="brand-name">Krypton</span>
+                                <img class="rotating" src="img/logo/krypton-gradient.svg" alt="logo">
+                                <span class="brand-name">Kryptoauth</span>
                             </a>
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
@@ -62,23 +56,19 @@
                             <div class="navbar-end">
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="token.html">Token</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
                                     <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                    <a class="is-centered-responsive" href="goals.html">Goals</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="technologies.html">Technologies</a>
                                 </div>
                                 <!-- Sign up -->
                                 <div class="navbar-item is-nav-link">
-                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                    <a href="authentication.html" class="button k-button k-primary raised has-gradient slanted">
                                         <span class="text">Register</span>
                                         <span class="front-gradient"></span>
                                     </a>
@@ -89,7 +79,6 @@
                 </nav>
                 <!-- /Cloned navbar -->
                 <!-- Static navbar -->
-                <!-- Static navbar -->
                 <nav x-data="initNavbar()" class="navbar is-light" :class="{
                         'is-dark-mobile': mobileOpen,
                         '': !mobileOpen
@@ -99,7 +88,7 @@
                         <div class="navbar-brand">
                             <a href="index.html" class="navbar-item">
                                 <img class="rotating" src="img/logo/krypton.svg" alt="">
-                                <span class="brand-name">Krypton</span>
+                                <span class="brand-name">Kryptoauth</span>
                             </a>
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
@@ -125,23 +114,19 @@
                             <div class="navbar-end">
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="token.html">Token</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
                                     <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                    <a class="is-centered-responsive" href="goals.html">Goals</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="technologies.html">Technologies</a>
                                 </div>
                                 <!-- Sign up -->
                                 <div class="navbar-item">
-                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                    <a href="authentication.html" class="button k-button k-primary raised has-gradient slanted">
                                         <span class="text">Register</span>
                                         <span class="front-gradient"></span>
                                     </a>
@@ -163,17 +148,18 @@
     
                         <!-- Landing page Title -->
                         <div class="column is-5 landing-caption">
-                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Cryptocurrency Exchange Market</h1>
+                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Self Sovereign <br>Identity</h1>
                             <h2 class="subtitle is-5 is-light is-thin">
-                                Cryptocurrency brought to the next level. Join our ICO for supercharged rates.
+                                SSI brought to the next level. <br>
+                                For more information join our community.
                             </h2>
                             <!-- CTA -->
                             <p class="buttons">
-                                <a href="#start" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                                <a href="authentication.html" class="button k-button k-primary raised has-gradient is-fat is-bold">
                                     <span class="text">Get Started</span>
                                     <span class="front-gradient"></span>
                                 </a>
-                                <a href="#" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                                <a href="#start" class="button k-button k-primary raised has-gradient is-fat is-bold">
                                     <span class="text">Learn More</span>
                                     <span class="front-gradient"></span>
                                 </a>
@@ -189,14 +175,14 @@
                     </div>
                 </div>
             </div>
-        <!-- /Landing page Hero -->
+            <!-- /Landing page Hero -->
     
-        <!-- Icon Features section -->
-        <section id="start" class="section is-transparent is-relative">
+            <!-- Icon Features section -->
+            <section class="section is-transparent is-relative">
             <!-- Container -->
             <div class="container">
                 <!-- Divide section -->
-                <div class="divider is-centered"></div>
+                <div id="start" class="divider is-centered"></div>
                 <!-- Content wrapper -->
                 <div class="content-wrapper is-medium">
                     <div class="columns is-vcentered">
@@ -205,23 +191,25 @@
                             <div class="feature">
                                 <img src="img/icons/chained.svg" alt="" data-aos="fade-up" data-aos-delay="100" data-aos-offset="200" data-aos-easing="ease-out-quart">
                                 <h4 class="title is-6 is-tight is-light">Chaining</h4>
-                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                                <p>Blockchain is designed to prevent data modification:
+                                    blocks are records linked together by cryptography in a blockchain.
+                                </p>
                             </div>
                         </div>
                         <!-- Feature -->
                         <div class="column is-4">
                             <div class="feature">
                                 <img src="img/icons/stacked.svg" alt="" data-aos="fade-up" data-aos-delay="300" data-aos-offset="200" data-aos-easing="ease-out-quart">
-                                <h4 class="title is-6 is-tight is-light">Stacking</h4>
-                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                                <h4 class="title is-6 is-tight is-light">Decentralized</h4>
+                                <p>The network doesn’t have any governing authority or a single person looking after the framework.</p>
                             </div>
                         </div>
                         <!-- Feature -->
                         <div class="column is-4">
                             <div class="feature">
                                 <img src="img/icons/compact.svg" alt="" data-aos="fade-up" data-aos-delay="500" data-aos-offset="200" data-aos-easing="ease-out-quart">
-                                <h4 class="title is-6 is-tight is-light">Managing</h4>
-                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                                <h4 class="title is-6 is-tight is-light">Enhanced Security</h4>
+                                <p>No central authority, no one can just change any characteristics of the network for their benefit.</p>
                             </div>
                         </div>
                     </div>
@@ -230,16 +218,16 @@
             </div>
             <!-- /Container -->
         </section>
-        <!-- /Icon Features section -->
+            <!-- /Icon Features section -->
     
-        <!-- Side Features section -->
-        <section id="big-gradient" class="section is-transparent">
+            <!-- Side Features section -->
+            <section id="big-gradient" class="section is-transparent">
             <!-- Container -->
             <div class="container">
                 <!-- Divider -->
                 <div class="divider is-centered"></div>
                 <!-- Title & subtitle -->
-                <h2 class="title is-light is-semibold has-text-centered is-spaced">Decentralized Exchange</h2>
+                <h2 class="title is-light is-semibold has-text-centered is-spaced">Decentralized Authentication</h2>
                 <h4 class="subtitle is-6 is-light has-text-centered is-compact">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Ut sea pertinax perpetua, eruditi volumus quaestio ex mel, has ei tota homero.</h4>
     
                 <!-- Content wrapper -->
@@ -250,11 +238,11 @@
                         <div class="column is-5 is-offset-1">
                             <div class="side-feature-content">
     
-                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitbanner.svg" alt=""> <span>Token Building</span></h3>
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitbanner.svg" alt=""> <span>Etherium</span></h3>
                                 <div class="divider is-long"></div>
                                 <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
                                 <div class="cta-wrapper">
-                                    <a href="token.html" class="button k-button k-primary raised has-gradient is-bold">
+                                    <a href="technologies.html" class="button k-button k-primary raised has-gradient is-bold">
                                         <span class="text">Learn More</span>
                                         <span class="front-gradient"></span>
                                     </a>
@@ -278,12 +266,12 @@
                         <div class="column is-5">
                             <div class="side-feature-content">
     
-                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitnetwork.svg" alt=""> <span>Cascading Blockchain</span></h3>
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitnetwork.svg" alt=""> <span>Blockchain</span></h3>
                                 <div class="divider is-long"></div>
                                 <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
                                 <div class="cta-wrapper">
-                                    <a href="#" class="button k-button k-primary raised has-gradient is-bold">
-                                        <span class="text">Whitepaper</span>
+                                    <a href="technologies.html" class="button k-button k-primary raised has-gradient is-bold">
+                                        <span class="text">Learn More</span>
                                         <span class="front-gradient"></span>
                                     </a>
                                 </div>
@@ -301,12 +289,12 @@
                         <div class="column is-5 is-offset-1">
                             <div class="side-feature-content">
     
-                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitmining.svg" alt=""> <span>Crypto Farming</span></h3>
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitmining.svg" alt=""> <span>Smart Contract</span></h3>
                                 <div class="divider is-long"></div>
                                 <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
                                 <div class="cta-wrapper">
-                                    <a href="#" class="button k-button k-primary raised has-gradient is-bold">
-                                        <span class="text">Join the ICO</span>
+                                    <a href="technologies.html" class="button k-button k-primary raised has-gradient is-bold">
+                                        <span class="text">Learn More</span>
                                         <span class="front-gradient"></span>
                                     </a>
                                 </div>
@@ -323,7 +311,8 @@
             </div>
             <!-- /Container -->
         </section>
-        <!-- /Side Features section -->
+            <!-- /Side Features section -->
+        </section>
     </div>
     
     <footer class="krypton-footer">
@@ -332,7 +321,7 @@
             <div class="footer-logo">
                 <a href="#">
                     <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
-                    <div class="brand-name">Krypton</div>
+                    <div class="brand-name">Kryptoauth</div>
                     <div class="brand-subtitle">Blockchain brought to another level</div>
                 </a>
             </div>
@@ -343,15 +332,10 @@
                     <!-- Links group -->
                     <ul class="footer-links">
                         <li>
-                            <a href="#">Token</a>
+                            <a href="roadmap.html">Roadmap</a>
                         </li>
-    
                         <li>
-                            <a href="#">ICO</a>
-                        </li>
-    
-                        <li>
-                            <a href="#">Roadmap</a>
+                            <a href="goals.html">Goals</a>
                         </li>
                     </ul>
                 </div>
@@ -374,32 +358,29 @@
                 <div class="column is-4">
                     <ul class="footer-links">
                         <li>
-                            <a href="#">Register</a>
+                            <a href="authentication.html">Register</a>
                         </li>
     
                         <li>
-                            <a href="#">Media</a>
+                            <a href="technologies.html">Technologies</a>
                         </li>
                     </ul>
                 </div>
             </div>
             <!-- Copyright -->
-            <p class="k-copyright">© 2018-2021 | Krypton. All Rights Reserved</p>
-            <br>
-            <!-- Made by -->
-            <p class="coded-by">Designed and Coded by <a href="https://cssninja.io" target="_blank">Css Ninja</a></p>
+            <p class="k-copyright">© 2022 | Kryptoauth. All Rights Reserved</p>
         </div>
-        
         <!-- Absolute image -->
         <img class="solar-system" src="img/bg/solar.svg" alt="">
-    </footer>    <!-- Back To Top Button -->
-    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
+    </footer>
+    <!-- Back To Top Button -->
+    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop">
+        <a href="javascript:" :class="{
         'visible': scrolled,
         '': !scrolled
-    }"></a></div>
+        }"></a>
+    </div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="js/bundle.js"></script>
-
 </body>
-
 </html>
