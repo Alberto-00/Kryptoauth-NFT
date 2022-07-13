@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Krypton</title>
+
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body>
+
+    <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
+    <div id="infraloader" class="infraloader is-active"></div>    
+    <div class="dark-wrapper">
+        <!-- Landing page Hero -->
+        <section class="hero is-fullheight is-transparent">
+            <div class="hero-head">
+    
+                <!-- Cloned navbar -->
+                <!-- Cloned navbar that comes in on scroll -->
+                <nav x-data="initNavbar()"  x-on:scroll.window="scroll()" id="navbar-clone" class="navbar is-fixed is-dark" :class="{
+                        'is-active': scrolled,
+                        '': !scrolled
+                    }">
+                    <div class="container">
+                        <!-- Brand -->
+                        <div class="navbar-brand">
+                            <a href="index.html" class="navbar-item">
+                                <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
+                                <span class="brand-name">Krypton</span>
+                            </a>
+                            <!-- Responsive toggle -->
+                            <div class="navbar-burger" @click="openMobileMenu()">
+                                <div class="menu-toggle">
+                                    <span class="icon-box-toggle" :class="{
+                                            'active': mobileOpen,
+                                            '': !mobileOpen
+                                        }">
+                                        <span class="rotate">
+                                            <i class="icon-line-top"></i>
+                                            <i class="icon-line-center"></i>
+                                            <i class="icon-line-bottom"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Menu -->
+                        <div id="cloneNavbarMenu" class="navbar-menu" :class="{
+                                'is-active': mobileOpen,
+                                '': !mobileOpen
+                            }">
+                            <div class="navbar-end">
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="token.html">Token</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                </div>
+                                <!-- Sign up -->
+                                <div class="navbar-item is-nav-link">
+                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                        <span class="text">Register</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- /Cloned navbar -->
+                <!-- Static navbar -->
+                <!-- Static navbar -->
+                <nav x-data="initNavbar()" class="navbar is-light" :class="{
+                        'is-dark-mobile': mobileOpen,
+                        '': !mobileOpen
+                    }">
+                    <div class="container">
+                        <!-- Brand -->
+                        <div class="navbar-brand">
+                            <a href="index.html" class="navbar-item">
+                                <img class="rotating" src="img/logo/krypton.svg" alt="">
+                                <span class="brand-name">Krypton</span>
+                            </a>
+                            <!-- Responsive toggle -->
+                            <div class="navbar-burger" @click="openMobileMenu()">
+                                <div class="menu-toggle">
+                                    <span class="icon-box-toggle" :class="{
+                                            'active': mobileOpen,
+                                            '': !mobileOpen
+                                        }">
+                                        <span class="rotate">
+                                            <i class="icon-line-top"></i>
+                                            <i class="icon-line-center"></i>
+                                            <i class="icon-line-bottom"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Menu -->
+                        <div id="navbarMenu" class="navbar-menu light-menu" :class="{
+                                'is-active': mobileOpen,
+                                '': !mobileOpen
+                            }">
+                            <div class="navbar-end">
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="token.html">Token</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
+                                </div>
+                                <!-- Menu item -->
+                                <div class="navbar-item is-nav-link">
+                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                </div>
+                                <!-- Sign up -->
+                                <div class="navbar-item">
+                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                        <span class="text">Register</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- /Static navbar -->
+            </div>
+    
+            <!-- Animated particles -->
+            <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+    
+            <!-- Hero Image and Title -->
+            <div class="hero-body">
+                <div class="container">
+                    <div class="columns is-vcentered">
+    
+                        <!-- Landing page Title -->
+                        <div class="column is-5 landing-caption">
+                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Cryptocurrency Exchange Market</h1>
+                            <h2 class="subtitle is-5 is-light is-thin">
+                                Cryptocurrency brought to the next level. Join our ICO for supercharged rates.
+                            </h2>
+                            <!-- CTA -->
+                            <p class="buttons">
+                                <a href="#start" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                                    <span class="text">Get Started</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                                <a href="#" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                                    <span class="text">Learn More</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </p>
+    
+                        </div>
+                        <!-- Hero image -->
+                        <div class="column is-7">
+                            <figure class="image">
+                                <img src="img/illustrations/buildings.svg" alt="">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- /Landing page Hero -->
+    
+        <!-- Icon Features section -->
+        <section id="start" class="section is-transparent is-relative">
+            <!-- Container -->
+            <div class="container">
+                <!-- Divide section -->
+                <div class="divider is-centered"></div>
+                <!-- Content wrapper -->
+                <div class="content-wrapper is-medium">
+                    <div class="columns is-vcentered">
+                        <!-- Feature -->
+                        <div class="column is-4">
+                            <div class="feature">
+                                <img src="img/icons/chained.svg" alt="" data-aos="fade-up" data-aos-delay="100" data-aos-offset="200" data-aos-easing="ease-out-quart">
+                                <h4 class="title is-6 is-tight is-light">Chaining</h4>
+                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                            </div>
+                        </div>
+                        <!-- Feature -->
+                        <div class="column is-4">
+                            <div class="feature">
+                                <img src="img/icons/stacked.svg" alt="" data-aos="fade-up" data-aos-delay="300" data-aos-offset="200" data-aos-easing="ease-out-quart">
+                                <h4 class="title is-6 is-tight is-light">Stacking</h4>
+                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                            </div>
+                        </div>
+                        <!-- Feature -->
+                        <div class="column is-4">
+                            <div class="feature">
+                                <img src="img/icons/compact.svg" alt="" data-aos="fade-up" data-aos-delay="500" data-aos-offset="200" data-aos-easing="ease-out-quart">
+                                <h4 class="title is-6 is-tight is-light">Managing</h4>
+                                <p>Supercharged features to make you happy and lorem ipsum sit dolor amet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- /Container -->
+        </section>
+        <!-- /Icon Features section -->
+    
+        <!-- Side Features section -->
+        <section id="big-gradient" class="section is-transparent">
+            <!-- Container -->
+            <div class="container">
+                <!-- Divider -->
+                <div class="divider is-centered"></div>
+                <!-- Title & subtitle -->
+                <h2 class="title is-light is-semibold has-text-centered is-spaced">Decentralized Exchange</h2>
+                <h4 class="subtitle is-6 is-light has-text-centered is-compact">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Ut sea pertinax perpetua, eruditi volumus quaestio ex mel, has ei tota homero.</h4>
+    
+                <!-- Content wrapper -->
+                <div class="content-wrapper is-large">
+                    <div class="columns is-vcentered">
+    
+                        <!-- Feature content -->
+                        <div class="column is-5 is-offset-1">
+                            <div class="side-feature-content">
+    
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitbanner.svg" alt=""> <span>Token Building</span></h3>
+                                <div class="divider is-long"></div>
+                                <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
+                                <div class="cta-wrapper">
+                                    <a href="token.html" class="button k-button k-primary raised has-gradient is-bold">
+                                        <span class="text">Learn More</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Feature image -->
+                        <div class="column is-7">
+                            <img class="side-feature" src="img/illustrations/token.svg" alt="">
+                        </div>
+                    </div>
+    
+                    <div class="columns is-vcentered">
+                        <!-- Feature image desktop -->
+                        <div class="column is-7 is-hidden-mobile">
+                            <img class="side-feature" src="img/illustrations/blockchain-blocks.svg" alt="">
+                        </div>
+    
+                        <!-- Feature content -->
+                        <div class="column is-5">
+                            <div class="side-feature-content">
+    
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitnetwork.svg" alt=""> <span>Cascading Blockchain</span></h3>
+                                <div class="divider is-long"></div>
+                                <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
+                                <div class="cta-wrapper">
+                                    <a href="#" class="button k-button k-primary raised has-gradient is-bold">
+                                        <span class="text">Whitepaper</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Feature image only for mobile -->
+                        <div class="column is-7 is-hidden-desktop is-hidden-tablet">
+                            <img class="side-feature" src="img/illustrations/blockchain-blocks.svg" alt="">
+                        </div>
+                    </div>
+    
+                    <div class="columns is-vcentered">
+                        <!-- Feature content -->
+                        <div class="column is-5 is-offset-1">
+                            <div class="side-feature-content">
+    
+                                <h3 class="title is-4 is-light"><img src="img/icons/ico/bitmining.svg" alt=""> <span>Crypto Farming</span></h3>
+                                <div class="divider is-long"></div>
+                                <p class="is-light">Viderer malorum sadipscing cum ei. Eu impetus perfecto sit, no sea labore detraxit. Primis mediocrem necessitatibus an vis. Eu impetus perfecto sit, no sea labore detraxit.</p>
+                                <div class="cta-wrapper">
+                                    <a href="#" class="button k-button k-primary raised has-gradient is-bold">
+                                        <span class="text">Join the ICO</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Feature image -->
+                        <div class="column is-7">
+                            <img class="side-feature" src="img/illustrations/crypto-mining.svg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <!-- /Content wrapper -->
+            </div>
+            <!-- /Container -->
+        </section>
+        <!-- /Side Features section -->
+    </div>
+    
+    <footer class="krypton-footer">
+        <div class="container">
+            <!-- Logo -->
+            <div class="footer-logo">
+                <a href="#">
+                    <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
+                    <div class="brand-name">Krypton</div>
+                    <div class="brand-subtitle">Blockchain brought to another level</div>
+                </a>
+            </div>
+            
+            <!-- Columns -->
+            <div class="columns footer-columns is-vcentered">
+                <div class="column is-4">
+                    <!-- Links group -->
+                    <ul class="footer-links">
+                        <li>
+                            <a href="#">Token</a>
+                        </li>
+    
+                        <li>
+                            <a href="#">ICO</a>
+                        </li>
+    
+                        <li>
+                            <a href="#">Roadmap</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Newsletter -->
+                <div class="column is-4">
+                    <div class="subscribe-block">
+                        <form>
+                            <!-- Field -->
+                            <div class="control">
+                                <!-- Special input -->
+                                <input class="krypton-subscribe-input" type="email" name="email" placeholder="">
+                                <button class="subscribe-button">
+                                    <span>Subscribe</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Links group -->
+                <div class="column is-4">
+                    <ul class="footer-links">
+                        <li>
+                            <a href="#">Register</a>
+                        </li>
+    
+                        <li>
+                            <a href="#">Media</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Copyright -->
+            <p class="k-copyright">© 2018-2021 | Krypton. All Rights Reserved</p>
+            <br>
+            <!-- Made by -->
+            <p class="coded-by">Designed and Coded by <a href="https://cssninja.io" target="_blank">Css Ninja</a></p>
+        </div>
+        
+        <!-- Absolute image -->
+        <img class="solar-system" src="img/bg/solar.svg" alt="">
+    </footer>    <!-- Back To Top Button -->
+    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
+        'visible': scrolled,
+        '': !scrolled
+    }"></a></div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="js/bundle.js"></script>
+
+</body>
+
+</html>
