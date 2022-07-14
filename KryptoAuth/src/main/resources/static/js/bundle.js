@@ -4956,10 +4956,7 @@ var showPageloader = (0, _pageloader.initPageLoader)();
 
 document.onreadystatechange = function () {
   if (document.readyState == 'complete') {
-    //Switch demo images
-    var changeImages = (0, _utils.switchDemoImages)(_constants.env); //Switch backgrounds
 
-    var changeBackgrounds = (0, _utils.insertBgImages)(); //Feather Icons
 
     var featherIcons = feather.replace();
   }

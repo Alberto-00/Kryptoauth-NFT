@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Krypton</title>
+    <title>Kryptoauth - Goals</title>
 
     <link rel="icon" type="image/png" href="img/favicon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -17,14 +16,12 @@
 </head>
 
 <body>
-
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
     <div id="infraloader" class="infraloader is-active"></div>    
     <div class="token-wrapper">
         <!-- Landing page Hero -->
         <section class="hero is-medium">
             <div class="hero-head">
-    
                 <!-- Cloned navbar -->
                 <!-- Cloned navbar that comes in on scroll -->
                 <nav x-data="initNavbar()"  x-on:scroll.window="scroll()" id="navbar-clone" class="navbar is-fixed is-dark" :class="{
@@ -36,7 +33,7 @@
                         <div class="navbar-brand">
                             <a href="index.html" class="navbar-item">
                                 <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
-                                <span class="brand-name">Krypton</span>
+                                <span class="brand-name">Kryptoauth</span>
                             </a>
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
@@ -62,30 +59,19 @@
                             <div class="navbar-end">
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="token.html">Token</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
                                     <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                    <a class="is-centered-responsive" href="goals.html">Goals</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="#" target="_blank">
-                                        <img class="telegram" src="img/logo/telegram.svg" alt="">
-                                        Telegram
-                                    </a>
+                                    <a class="is-centered-responsive" href="technologies.html">Technologies</a>
                                 </div>
                                 <!-- Sign up -->
                                 <div class="navbar-item is-nav-link">
-                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                    <a href="register.html" class="button k-button k-primary raised has-gradient slanted">
                                         <span class="text">Register</span>
                                         <span class="front-gradient"></span>
                                     </a>
@@ -96,7 +82,6 @@
                 </nav>
                 <!-- /Cloned navbar -->
                 <!-- Static navbar -->
-                <!-- Static navbar -->
                 <nav x-data="initNavbar()" class="navbar is-light" :class="{
                         'is-dark-mobile': mobileOpen,
                         '': !mobileOpen
@@ -106,7 +91,7 @@
                         <div class="navbar-brand">
                             <a href="index.html" class="navbar-item">
                                 <img class="rotating" src="img/logo/krypton.svg" alt="">
-                                <span class="brand-name">Krypton</span>
+                                <span class="brand-name">Kryptoauth</span>
                             </a>
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
@@ -132,30 +117,19 @@
                             <div class="navbar-end">
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="token.html">Token</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="ico.html">Ico</a>
-                                </div>
-                                <!-- Menu item -->
-                                <div class="navbar-item is-nav-link">
                                     <a class="is-centered-responsive" href="roadmap.html">Roadmap</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="blog.html">Media</a>
+                                    <a class="is-centered-responsive" href="goals.html">Goals</a>
                                 </div>
                                 <!-- Menu item -->
                                 <div class="navbar-item is-nav-link">
-                                    <a class="is-centered-responsive" href="#" target="_blank">
-                                        <img class="telegram" src="img/logo/telegram.svg" alt="">
-                                        Telegram
-                                    </a>
+                                    <a class="is-centered-responsive" href="technologies.html">Technologies</a>
                                 </div>
                                 <!-- Sign up -->
-                                <div class="navbar-item">
-                                    <a href="#" class="button k-button k-primary raised has-gradient slanted">
+                                <div class="navbar-item is-nav-link">
+                                    <a href="register.html" class="button k-button k-primary raised has-gradient slanted">
                                         <span class="text">Register</span>
                                         <span class="front-gradient"></span>
                                     </a>
@@ -166,20 +140,23 @@
                 </nav>
                 <!-- /Static navbar -->
             </div>
-    
+
+            <!-- Animated particles -->
+            <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+
             <div class="hero-body has-text-centered">
                 <div class="columns">
                     <div class="column is-6 is-offset-3">
                         <div class="token-image">
-                            <img src="img/illustrations/krypton-token.svg">
+                            <img src="img/illustrations/krypton-token.svg" alt="">
                         </div>
-                        <h1 class="title is-2 is-light is-semibold is-spaced main-title">The K Token</h1>
+                        <h1 class="title is-2 is-light is-semibold is-spaced main-title">The KA Goals</h1>
                         <h2 class="subtitle is-5 is-light is-thin">
-                            Cryptocurrency brought to the next level. Join our ICO for supercharged rates.
+                            SSI brought to the next level. For more information join our community.
                         </h2>
                         <!-- CTA -->
                         <p>
-                            <a href="start" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                            <a href="#start" class="button k-button k-primary raised has-gradient is-fat is-bold">
                                 <span class="text">More details</span>
                                 <span class="front-gradient"></span>
                             </a>
@@ -187,14 +164,14 @@
                     </div>
                 </div>
             </div>
+            <div style="margin-bottom: 10em;"></div>
         </section>
-    
-        <section class="section is-medium">
+
+        <section id="start" class="section is-medium">
             <div class="container">
-    
                 <!-- Content wrapper -->
+                <div style="margin-top: 0;" class="divider is-centered is-spacer"></div>
                 <div class="content-wrapper">
-    
                     <div class="columns is-vcentered">
                         <!-- Feature content -->
                         <div class="column is-5 is-offset-1">
@@ -546,27 +523,19 @@
             <div class="footer-logo">
                 <a href="#">
                     <img class="rotating" src="img/logo/krypton-gradient.svg" alt="">
-                    <div class="brand-name">Krypton</div>
+                    <div class="brand-name">Kryptoauth</div>
                     <div class="brand-subtitle">Blockchain brought to another level</div>
                 </a>
             </div>
-            
+
             <!-- Columns -->
             <div class="columns footer-columns is-vcentered">
                 <div class="column is-4">
                     <!-- Links group -->
                     <ul class="footer-links">
-                        <li>
-                            <a href="#">Token</a>
-                        </li>
-    
-                        <li>
-                            <a href="#">ICO</a>
-                        </li>
-    
-                        <li>
-                            <a href="#">Roadmap</a>
-                        </li>
+                        <li><a href="technologies.html">Technologies</a></li>
+                        <li><a href="goals.html">Goals</a></li>
+                        <li><a href="roadmap.html">Roadmap</a></li>
                     </ul>
                 </div>
                 <!-- Newsletter -->
@@ -587,37 +556,25 @@
                 <!-- Links group -->
                 <div class="column is-4">
                     <ul class="footer-links">
-                        <li>
-                            <a href="#">Register</a>
-                        </li>
-    
-                        <li>
-                            <a href="#">Media</a>
-                        </li>
-    
-                        <li>
-                            <a href="#">Telegram</a>
-                        </li>
+                        <li><a target="_blank" href="https://github.com/Alberto-00">GitHub</a></li>
+                        <li><a target="_blank" href="https://www.linkedin.com/in/alberto-montefusco">LinkedIn</a></li>
+                        <li><a target="_blank" href="https://www.instagram.com/alberto_montefusco_/">Instagram</a></li>
                     </ul>
                 </div>
             </div>
             <!-- Copyright -->
-            <p class="k-copyright">© 2018-2021 | Krypton. All Rights Reserved</p>
-            <br>
-            <!-- Made by -->
-            <p class="coded-by">Designed and Coded by <a href="https://cssninja.io" target="_blank">Css Ninja</a></p>
+            <p class="k-copyright">© 2022 | Kryptoauth. All Rights Reserved</p>
         </div>
-        
+
         <!-- Absolute image -->
         <img class="solar-system" src="img/bg/solar.svg" alt="">
-    </footer>    <!-- Back To Top Button -->
+    </footer>
+    <!-- Back To Top Button -->
     <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
         'visible': scrolled,
         '': !scrolled
     }"></a></div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="./js/bundle.js"></script>
-
+    <script src="js/bundle.js"></script>
 </body>
-
 </html>
