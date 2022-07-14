@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Kryptoauth - Login</title>
 
-    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
@@ -25,6 +24,7 @@
     <!-- Landing page Hero -->
     <section class="hero is-fullheight has-big-dark-gradient">
         <div class="hero-head">
+    
             <!-- Cloned navbar -->
             <!-- Cloned navbar that comes in on scroll -->
             <nav x-data="initNavbar()"  x-on:scroll.window="scroll()" id="navbar-clone" class="navbar is-fixed is-dark" :class="{
@@ -161,7 +161,7 @@
                                 <label>Email or Username</label>
                             </div>
                             <!-- Field -->
-                            <div class="control-material is-primary">      
+                            <div class="control-material is-primary">
                                 <input class="material-input" type="password" required name="password">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
@@ -176,6 +176,7 @@
                                 </button>
                             </div>
                         </form>
+    
                     </div>
                     <!-- Hero image -->
                     <div class="column is-5 is-offset-1 ico-countdown">
@@ -199,7 +200,6 @@
                                     <div class="label">Seconds</div>
                                 </li>
                             </ul>
-
                             <!-- Progress bar -->
                             <div class="progress-block">
                                 <!-- Tags -->
@@ -235,7 +235,7 @@
         <div class="hero-foot">
             <div class="container">
                 <div class="tabs is-centered">
-                    <!-- Client / partner list -->
+                    <!-- Technologies list -->
                     <ul>
                         <li><a><img style="filter: invert(14%) sepia(1%) saturate(17%) hue-rotate(314deg) brightness(101%) contrast(79%);"
                                     class="hero-logo" src="img/logo/ethereum.svg" alt=""></a></li>
@@ -258,18 +258,15 @@
                     <div class="brand-subtitle">Blockchain brought to another level</div>
                 </a>
             </div>
-
+            
             <!-- Columns -->
             <div class="columns footer-columns is-vcentered">
                 <div class="column is-4">
                     <!-- Links group -->
                     <ul class="footer-links">
-                        <li>
-                            <a href="roadmap.html">Roadmap</a>
-                        </li>
-                        <li>
-                            <a href="goals.html">Goals</a>
-                        </li>
+                        <li><a href="technologies.html">Technologies</a></li>
+                        <li><a href="goals.html">Goals</a></li>
+                        <li><a href="roadmap.html">Roadmap</a></li>
                     </ul>
                 </div>
                 <!-- Newsletter -->
@@ -290,31 +287,24 @@
                 <!-- Links group -->
                 <div class="column is-4">
                     <ul class="footer-links">
-                        <li>
-                            <a href="login.html">Register</a>
-                        </li>
-
-                        <li>
-                            <a href="technologies.html">Technologies</a>
-                        </li>
+                        <li><a target="_blank" href="https://github.com/Alberto-00">GitHub</a></li>
+                        <li><a target="_blank" href="https://www.linkedin.com/in/alberto-montefusco">LinkedIn</a></li>
+                        <li><a target="_blank" href="https://www.instagram.com/alberto_montefusco_/">Instagram</a></li>
                     </ul>
                 </div>
             </div>
             <!-- Copyright -->
             <p class="k-copyright">© 2022 | Kryptoauth. All Rights Reserved</p>
         </div>
-
+        
         <!-- Absolute image -->
         <img class="solar-system" src="img/bg/solar.svg" alt="">
-    </footer>
-    <!-- Back To Top Button -->
-    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop">
-        <a href="javascript:" :class="{
+    </footer>    <!-- Back To Top Button -->
+    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
         'visible': scrolled,
         '': !scrolled
-        }"></a>
-    </div>
+    }"></a></div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="js/bundle.js"></script>
+    <script src="./js/bundle.js"></script>
 </body>
 </html>
