@@ -1,0 +1,8 @@
+.format-password{
+    color: #7f00ff;
+    margin-top: 20px;
+}
+
+.format-password > span{
+    margin-bottom: 20px;
+}

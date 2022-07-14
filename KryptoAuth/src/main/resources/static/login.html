@@ -6,13 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Kryptoauth</title>
-    <link rel="icon" type="image/png" href="img/favicon.png" />
+
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <script src="js/authentication.js"></script>
+
+    <script src="js/validator/jquery.js"></script>
+    <script src="js/validator/jquery-validate-plugin.js"></script>
+    <script src="js/authentication.js" defer></script>
 </head>
 <body onload="timer();">
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
@@ -69,7 +74,7 @@
                             </div>
                             <!-- Sign up -->
                             <div class="navbar-item is-nav-link">
-                                <a href="authentication.html" class="button k-button k-primary raised has-gradient slanted">
+                                <a href="register.html" class="button k-button k-primary raised has-gradient slanted">
                                     <span class="text">Register</span>
                                     <span class="front-gradient"></span>
                                 </a>
@@ -127,7 +132,7 @@
                             </div>
                             <!-- Sign up -->
                             <div class="navbar-item is-nav-link">
-                                <a href="authentication.html" class="button k-button k-primary raised has-gradient slanted">
+                                <a href="register.html" class="button k-button k-primary raised has-gradient slanted">
                                     <span class="text">Register</span>
                                     <span class="front-gradient"></span>
                                 </a>
@@ -147,17 +152,17 @@
                     <!-- Landing page Title -->
                     <div class="column is-5 landing-caption">
                         <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Login to KRYPTOAUTH</h1>
-                        <form class="login-form">
+                        <form name="login-form" class="login-form" method="post" action="">
                             <!-- Field -->
-                            <div class="control-material is-primary">      
-                                <input class="material-input " type="email" required>
+                            <div class="control-material is-primary">
+                                <input class="material-input" type="text" required name="email">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
-                                <label>Email</label>
+                                <label>Email or Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">      
-                                <input class="material-input " type="password" required>
+                                <input class="material-input" type="password" required name="password">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Password</label>
@@ -171,7 +176,6 @@
                                 </button>
                             </div>
                         </form>
-    
                     </div>
                     <!-- Hero image -->
                     <div class="column is-5 is-offset-1 ico-countdown">
@@ -208,7 +212,7 @@
     
                             <!-- Button -->
                             <div class="button-block">
-                                <a href="#" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
+                                <a href="register.html" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
                                     <span class="text">Register for KRYPTOAUTH</span>
                                     <span class="front-gradient"></span>
                                 </a>
@@ -286,7 +290,7 @@
                 <div class="column is-4">
                     <ul class="footer-links">
                         <li>
-                            <a href="authentication.html">Register</a>
+                            <a href="login.html">Register</a>
                         </li>
 
                         <li>
