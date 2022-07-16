@@ -41,7 +41,7 @@
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
                                 <div class="menu-toggle">
-                                    <span class="icon-box-toggle" :class="{
+                                    <span id="menu-clone" class="icon-box-toggle" :class="{
                                             'active': mobileOpen,
                                             '': !mobileOpen
                                         }">
@@ -85,7 +85,7 @@
                 </nav>
                 <!-- /Cloned navbar -->
                 <!-- Static navbar -->
-                <nav x-data="initNavbar()" class="navbar is-light" :class="{
+                <nav id="nav" x-data="initNavbar()" class="navbar is-light" :class="{
                         'is-dark-mobile': mobileOpen,
                         '': !mobileOpen
                     }">
@@ -99,7 +99,7 @@
                             <!-- Responsive toggle -->
                             <div class="navbar-burger" @click="openMobileMenu()">
                                 <div class="menu-toggle">
-                                    <span class="icon-box-toggle" :class="{
+                                    <span id="menu-nav" class="icon-box-toggle" :class="{
                                             'active': mobileOpen,
                                             '': !mobileOpen
                                         }">
@@ -297,7 +297,7 @@
                     <!-- CTA -->
                     <div class="cta-wrapper has-text-centered">
                         <a href="register.html" class="button k-button k-primary raised has-gradient is-fat is-bold">
-                            <span class="text">Join the ICO</span>
+                            <span class="text">Join the KRYPTOAUTH</span>
                             <span class="front-gradient"></span>
                         </a>
                     </div>
