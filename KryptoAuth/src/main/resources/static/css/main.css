@@ -13,13 +13,19 @@
     }
 }
 
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
     .size{
         width: 47%;
         margin: auto;
     }
 
-    .title, .{
+    .title {
         text-align: center;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 956px) {
+    .size{
+        width: 47%;
     }
 }

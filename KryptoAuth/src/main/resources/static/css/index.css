@@ -1,0 +1,10 @@
+@media screen and (max-width: 768px) {
+    h3.title {
+        display: inline-block!important;
+        vertical-align: middle!important;
+    }
+
+    .side-feature-content img{
+        vertical-align: middle!important;
+    }
+}

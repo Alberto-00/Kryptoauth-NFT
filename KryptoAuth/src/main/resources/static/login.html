@@ -13,10 +13,13 @@
 
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/library.css">
+    <link rel="stylesheet" type="text/css" href="css/authentication.css">
 
     <script src="js/validator/jquery.js"></script>
     <script src="js/validator/jquery-validate-plugin.js"></script>
     <script src="js/authentication.js" defer></script>
+    <script src="js/library.js"></script>
 </head>
 <body onload="timer();">
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
@@ -41,7 +44,7 @@
                         <!-- Responsive toggle -->
                         <div class="navbar-burger" @click="openMobileMenu()">
                             <div class="menu-toggle">
-                                <span class="icon-box-toggle" :class="{
+                                <span id="menu-clone" class="icon-box-toggle" :class="{
                                         'active': mobileOpen,
                                         '': !mobileOpen
                                     }">
@@ -85,7 +88,7 @@
             </nav>
             <!-- /Cloned navbar -->
             <!-- Static navbar -->
-            <nav x-data="initNavbar()" class="navbar is-light" :class="{
+            <nav id="nav" x-data="initNavbar()" class="navbar is-light" :class="{
                     'is-dark-mobile': mobileOpen,
                     '': !mobileOpen
                 }">
@@ -213,8 +216,8 @@
     
                             <!-- Button -->
                             <div class="button-block">
-                                <a href="register.html" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
-                                    <span class="text">Register for KRYPTOAUTH</span>
+                                <a style="padding: 25px 0 25px 0;" href="register.html" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
+                                    <span class="text">Register <br>for KRYPTOAUTH</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </div>

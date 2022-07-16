@@ -1,0 +1,10 @@
+.icon-goals-solidity{
+    width: 5%;
+    filter: invert(60%) sepia(47%) saturate(4758%) hue-rotate(201deg) brightness(102%) contrast(100%);
+    margin: 16px;
+}
+
+.icon-goals-metamask{
+    width: 10%;
+    filter: invert(53%) sepia(56%) saturate(4758%) hue-rotate(200deg) brightness(96%) contrast(84%);
+}
