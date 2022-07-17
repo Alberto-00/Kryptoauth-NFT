@@ -11,10 +11,12 @@
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="css/library.css">
     <link rel="stylesheet" type="text/css" href="css/authentication.css">
+    <link rel="stylesheet" type="text/css" href="css/scrollUp.css">
 
     <script src="js/validator/jquery.js"></script>
     <script src="js/validator/jquery-validate-plugin.js"></script>
@@ -23,7 +25,14 @@
 </head>
 <body onload="timer();">
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
-    <div id="infraloader" class="infraloader is-active"></div>    
+    <div id="infraloader" class="infraloader is-active"></div>
+
+    <!-- Scroll To Top Button -->
+    <a id="scrollUp" class="one" href="javascript:void(0)">
+        <i class="fa-solid fa-chevron-up"></i>
+    </a>
+    <!-- /Scroll To Top Button -->
+
     <!-- Landing page Hero -->
     <section class="hero is-fullheight has-big-dark-gradient">
         <div class="hero-head">
@@ -302,11 +311,7 @@
         
         <!-- Absolute image -->
         <img class="solar-system" src="img/bg/solar.svg" alt="">
-    </footer>    <!-- Back To Top Button -->
-    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
-        'visible': scrolled,
-        '': !scrolled
-    }"></a></div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="js/bundle.js"></script>
 </body>

@@ -1,0 +1,78 @@
+
+#scrollUp{
+    visibility: hidden;
+    background-color: #333;
+    border: 1px solid #222;
+    color: #aaa;
+    position: fixed;
+    bottom: 10px;
+    right: 15px;
+    z-index: 100;
+    display: inline-block;
+    padding: 0;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 1;
+    margin-right: 45px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 0 12px 0 rgb(0 0 0 / 12%);
+    -moz-box-shadow: 0 0 12px 0 rgba(0,0,0,.12);
+    box-shadow: 0 0 12px 0 rgb(0 0 0 / 12%);
+}
+
+#scrollUp:hover{
+    color:#0099e5
+}
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; }}
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; }}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; }}
+
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; }}
+@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; }}
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; }}
+
+.fade-in {
+    opacity:0;  /* make things invisible upon start */
+    -webkit-animation:fadeIn ease-in 1;  /* call keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+    -moz-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+
+    -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration: 0.2s;
+    -moz-animation-duration: 0.2s;
+    animation-duration: 0.2s;
+}
+
+.fade-out {
+    opacity:1;  /* make things visible upon start */
+    -webkit-animation:fadeOut ease-out 1;  /* call keyframe named fadeOut, use animattion ease-out and repeat it only 1 time */
+    -moz-animation:fadeOut ease-out 1;
+    animation:fadeOut ease-out 1;
+
+    -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 0)*/
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration: 0.2s;
+    -moz-animation-duration: 0.2s;
+    animation-duration: 0.2s;
+
+    -webkit-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
+.fade-in.fade-out.one {
+    -webkit-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}

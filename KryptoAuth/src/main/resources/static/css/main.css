@@ -22,6 +22,10 @@
     .title {
         text-align: center;
     }
+
+    .blog-post{
+        margin-bottom: 4.6em;
+    }
 }
 
 @media screen and (min-width: 769px) and (max-width: 956px) {

@@ -11,16 +11,25 @@
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="css/library.css">
     <link rel="stylesheet" type="text/css" href="css/goals.css">
+    <link rel="stylesheet" type="text/css" href="css/scrollUp.css">
     <script src="js/validator/jquery.js"></script>
     <script src="js/library.js"></script>
 </head>
 <body>
     <div id="pageloader" class="pageloader is-left-to-right is-theme"></div>
-    <div id="infraloader" class="infraloader is-active"></div>    
+    <div id="infraloader" class="infraloader is-active"></div>
+
+    <!-- Scroll To Top Button -->
+    <a id="scrollUp" class="one" href="javascript:void(0)">
+        <i class="fa-solid fa-chevron-up"></i>
+    </a>
+    <!-- /Scroll To Top Button -->
+
     <div class="token-wrapper">
         <!-- Landing page Hero -->
         <section class="hero is-medium">
@@ -159,7 +168,7 @@
                         </h2>
                         <!-- CTA -->
                         <p>
-                            <a href="#info" class="button k-button k-primary raised has-gradient is-fat is-bold">
+                            <a id="info-goals" class="button k-button k-primary raised has-gradient is-fat is-bold">
                                 <span class="text">More details</span>
                                 <span class="front-gradient"></span>
                             </a>
@@ -170,7 +179,7 @@
             <div style="margin-bottom: 10em;"></div>
         </section>
 
-        <section id="info" class="section is-medium">
+        <section class="section is-medium">
             <div class="container">
                 <!-- Content wrapper -->
                 <div style="margin-top: 0;" class="divider is-centered is-spacer"></div>
@@ -304,7 +313,7 @@
     
                     <div class="currencies">
                         <i class="cf cf-etc"></i>
-                        <img class="icon-goals-metamask" src="img/logo/metamask.svg">
+                        <img class="icon-goals-metamask" src="img/logo/metamask.svg" alt="">
                         <img class="icon-goals-solidity" src="img/logo/solidity.svg" alt="">
                     </div>
                 </div>
@@ -497,15 +506,9 @@
             <!-- Copyright -->
             <p class="k-copyright">© 2022 | Kryptoauth. All Rights Reserved</p>
         </div>
-
         <!-- Absolute image -->
         <img class="solar-system" src="img/bg/solar.svg" alt="">
     </footer>
-    <!-- Back To Top Button -->
-    <div x-data="initBackToTop()" x-on:scroll.window="scroll($event)" @click="goTop($event)" id="backtotop"><a href="javascript:" :class="{
-        'visible': scrolled,
-        '': !scrolled
-    }"></a></div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="js/bundle.js"></script>
 </body>
