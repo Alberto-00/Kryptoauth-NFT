@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Kryptoauth - Register</title>
 
-    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="css/authentication.css">
     <link rel="stylesheet" type="text/css" href="css/library.css">
     <link rel="stylesheet" type="text/css" href="css/scrollUp.css">
+    <link rel="stylesheet" href="css/popupSuccess.css">
 
     <script src="js/validator/jquery.js"></script>
     <script src="js/validator/jquery-validate-plugin.js"></script>
@@ -189,7 +190,7 @@
                             
                             <!-- Submit -->
                             <div>
-                                <button class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
+                                <button id="open" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
                                     <span class="text">Register</span>
                                     <span class="front-gradient"></span>
                                 </button>
@@ -198,7 +199,6 @@
                                 <span>Password format:</span>
                                 <ul>
                                     <li>- min lenght 8 characters;</li>
-                                    <li>- max lenght 50 characters;</li>
                                     <li>- at last one upper character;</li>
                                     <li>- at last one lower character;</li>
                                     <li>- at last one digit;</li>
@@ -206,10 +206,10 @@
                                 </ul>
                             </div>
                         </form>
-    
+
                     </div>
                     <!-- Hero image -->
-                    <div class="column is-5 is-offset-1 ico-countdown">
+                    <div class="hero-image column is-5 is-offset-1 ico-countdown">
                         <div x-data="initCountdown()" x-init="setupCountdown()" class="ico-card animated preFadeInUp fadeInUp">
                             <!-- Countdown -->
                             <ul id="countdown" class="is-ico">
@@ -234,17 +234,17 @@
                             <div class="progress-block">
                                 <!-- Tags -->
                                 <div class="progress-tags">
-                                    <div>Smart Contract</div>
-                                    <div>Blockchain</div>
-                                    <div>Etherium</div>
+                                    <div>SC</div>
+                                    <div>BC</div>
+                                    <div>ETH</div>
                                 </div>
                                 <progress class="progress ico-progress" value="65" max="100">65%</progress>
                             </div>
     
                             <!-- Button -->
                             <div class="button-block">
-                                <a style="padding: 25px 0 25px 0;" href="register.html" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
-                                    <span class="text">Register <br>for KRYPTOAUTH</span>
+                                <a style="padding: 25px 0 25px 0;" href="login.html" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
+                                    <span class="text">Login <br>for KRYPTOAUTH</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </div>
@@ -332,5 +332,45 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="js/bundle.js"></script>
+
+    <!-- Success Popup -->
+    <div class="modal" id="popupSuccess">
+        <div class="header-modal"></div>
+        <div class="content-modal success-p">
+            <p style="font-size: 35px">Fantastico!</p>
+            <p>La registrazione è avvenuta con successo.</p>
+            <div class="icon-box-success">
+                <img src="img/icons/check-solid.svg" alt="check">
+            </div>
+        </div>
+        <div class="footer-modal">
+            <button id="confirmPopupSuccess" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
+                <span style="font-size: 16px; font-weight: bolder;" class="text">OK</span>
+                <span class="front-gradient"></span>
+            </button>
+        </div>
+    </div>
+    <!-- /Success Popup -->
+
+    <!-- Error Popup -->
+    <div class="modal" id="popupError">
+        <div class="header-modal"></div>
+        <div class="content-modal error-p">
+            <p style="font-size: 35px">Error!</p>
+            <p>Qualcosa è andato storto.<br> Ti invitiamo a riprovare.</p>
+            <div class="icon-box-error">
+                <img src="img/icons/x.svg" alt="">
+            </div>
+        </div>
+        <div class="footer-modal">
+            <button id="confirmPopupError" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
+                <span style="font-size: 16px; font-weight: bolder;" class="text">Cancel</span>
+                <span class="front-gradient"></span>
+            </button>
+        </div>
+    </div>
+    <!-- Error Popup -->
+    <div class="shadow"></div>
+
 </body>
 </html>

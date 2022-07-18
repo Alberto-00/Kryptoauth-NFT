@@ -33,6 +33,10 @@ $(document).ready(function (){
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=^ ì{}+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\d=^ ì{}+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$/.test(value)
     }, "Password wrong.");
 
+    $.validator.addMethod("checklenght", function (value) {
+        return /^.{8,}$/.test(value)
+    }, "Password must have at last 8 characters.");
+
     $.validator.addMethod("checklower", function (value){
         $('#repeat-pass').empty();
         return /^(?=.*[a-z])/.test(value);
@@ -91,6 +95,7 @@ $(document).ready(function (){
                 checkupper: true,
                 checkdigit: true,
                 checkspecial: true,
+                checklenght: true,
             },
             repeatPassword: {
                 required: true,
@@ -98,6 +103,7 @@ $(document).ready(function (){
                 checkupper: true,
                 checkdigit: true,
                 checkspecial: true,
+                checklenght: true,
             }
         },
         messages: {
@@ -112,7 +118,41 @@ $(document).ready(function (){
             }
         },
         submitHandler: function(form) {
-            form.submit();
+            /*$("#open").click(function(){
+                $(".shadow").css("display","block");
+                $("#popupSuccess").css("display","block");
+                $("html, body").animate({scrollTop: 0}, 700);
+            });
+
+            $(".shadow").click(function(){
+                $(this).fadeOut();
+                $("#popupSuccess").fadeOut();
+                form.submit();
+            });
+
+            $('#confirmPopupSuccess').click(function (){
+                $(".shadow").fadeOut();
+                $("#popupSuccess").fadeOut();
+                form.submit();
+            })*/
+
+            $("#open").click(function () {
+                $(".shadow").css("display", "block");
+                $("#popupError").css("display", "block");
+                $("html, body").animate({scrollTop: 0}, 700);
+            });
+
+            $(".shadow").click(function () {
+                $(this).fadeOut();
+                $("#popupError").fadeOut();
+                form.submit();
+            });
+
+            $('#confirmPopupError').click(function () {
+                $(".shadow").fadeOut();
+                $("#popupError").fadeOut();
+                form.submit();
+            });
         }
     });
 })

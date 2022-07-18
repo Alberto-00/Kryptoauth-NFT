@@ -7,13 +7,20 @@
     margin-bottom: 20px;
 }
 
-@media screen and (max-width: 391px){
-    div.columns{
-        margin-left: -3.2rem!important;
+@media screen and (max-width: 347px){
+    .button.is-fullwidth{
+        width: 92%;
     }
+}
 
-    .ico-countdown .ico-card {
-        width: 79%!important;
-        margin-left: 25px!important;
+@media screen and (max-width: 460px){
+    .hero-image{
+        display: none;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1216px){
+    .hero-image{
+        width: 50%!important;
     }
 }
