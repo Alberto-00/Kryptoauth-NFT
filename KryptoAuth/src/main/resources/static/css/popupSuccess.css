@@ -2,7 +2,7 @@
     width: 19%;
 }
 
-.error-p p:first-child, .success-p p:first-child{
+.success-p p:first-child{
     background-size: 100%;
     background-repeat: repeat;
 
@@ -13,11 +13,7 @@
 }
 
 .error-p p:first-child{
-    background-color: rgb(111,3,3);
-    background-image: -moz-radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background-image: -webkit-radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background-image: radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6f0303",endColorstr="#a00a16",GradientType=1);
+    color: #ff0033;
 }
 
 .success-p p:first-child{
@@ -47,11 +43,7 @@
 .icon-box-error{
     width: 52px;
     height: 52px;
-    background: rgb(111,3,3);
-    background: -moz-radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background: -webkit-radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background: radial-gradient(circle, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6f0303",endColorstr="#a00a16",GradientType=1);
+    background: #ff0033;
 }
 
 .icon-box-success > img, .icon-box-error > img{
@@ -69,7 +61,7 @@
 
 #confirmPopupSuccess, #confirmPopupError{
     border: none;
-    margin-right: 15em;
+    margin-right: 15.5em;
 }
 
 #confirmPopupSuccess{
@@ -79,11 +71,7 @@
 }
 
 #confirmPopupError{
-    background: rgb(111,3,3);
-    background: -moz-linear-gradient(0deg, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background: -webkit-linear-gradient(0deg, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    background: linear-gradient(0deg, rgba(111,3,3,1) 0%, rgba(160,10,22,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6f0303",endColorstr="#a00a16",GradientType=1);
+    background: #ff0033;
 }
 
 .close{
@@ -125,12 +113,19 @@
     animation-duration: 0.8s;
 }
 
-.header-modal{
+.header-modal-success, .header-modal-error{
     width: 100%;
     height: 70px;
     border-radius: 10px 10px 0px 0px;
     border-bottom: 2px solid;
+}
+
+.header-modal-success{
     border-image: linear-gradient(to top, #00ff99, #33ccff) 1 !important;
+}
+
+.header-modal-error{
+    border-image: linear-gradient(to top, #ff0033, #ff0033) 1 !important;
 }
 
 .content-modal{
@@ -147,16 +142,23 @@
     font-size: 22px;
 }
 
-.footer-modal{
+.footer-modal-success, .footer-modal-error{
     padding: 0;
     width: 100%;
     height: 80px;
     border-radius: 0 0 10px 10px;
     border-top: 2px solid;
-    border-image: linear-gradient(to top, #00ff99, #33ccff) 1 !important;;
 }
 
-.footer-modal button{
+.footer-modal-success{
+    border-image: linear-gradient(to top, #00ff99, #33ccff) 1 !important;
+}
+
+.footer-modal-error{
+    border-image: linear-gradient(to top, #ff0033, #ff0033) 1 !important;
+}
+
+.footer-modal-success button, .footer-modal-error button{
     float: right;
     margin-right: 10px;
     margin-top: 18px;
@@ -174,7 +176,7 @@
         margin-top: calc(50vh - 150px);
     }
 
-    .header-modal{
+    .header-modal-success, .header-modal-error{
         width: 100%;
         height: 40px;
     }
@@ -184,12 +186,12 @@
         height: 190px;
     }
 
-    .footer-modal{
+    .footer-modal-success, .footer-modal-error{
         width: 100%;
         height: 70px;
     }
 
-    .footer-modal button{
+    .footer-modal-success button, .footer-modal-error button{
         float: right;
         margin-right: 10px;
         margin-top: 10px;
