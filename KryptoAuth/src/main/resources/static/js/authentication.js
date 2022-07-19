@@ -26,11 +26,15 @@ timer();
 $(document).ready(function (){
 
     $.validator.addMethod("username_email", function (value){
-        return /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){2,18}[a-zA-Z0-9]$/.test(value) | /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+        return /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,}[a-zA-Z0-9]$/.test(value) | /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
     }, "Email or Username field wrong.");
 
+    $.validator.addMethod("username_email_lenght", function (value){
+        return /^.{3,}$/.test(value);
+    }, "Email or Username must have at last 3 characters.");
+
     $.validator.addMethod("strong_password", function (value) {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=^ ì{}+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\d=^ ì{}+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$/.test(value)
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\d=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$/.test(value)
     }, "Password wrong.");
 
     $.validator.addMethod("checklenght", function (value) {
@@ -54,7 +58,7 @@ $(document).ready(function (){
 
     $.validator.addMethod("checkspecial", function (value){
         $('#repeat-pass').empty();
-        return /^(?=.*[={}+çò°àù§èé#@$!%€*?&:,;'._<>|-])/.test(value);
+        return /^(?=.*[={}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])/.test(value);
     }, "Password must have at last one special character.");
 
     $("form[name='login-form']").validate({
@@ -62,6 +66,7 @@ $(document).ready(function (){
             email: {
                 required: true,
                 email: false,
+                username_email_lenght: true,
                 username_email: true,
             },
             password: {
@@ -82,11 +87,16 @@ $(document).ready(function (){
         }
     });
 
+    $('#log').on('click', function (){
+        $("input[name='repeatPassword']").val($('#password').val())
+    })
+
     $("form[name='register-form']").validate({
         rules: {
             email: {
                 required: true,
                 email: false,
+                username_email_lenght: true,
                 username_email: true,
             },
             password: {
@@ -145,6 +155,7 @@ $(document).ready(function (){
             $(".shadow").click(function () {
                 $(this).fadeOut();
                 $("#popupError").fadeOut();
+
                 form.submit();
             });
 

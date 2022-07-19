@@ -27,17 +27,24 @@
                     <!-- Landing page Title -->
                     <div class="column is-5 landing-caption">
                         <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Login to KRYPTOAUTH</h1>
-                        <form name="login-form" class="login-form" method="post" action="/kryptoauth/login">
+                        <form name="login-form" class="login-form" method="post" th:action="@{/kryptoauth/login}">
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="text" required name="email">
+                                <input class="material-input" type="text" id="email" required name="email" th:field="${user.email}">
+                                <th:block th:if="${#fields.hasErrors('user.email')}">
+                                    <label th:text="${#fields.errors('user.email').get(0)}" id="email-error" class="error" for="email"></label>
+                                </th:block>
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Email or Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" required name="password">
+                                <input class="material-input" type="password" required id="password" name="password" th:field="${user.password}">
+                                <input hidden="hidden" type="password" name="repeatPassword">
+                                <th:block th:if="${#fields.hasErrors('user.password')}">
+                                    <label th:text="${#fields.errors('user.password').get(0)}" id="password-error" class="error" for="password"></label>
+                                </th:block>
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Password</label>
@@ -45,7 +52,7 @@
                             
                             <!-- Submit -->
                             <div>
-                                <button class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
+                                <button id="log" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
                                     <span class="text">Login</span>
                                     <span class="front-gradient"></span>
                                 </button>

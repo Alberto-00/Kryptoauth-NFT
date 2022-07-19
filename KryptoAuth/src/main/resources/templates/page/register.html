@@ -27,23 +27,32 @@
                     <!-- Landing page Title -->
                     <div class="column is-5 landing-caption">
                         <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Register to KRYPTOAUTH</h1>
-                        <form name="register-form" class="login-form" method="post" action="/kryptoauth/register">
+                        <form name="register-form" class="login-form" method="post" th:action="@{/kryptoauth/register}">
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="text" required name="email">
+                                <input class="material-input" type="text" id="email" required name="email" th:field="${user.email}">
+                                <th:block th:if="${#fields.hasErrors('user.email')}">
+                                    <label th:text="${#fields.errors('user.email').get(0)}" id="email-error" class="error" for="email"></label>
+                                </th:block>
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Email or Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" required name="password">
+                                <input class="material-input" type="password" id="password" required name="password" th:field="${user.password}">
+                                <th:block th:if="${#fields.hasErrors('user.password')}">
+                                    <label th:text="${#fields.errors('user.password').get(0)}" id="password-error" class="error" for="password"></label>
+                                </th:block>
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Password</label>
                             </div>
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" required name="repeatPassword">
+                                <input class="material-input" type="password" id="repeatPassword" required name="repeatPassword" th:field="${user.repeatPassword}">
+                                <th:block th:if="${#fields.hasErrors('user.repeatPassword')}">
+                                    <label th:text="${#fields.errors('user.repeatPassword').get(0)}" id="repeatPassword-error" class="error" for="repeatPassword"></label>
+                                </th:block>
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label id="repeat-pass">Repeat Password</label>
