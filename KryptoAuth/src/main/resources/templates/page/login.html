@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="partials/head :: head"></th:block>
+    <title>Kryptoauth - Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/authentication.css}">
+    <script th:src="@{/js/lib/jquery-validate-plugin.js}"></script>
+    <script th:src="@{/js/scrollUp.js}"></script>
+    <script th:src="@{/js/authentication.js}" defer></script>
+</head>
+<body onload="timer();">
+    <div th:replace="partials/header :: #pageloader"></div>
+    <div th:replace="partials/header :: #infraloader"></div>
+    <div th:replace="partials/header :: #scrollUp"></div>
+
+    <!-- Landing page Hero -->
+    <section class="hero is-fullheight has-big-dark-gradient">
+        <div th:replace="partials/header :: header"></div>
+    
+        <!-- Hero Image and Title -->
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-vcentered">
+    
+                    <!-- Landing page Title -->
+                    <div class="column is-5 landing-caption">
+                        <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Login to KRYPTOAUTH</h1>
+                        <form name="login-form" class="login-form" method="post" action="/kryptoauth/login">
+                            <!-- Field -->
+                            <div class="control-material is-primary">
+                                <input class="material-input" type="text" required name="email">
+                                <span class="material-highlight"></span>
+                                <span class="bar"></span>
+                                <label>Email or Username</label>
+                            </div>
+                            <!-- Field -->
+                            <div class="control-material is-primary">
+                                <input class="material-input" type="password" required name="password">
+                                <span class="material-highlight"></span>
+                                <span class="bar"></span>
+                                <label>Password</label>
+                            </div>
+                            
+                            <!-- Submit -->
+                            <div>
+                                <button class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
+                                    <span class="text">Login</span>
+                                    <span class="front-gradient"></span>
+                                </button>
+                            </div>
+                        </form>
+    
+                    </div>
+                    <!-- Hero image -->
+                    <div class="hero-image column is-5 is-offset-1 ico-countdown">
+                        <div x-data="initCountdown()" x-init="setupCountdown()" class="ico-card animated preFadeInUp fadeInUp">
+                            <!-- Countdown -->
+                            <ul id="countdown" class="is-ico">
+                                <li id="days">
+                                    <div id="days-count" class="timer-number"></div>
+                                    <div class="label">Days</div>
+                                </li>
+                                <li id="hours">
+                                    <div id="hours-count" class="timer-number"></div>
+                                    <div class="label">Hours</div>
+                                </li>
+                                <li id="minutes">
+                                    <div id="minutes-count" class="timer-number"></div>
+                                    <div class="label">Minutes</div>
+                                </li>
+                                <li id="seconds">
+                                    <div id="seconds-count" class="timer-number"></div>
+                                    <div class="label">Seconds</div>
+                                </li>
+                            </ul>
+                            <!-- Progress bar -->
+                            <div class="progress-block">
+                                <!-- Tags -->
+                                <div class="progress-tags">
+                                    <div>SC</div>
+                                    <div>BC</div>
+                                    <div>ETH</div>
+                                </div>
+                                <progress class="progress ico-progress" value="65" max="100">65%</progress>
+                            </div>
+    
+                            <!-- Button -->
+                            <div class="button-block">
+                                <a style="padding: 25px 0 25px 0;" href="/kryptoauth/register" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
+                                    <span class="text">Register <br>for KRYPTOAUTH</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </div>
+    
+                            <!-- Icons -->
+                            <div class="icon-block">
+                                <i class="cf cf-btc"></i>
+                                <i class="cf cf-eth"></i>
+                                <i class="cf cf-ltc"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Hero footer -->
+        <div class="hero-foot">
+            <div class="container">
+                <div class="tabs is-centered">
+                    <!-- Technologies list -->
+                    <ul>
+                        <li><a><img style="filter: invert(14%) sepia(1%) saturate(17%) hue-rotate(314deg) brightness(101%) contrast(79%);"
+                                    class="hero-logo" th:src="@{/img/logo/ethereum.svg}" alt=""></a></li>
+                        <li><a><img class="hero-logo" th:src="@{/img/logo/metamask.svg}" alt=""></a></li>
+                        <li><a><img style="filter: invert(20%) sepia(94%) saturate(0%) hue-rotate(315deg) brightness(200%) contrast(88%)"
+                                    class="hero-logo" th:src="@{/img/logo/solidity.svg}" alt=""></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Landing page Hero -->
+    <div th:replace="partials/footer :: footer"></div>
+    <div th:replace="partials/popupSuccess :: popupSuccess"></div>
+    <div th:replace="partials/popupError :: popupError"></div>
+    <div class="shadow"></div>
+</body>
+</html>

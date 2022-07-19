@@ -3,6 +3,18 @@
     margin-top: 20px;
 }
 
+ul#countdown.is-ico .label{
+    font-size: 16px;
+}
+
+ul#countdown li .label{
+    font-size: 16px;
+}
+
+.ico-countdown .ico-card .progress-block .progress-tags div{
+    font-size: 16px;
+}
+
 .format-password > span{
     margin-bottom: 20px;
 }

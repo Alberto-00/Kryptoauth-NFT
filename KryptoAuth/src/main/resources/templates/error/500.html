@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="partials/head :: head"></th:block>
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+    <script th:src="@{/js/scrollUp.js}"></script>
+</head>
+<body>
+    <div th:replace="partials/header :: #pageloader"></div>
+    <div th:replace="partials/header :: #infraloader"></div>
+    <div th:replace="partials/header :: #scrollUp"></div>
+
+    <div class="dark-wrapper">
+        <!-- Landing page Hero -->
+        <section class="hero is-fullheight is-transparent">
+            <div th:replace="partials/header :: header"></div>
+
+            <!-- Animated particles -->
+            <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+
+            <!-- Hero Image and Title -->
+            <div class="hero-body">
+                <div class="container">
+                    <div class="columns is-vcentered">
+
+                        <!-- Landing page Title -->
+                        <div class="column is-5 landing-caption">
+                            <h1 style="font-size: 5em" class="title is-1 is-light is-semibold is-spaced main-title">ERROR 500</h1>
+                            <h2 style="font-size: 2em" class="title subtitle is-5 is-light is-thin">
+                                Internal Server Error.
+                            </h2>
+                        <!-- CTA -->
+                        <p class="buttons">
+                            <a href="/kryptoauth" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                                <span class="text">Back To HomePage</span>
+                                <span class="front-gradient"></span>
+                            </a>
+                        </p>
+
+                    </div>
+                    <!-- Hero image -->
+                    <div class="column is-7">
+                        <figure class="image">
+                            <img th:src="@{/img/illustrations/buildings.svg}" alt="">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+    </div>
+    <div th:replace="partials/footer :: footer"></div>
+</body>
+</html>

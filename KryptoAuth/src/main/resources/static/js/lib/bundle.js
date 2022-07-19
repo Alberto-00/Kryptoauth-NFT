@@ -4957,7 +4957,6 @@ var showPageloader = (0, _pageloader.initPageLoader)();
 document.onreadystatechange = function () {
   if (document.readyState == 'complete') {
 
-
     var featherIcons = feather.replace();
   }
 };

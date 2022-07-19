@@ -1,0 +1,55 @@
+<footer class="krypton-footer" th:fragment="footer">
+    <div class="container">
+        <!-- Logo -->
+        <div class="footer-logo">
+            <a href="/kryptoauth">
+                <img class="rotating" th:src="@{/img/logo/krypton-gradient.svg}" alt="">
+                <div class="brand-name">Kryptoauth</div>
+                <div class="brand-subtitle">Blockchain brought to another level</div>
+            </a>
+        </div>
+
+        <!-- Columns -->
+        <div class="columns footer-columns is-vcentered">
+            <div class="column is-4">
+                <!-- Links group -->
+                <ul class="footer-links">
+                    <li><a href="/kryptoauth/technologies">Technologies</a></li>
+                    <li><a href="/kryptoauth/goals">Goals</a></li>
+                    <li><a href="/kryptoauth/roadmap">Roadmap</a></li>
+                </ul>
+            </div>
+            <!-- Newsletter -->
+            <div class="column is-4">
+                <div class="subscribe-block">
+                    <form>
+                        <!-- Field -->
+                        <div class="control">
+                            <!-- Special input -->
+                            <input class="krypton-subscribe-input" type="email" name="email" placeholder="">
+                            <button class="subscribe-button">
+                                <span>Subscribe</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Links group -->
+            <div class="column is-4">
+                <ul class="footer-links">
+                    <li><a target="_blank" href="https://github.com/Alberto-00">GitHub</a></li>
+                    <li><a target="_blank" href="https://www.linkedin.com/in/alberto-montefusco">LinkedIn</a></li>
+                    <li><a target="_blank" href="https://www.instagram.com/alberto_montefusco_/">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- Copyright -->
+        <p class="k-copyright">© 2022 | Kryptoauth. All Rights Reserved</p>
+    </div>
+
+    <!-- Absolute image -->
+    <img class="solar-system" th:src="@{/img/bg/solar.svg}" alt="">
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script th:src="@{/js/lib/bundle.js}"></script>
+</footer>

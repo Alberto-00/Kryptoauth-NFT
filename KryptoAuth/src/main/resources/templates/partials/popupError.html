@@ -1,0 +1,20 @@
+<!-- Error Popup -->
+<th:block th:fragment="popupError">
+    <div class="modal" id="popupError">
+        <div class="header-modal-error"></div>
+        <div class="content-modal error-p">
+            <p style="font-size: 35px">Error!</p>
+            <p>Qualcosa è andato storto.<br> Ti invitiamo a riprovare.</p>
+            <div class="icon-box-error">
+                <img th:src="@{/img/icons/x.svg}" alt="">
+            </div>
+        </div>
+        <div class="footer-modal-error">
+            <button id="confirmPopupError" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
+                <span style="font-size: 16px; font-weight: bolder;" class="text">Cancel</span>
+                <span class="front-gradient"></span>
+            </button>
+        </div>
+    </div>
+</th:block>
+<!-- Error Popup -->
