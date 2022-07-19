@@ -10,7 +10,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class KryptoErrorController implements ErrorController {
+public class ErrorPageController implements ErrorController {
 
     @GetMapping("/error")
     public String handleError(HttpServletRequest request, Model model){

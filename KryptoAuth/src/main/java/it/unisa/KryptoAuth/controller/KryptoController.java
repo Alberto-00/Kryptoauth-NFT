@@ -10,7 +10,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 @RequestMapping(value = "/kryptoauth", method = GET)
-public class AuthController {
+public class KryptoController {
 
     @GetMapping("")
     public String home(){

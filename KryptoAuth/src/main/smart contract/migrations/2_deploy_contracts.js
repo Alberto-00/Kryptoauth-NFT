@@ -1,5 +1,5 @@
 var Authentication = artifacts.require("./Authentication.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(Authentication, '0x0fD737aFb101884A864E96c8943D8B7c15Ec3C4A');
+  deployer.deploy(Authentication, "0xeA196D3d90FEf3902c1DC4044FeFbeb300A09770");
 };

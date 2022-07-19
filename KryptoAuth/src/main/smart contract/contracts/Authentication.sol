@@ -60,12 +60,14 @@ contract Authentication is AccessControl {
 
     /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
     function addUser(address account) public virtual onlyAdmin {
-        grantRole(USER_ROLE, account);
+        if(!hasRole(DEFAULT_ADMIN_ROLE, account) || !hasRole(USER_ROLE, account))
+            grantRole(USER_ROLE, account);
     }
 
     /*Aggiunge un account con il ruolo di admin (lo possono fare solo gli admin).*/
     function addAdmin(address account) public virtual onlyAdmin {
-        grantRole(DEFAULT_ADMIN_ROLE, account);
+        if(!hasRole(DEFAULT_ADMIN_ROLE, account))
+            grantRole(DEFAULT_ADMIN_ROLE, account);
     }
 
     /*Rimuove un account dal ruolo di user (lo possono fare solo gli admin).*/
@@ -101,8 +103,11 @@ contract Authentication is AccessControl {
     * e la modifica del campo isUserLoggedIn su true: questo significa che *
     * l'utente accede correttamente.                                       *
     ************************************************************************/
-    function loginUser(address _address, string memory _password) public returns (bool) {
-        if (user[_address].password == keccak256(abi.encodePacked(_password))) {
+    function loginUser(address _address, string memory _name, string memory _password) public returns (bool) {
+        //keccak256(abi.encodePacked(...)) è usato per comparare le stringhe e richiede meno gas
+        if (user[_address].password == keccak256(abi.encodePacked(_password)) &&
+            keccak256(abi.encodePacked(user[_address].name)) == keccak256(abi.encodePacked(_name))) {
+
             user[_address].isUserLoggedIn = true;
             return user[_address].isUserLoggedIn;
         } else 
@@ -140,8 +145,10 @@ contract Authentication is AccessControl {
         return true;
     }
 
-    function loginAdmin(address _address, string memory _password) public returns (bool) {
-        if (admin[_address].password == keccak256(abi.encodePacked(_password))) {
+    function loginAdmin(address _address, string memory _name, string memory _password) public returns (bool) {
+        if (admin[_address].password == keccak256(abi.encodePacked(_password)) &&
+            keccak256(abi.encodePacked(admin[_address].name)) == keccak256(abi.encodePacked(_name))) {
+
             admin[_address].isAdminLoggedIn = true;
             return admin[_address].isAdminLoggedIn;
         } else 
