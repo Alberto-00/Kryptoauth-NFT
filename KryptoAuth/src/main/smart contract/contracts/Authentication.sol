@@ -91,10 +91,11 @@ contract Authentication is AccessControl {
         string memory _password
     ) public returns (bool) {
         require(user[_address].addr == address(0x0000000000000000000000000000000000000000), "already registered");
+
         user[_address].addr = _address;
         user[_address].name = _name;
         user[_address].password = keccak256(abi.encodePacked(_password));
-        user[_address].isUserLoggedIn = false;
+        user[_address].isUserLoggedIn = true;
         return true;
     }
 
@@ -138,10 +139,11 @@ contract Authentication is AccessControl {
         string memory _password
     ) public returns (bool) {
         require(admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), "already registered");
+
         admin[_address].adminAddress = _address;
         admin[_address].name = _name;
         admin[_address].password = keccak256(abi.encodePacked(_password));
-        admin[_address].isAdminLoggedIn = false;
+        admin[_address].isAdminLoggedIn = true;
         return true;
     }
 
