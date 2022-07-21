@@ -17,7 +17,12 @@ public class PasswordsEqualsValidator implements ConstraintValidator<PasswordsEq
     @Override
     public boolean isValid(Object candidate, ConstraintValidatorContext arg1) {
         User user = (User) candidate;
-        boolean isValid = user.getPassword().compareTo(user.getRepeatPassword()) == 0;
+        boolean isValid;
+
+        if (user.getRepeatPassword() == null || user.getPassword() == null)
+            isValid = false;
+        else
+            isValid = user.getPassword().compareTo(user.getRepeatPassword()) == 0;
 
         if (!isValid) {
             arg1.disableDefaultConstraintViolation();

@@ -1,4 +1,7 @@
-function timer() {
+import {closePopupError, openPopupError} from './popup.js'
+import {sendAddressToBackend} from './metamask.js'
+
+window.timer = function(event){
     var now = new Date();
     var start = new Date(now.getFullYear(), 0, 0);
     var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
@@ -21,7 +24,7 @@ function timer() {
 
     setTimeout('timer()', 1000);
 }
-timer();
+timer()
 
 $(document).ready(function (){
 
@@ -60,6 +63,11 @@ $(document).ready(function (){
         $('#repeat-pass').empty();
         return /^(?=.*[={}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])/.test(value);
     }, "Password must have at last one special character.");
+
+    $.validator.addMethod("isEqual", function (value){
+        $('#repeat-pass').empty();
+        return $('input[name="password"]').val().localeCompare($('input[name="repeatPassword"]').val()) === 0
+    }, "Repeat Password and Password are not equals.");
 
     $("form[name='login-form']").validate({
         rules: {
@@ -114,6 +122,7 @@ $(document).ready(function (){
                 checkdigit: true,
                 checkspecial: true,
                 checklenght: true,
+                isEqual: true,
             }
         },
         messages: {
@@ -124,46 +133,73 @@ $(document).ready(function (){
                 required: "Email or Username field is empty.",
             },
             repeatPassword: {
-                required: "Password field is empty.",
+                required: "Repeat Password field is empty.",
             }
         },
         submitHandler: function(form) {
-            /*$("#open").click(function(){
-                $(".shadow").css("display","block");
-                $("#popupSuccess").css("display","block");
-                $("html, body").animate({scrollTop: 0}, 700);
-            });
+            if (sendAddressToBackend().localeCompare("ok") === 0){
+                const $userAddress = $("input[name='userAddress']")
 
-            $(".shadow").click(function(){
-                $(this).fadeOut();
-                $("#popupSuccess").fadeOut();
-                form.submit();
-            });
+                if (typeof $userAddress.val() === "undefined" || $userAddress === ''){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Nessun account rilevato. <br>Accedere a Metamask.");
+                }
 
-            $('#confirmPopupSuccess').click(function (){
-                $(".shadow").fadeOut();
-                $("#popupSuccess").fadeOut();
-                form.submit();
-            })*/
+                $.ajax({
+                    type: "POST",
+                    url: "/kryptoauth/register",
+                    data: {
+                        email: $("input[name='email']").val(),
+                        password: $("input[name='password']").val(),
+                        repeatPassword: $("input[name='repeatPassword']").val(),
+                        userAddress: $userAddress.val(),
+                    },
+                    dataType: 'json',
+                    cache: false,
+                    success: function (data) {
+                        const $emailInput = $('#email-error')
+                        const $passwordInput = $('#password-error')
+                        const $repeatPasswordInput = $('#repeatPassword-error')
 
-            $("#open").click(function () {
-                $(".shadow").css("display", "block");
-                $("#popupError").css("display", "block");
-                $("html, body").animate({scrollTop: 0}, 700);
-            });
+                        if (data.msgError['email'] != null){
+                            if ($emailInput.length)
+                                $emailInput.remove()
+                            $('input[name="email"]').after('<label id="email-error" class="error" for="email">' + data.msgError['email'] + '</label>')
+                        }
 
-            $(".shadow").click(function () {
-                $(this).fadeOut();
-                $("#popupError").fadeOut();
+                        if (data.msgError['password'] != null){
+                            if ($passwordInput.length)
+                                $passwordInput.remove()
+                            $('input[name="password"]').after('<label id="password-error" class="error" for="password">' + data.msgError['password'] + '</label>')
+                        }
 
-                form.submit();
-            });
+                        if (data.msgError['repeatPassword'] != null){
+                            if ($repeatPasswordInput.length)
+                                $repeatPasswordInput.remove()
+                            $('input[name="repeatPassword"]').after('<label id="repeatPassword-error" class="error" for="email">' + data.msgError['repeatPassword'] + '</label>')
+                        }
 
-            $('#confirmPopupError').click(function () {
-                $(".shadow").fadeOut();
-                $("#popupError").fadeOut();
-                form.submit();
-            });
+                        if (data.msgError['userAddress'] != null){
+                            openPopupError()
+                            $('div.error-p').children('p').eq(1)
+                                .html("Nessun account rilevato. <br>Accedere a Metamask.");
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e)
+                    }
+                });
+            }
+            return false;
         }
+    });
+
+    $(".shadow").click(function () {
+        closePopupError()
+    });
+
+    $('#confirmPopupError').click(function () {
+        closePopupError()
     });
 })
