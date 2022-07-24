@@ -20,18 +20,31 @@ public class BlockchainController {
     @Autowired
     private BlockchainServiceImpl service;
 
+    @ResponseBody
     @PostMapping("/login")
-    public String loginPost(@Valid @ModelAttribute("user") User user, Errors errors){
-        if(errors.hasErrors())
-            return "page/login";
+    public AjaxResponse loginPost(@Valid @ModelAttribute("user") User user, Errors errors,
+                                  @RequestParam(value = "userAddress") String address){
 
-        return "redirect:/kryptoauth";
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if(errors.hasErrors()) {
+            ajaxResponse.addMsg("email", errorMsgField(errors, "email"));
+            ajaxResponse.addMsg("password", errorMsgField(errors, "password"));
+            return ajaxResponse;
+        }
+        else if (address == null || address.compareTo("undefined") == 0 || address.isEmpty()) {
+            ajaxResponse.addMsg("userAddress", "Nessun account rilevato. Accedere a Metamask.");
+            return ajaxResponse;
+        }
+
+        return null;
     }
 
     @ResponseBody
     @PostMapping("/register")
-    public AjaxResponse registerPost(@Valid @ModelAttribute("user") User user, Errors errors,
-                                     @RequestParam(value = "userAddress") String address){
+    public AjaxResponse registerPostUser(@Valid @ModelAttribute("user") User user, Errors errors,
+                                     @RequestParam(value = "userAddress") String address,
+                                     @RequestParam(value = "privateKey") String privateKey) throws Exception {
 
         AjaxResponse ajaxResponse = new AjaxResponse();
 
@@ -45,14 +58,23 @@ public class BlockchainController {
             ajaxResponse.addMsg("userAddress", "Nessun account rilevato. Accedere a Metamask.");
             return ajaxResponse;
         }
-
-        try {
-            service.deploy(address);
-            System.out.println(service.isAdmin(address));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        else if (!service.isContractLoaded(address)) {
+            if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
+                ajaxResponse.addMsg("contract", "incorrect");
+                return ajaxResponse;
+            }
+            else if (privateKey.length() != 64) {
+                ajaxResponse.addMsg("privateKey", "incorrect");
+                return ajaxResponse;
+            }
+            service.loadContract(privateKey);
+            service.registerAdmin(address, user.getEmail(), user.getPassword());
+            ajaxResponse.addMsg("success", "ok");
+            return ajaxResponse;
         }
-        return null;
+        service.registerAdmin(address, user.getEmail(), user.getPassword());
+        ajaxResponse.addMsg("success", "ok");
+        return ajaxResponse;
     }
 
     private String errorMsgField(Errors errors, String field){

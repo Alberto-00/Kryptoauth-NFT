@@ -1,3 +1,24 @@
+.privateKey{
+    margin-left: 25px;
+    height: 35px;
+    width: 90%;
+    margin-top: 10px;
+    border: none;
+    box-shadow: 0 14px 26px -12px rgba(0,0,0,.42),0 4px 23px 0 rgba(0,0,0,.12),0 8px 10px -5px rgba(0,0,0,.2) !important;
+    outline: none;
+    border-radius: 5px;
+}
+
+#privateKey-error{
+    color: #7f00ff;
+    font-size: 12px;
+    font-family: "Arial";
+}
+
+.content-modal > span{
+    text-align: center;
+}
+
 .format-password{
     color: #7f00ff;
     margin-top: 20px;
@@ -17,6 +38,18 @@ ul#countdown li .label{
 
 .format-password > span{
     margin-bottom: 20px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 455px){
+    .success-p p:first-child{
+        font-size: 28px!important;
+    }
+    .success-p p:nth-child(2){
+        font-size: 17px !important;
+    }
+    .privateKey{
+        margin-left: 17px;
+    }
 }
 
 @media screen and (max-width: 347px){

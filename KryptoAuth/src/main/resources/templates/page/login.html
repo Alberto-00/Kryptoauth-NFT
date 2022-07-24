@@ -8,7 +8,9 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/authentication.css}">
     <script th:src="@{/js/lib/jquery-validate-plugin.js}"></script>
     <script th:src="@{/js/scrollUp.js}"></script>
-    <script th:src="@{/js/authentication.js}" defer></script>
+    <script th:src="@{/js/popup.js}" type="module"></script>
+    <script th:src="@{/js/metamask.js}" type="module" defer></script>
+    <script th:src="@{/js/authentication.js}" type="module" defer></script>
 </head>
 <body onload="timer();">
     <div th:replace="partials/header :: #pageloader"></div>
@@ -30,29 +32,25 @@
                         <form name="login-form" class="login-form" method="post" th:action="@{/kryptoauth/login}">
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="text" id="email" required name="email" th:field="${user.email}">
-                                <th:block th:if="${#fields.hasErrors('user.email')}">
-                                    <label th:text="${#fields.errors('user.email').get(0)}" id="email-error" class="error" for="email"></label>
-                                </th:block>
+                                <input class="material-input" type="text" id="email" name="email" th:field="${user.email}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Email or Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" required id="password" name="password" th:field="${user.password}">
-                                <input hidden="hidden" type="password" name="repeatPassword">
-                                <th:block th:if="${#fields.hasErrors('user.password')}">
-                                    <label th:text="${#fields.errors('user.password').get(0)}" id="password-error" class="error" for="password"></label>
-                                </th:block>
+                                <input class="material-input" type="password" id="password" name="password" th:field="${user.password}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Password</label>
                             </div>
+
+                            <!-- send address to backend -->
+                            <input hidden name="userAddress" value="">
                             
                             <!-- Submit -->
                             <div>
-                                <button id="log" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
+                                <button id="loginButton" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
                                     <span class="text">Login</span>
                                     <span class="front-gradient"></span>
                                 </button>

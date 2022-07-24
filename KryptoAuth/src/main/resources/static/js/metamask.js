@@ -1,4 +1,3 @@
-
 import {openPopupErrorMetamask} from './popup.js'
 
 window.userWalletAddress = null
@@ -24,4 +23,3 @@ async function activeMetaMask() {
     addressField.value = window.userWalletAddress
     return true;
 }
-

@@ -14,18 +14,29 @@ export function openPopupError(){
     $("html, body").animate({scrollTop: 0}, 700);
 }
 
+export function closePopupError(){
+    $(".shadow").fadeOut();
+    $("#popupError").fadeOut();
+}
+
 export function openPopupSuccess(){
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
     $("html, body").animate({scrollTop: 0}, 700);
 }
 
-export function closePopupError(){
-    $(".shadow").fadeOut();
-    $("#popupError").fadeOut();
-}
-
 export function closePopupSuccess(){
     $(".shadow").fadeOut();
     $("#popupSuccess").fadeOut();
+}
+
+export function openPopupPrivateKey(){
+    $(".shadow").css("display","block");
+    $("#popupSuccessPrivateKey").css("display","block");
+    $("html, body").animate({scrollTop: 0}, 700);
+}
+
+export function closePopupPrivateKey(){
+    $(".shadow").fadeOut();
+    $("#popupSuccessPrivateKey").fadeOut();
 }

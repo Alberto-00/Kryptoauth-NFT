@@ -31,8 +31,8 @@ contract Authentication is AccessControl {
     mapping(address => User) user;
     mapping(address => Admin) admin;
 
-    constructor(address root) {
-        _setupRole(DEFAULT_ADMIN_ROLE, root);
+    constructor() {
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
@@ -60,7 +60,7 @@ contract Authentication is AccessControl {
 
     /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
     function addUser(address account) public virtual onlyAdmin {
-        if(!hasRole(DEFAULT_ADMIN_ROLE, account) || !hasRole(USER_ROLE, account))
+        if(!hasRole(USER_ROLE, account))
             grantRole(USER_ROLE, account);
     }
 
@@ -78,6 +78,10 @@ contract Authentication is AccessControl {
     /*Un admin rinucia ad esserlo.*/
     function renounceAdmin() public virtual {
         renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+
+    function getAddress() public view returns (address) {
+        return msg.sender;
     }
 
 

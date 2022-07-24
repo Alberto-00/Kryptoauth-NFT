@@ -11,7 +11,6 @@
     <script th:src="@{/js/popup.js}" type="module"></script>
     <script th:src="@{/js/metamask.js}" type="module" defer></script>
     <script th:src="@{/js/authentication.js}" type="module" defer></script>
-    <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
 </head>
 <body onload="timer()">
     <div th:replace="partials/header :: #pageloader"></div>
@@ -54,6 +53,7 @@
 
                             <!-- send address to backend -->
                             <input hidden name="userAddress" value="">
+                            <div th:replace="partials/popupPrivateKey :: popupSuccessPrivateKey"></div>
 
                             <!-- Submit -->
                             <div>
@@ -145,8 +145,8 @@
     </section>
     <!-- /Landing page Hero -->
     <div th:replace="partials/footer :: footer"></div>
-    <div th:replace="partials/popupSuccess :: popupSuccess"></div>
     <div th:replace="partials/popupError :: popupError"></div>
+    <div th:replace="partials/popupSuccess :: popupSuccess"></div>
     <div class="shadow"></div>
 </body>
 </html>
