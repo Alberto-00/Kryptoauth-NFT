@@ -3,8 +3,7 @@ package it.unisa.KryptoAuth.controller;
 import it.unisa.KryptoAuth.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -47,5 +46,10 @@ public class KryptoController {
     public String login(Model model){
         model.addAttribute("user", new User());
         return "/page/login";
+    }
+
+    @GetMapping("/loginAdmin")
+    public String loginAdmin() {
+        return "/page/admin";
     }
 }

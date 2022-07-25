@@ -7,6 +7,7 @@ public interface BlockchainService {
     Authentication loadContract(String account);
     Authentication deploy(String account)throws Exception;
     boolean isContractLoaded(String address) throws Exception;
+    boolean addressEquals(String address) throws Exception;
     boolean isAdmin(String address) throws Exception;
     boolean isUser(String address) throws Exception;
     boolean registerUser(String address, String name, String password) throws Exception;

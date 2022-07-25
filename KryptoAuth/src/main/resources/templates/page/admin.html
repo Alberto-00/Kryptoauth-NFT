@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="partials/head :: head"></th:block>
+    <title>Kryptoauth - Admin</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+    <script th:src="@{/js/scrollUp.js}"></script>
+</head>
+<body>
+    <div th:replace="partials/header :: #pageloader"></div>
+    <div th:replace="partials/header :: #infraloader"></div>
+    <div th:replace="partials/header :: #scrollUp"></div>
+
+    <div class="media-wrapper">
+        <!-- Landing page Hero -->
+        <section class="hero">
+            <div th:replace="partials/header :: header"></div>
+
+            <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+
+            <!-- Hero Image and Title -->
+            <div class="hero-body">
+                <div class="container">
+                    <div class="columns is-vcentered">
+
+                        <!-- Landing page Title -->
+                        <div class="column is-5 is-offset-1 landing-caption">
+                            <div class="divider"></div>
+                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Verify Credentials</h1>
+                            <h2 class="subtitle is-6 is-light is-thin">
+                                Qui ci sono le credenziali degli Utenti o degli Admin da verificare.
+                            </h2>
+                        </div>
+                        <!-- Hero image -->
+                        <div class="column is-6">
+                            <figure class="image">
+                                <img th:src="@{/img/illustrations/media.svg}" alt="">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+
+            </div>
+        </section>
+    </div>
+
+    <div th:replace="partials/footer :: footer"></div>
+</body>
+</html>

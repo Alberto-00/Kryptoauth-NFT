@@ -98,4 +98,9 @@ public class BlockchainServiceImpl implements BlockchainService {
     public boolean isContractLoaded(String address) throws Exception {
         return authentication != null && authentication.getAddress().send().compareTo(address) == 0;
     }
+
+    @Override
+    public boolean addressEquals(String address) throws Exception {
+        return authentication.getAddress().send().compareTo(address) == 0;
+    }
 }

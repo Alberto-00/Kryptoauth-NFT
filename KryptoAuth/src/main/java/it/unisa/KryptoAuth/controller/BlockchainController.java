@@ -23,7 +23,8 @@ public class BlockchainController {
     @ResponseBody
     @PostMapping("/login")
     public AjaxResponse loginPost(@Valid @ModelAttribute("user") User user, Errors errors,
-                                  @RequestParam(value = "userAddress") String address){
+                                  @RequestParam(value = "userAddress") String address,
+                                  @RequestParam(value = "privateKey") String privateKey) throws Exception {
 
         AjaxResponse ajaxResponse = new AjaxResponse();
 
@@ -36,13 +37,47 @@ public class BlockchainController {
             ajaxResponse.addMsg("userAddress", "Nessun account rilevato. Accedere a Metamask.");
             return ajaxResponse;
         }
+        else if (!service.isContractLoaded(address)) {
+            if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
+                ajaxResponse.addMsg("contract", "incorrect");
+                return ajaxResponse;
+            }
+            else if (privateKey.length() != 64) {
+                ajaxResponse.addMsg("privateKey", "incorrect");
+                return ajaxResponse;
+            }
 
-        return null;
+            service.loadContract(privateKey);
+            if (!service.addressEquals(address)) {
+                ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+                return ajaxResponse;
+            }
+
+
+                if (service.isAdmin(address)) {
+                    if (!service.loginAdmin(address, user.getEmail(), user.getPassword()))
+                        ajaxResponse.addMsg("loginError", "incorrect");
+                    else
+                        ajaxResponse.addMsg("successAdmin", "ok");
+                }
+                else if (service.isUser(address)) {
+                    if (!service.loginUser(address, user.getEmail(), user.getPassword()))
+                        ajaxResponse.addMsg("loginError", "incorrect");
+                    else
+                        ajaxResponse.addMsg("successUser", "ok");
+                } else
+                    ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
+            return ajaxResponse;
+
+        }
+        //service.registerAdmin(address, user.getEmail(), user.getPassword());
+        //ajaxResponse.addMsg("success", "ok");
+        return ajaxResponse;
     }
 
     @ResponseBody
     @PostMapping("/register")
-    public AjaxResponse registerPostUser(@Valid @ModelAttribute("user") User user, Errors errors,
+    public AjaxResponse registerPost(@Valid @ModelAttribute("user") User user, Errors errors,
                                      @RequestParam(value = "userAddress") String address,
                                      @RequestParam(value = "privateKey") String privateKey) throws Exception {
 
@@ -67,12 +102,28 @@ public class BlockchainController {
                 ajaxResponse.addMsg("privateKey", "incorrect");
                 return ajaxResponse;
             }
+
             service.loadContract(privateKey);
-            service.registerAdmin(address, user.getEmail(), user.getPassword());
+            if (!service.addressEquals(address)) {
+                ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+                return ajaxResponse;
+            }
+
+            try {
+                service.registerAdmin(address, user.getEmail(), user.getPassword());
+            } catch (Exception e){
+                ajaxResponse.addMsg("alredyRegistered", "error");
+                return ajaxResponse;
+            }
             ajaxResponse.addMsg("success", "ok");
             return ajaxResponse;
         }
-        service.registerAdmin(address, user.getEmail(), user.getPassword());
+        try {
+            service.registerAdmin(address, user.getEmail(), user.getPassword());
+        } catch (Exception e){
+            ajaxResponse.addMsg("alredyRegistered", "error");
+            return ajaxResponse;
+        }
         ajaxResponse.addMsg("success", "ok");
         return ajaxResponse;
     }

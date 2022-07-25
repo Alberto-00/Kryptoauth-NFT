@@ -103,52 +103,14 @@ $(document).ready(function (){
         submitHandler: function(form) {
             if (sendAddressToBackend().localeCompare("ok") === 0){
                 const $userAddress = $("input[name='userAddress']")
+                const $privateKey = $('input[name="privateKey"]')
 
                 if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
                         .html("Nessun account rilevato. <br>Accedere a Metamask.");
-                }
-
-                const $password = $("input[name='password']")
-                const $email = $("input[name='email']")
-                $.ajax({
-                    type: "POST",
-                    url: "/kryptoauth/register",
-                    data: {
-                        email: $email.val(),
-                        password: $password.val(),
-                        repeatPassword: $password.val(),
-                        userAddress: $userAddress.val(),
-                    },
-                    dataType: 'json',
-                    cache: false,
-                    success: function (data) {
-                        const $emailInput = $('#email-error')
-                        const $passwordInput = $('#password-error')
-
-                        if (data.msgError['email'] != null){
-                            if ($emailInput.length)
-                                $emailInput.remove()
-                            $('input[name="email"]').after('<label id="email-error" class="error" for="email">' + data.msgError['email'] + '</label>')
-                        }
-
-                        if (data.msgError['password'] != null){
-                            if ($passwordInput.length)
-                                $passwordInput.remove()
-                            $('input[name="password"]').after('<label id="password-error" class="error" for="password">' + data.msgError['password'] + '</label>')
-                        }
-
-                        if (data.msgError['userAddress'] != null){
-                            openPopupError()
-                            $('div.error-p').children('p').eq(1)
-                                .html("Nessun account rilevato. <br>Accedere a Metamask.");
-                        }
-                    },
-                    error: function (e) {
-                        console.log(e)
-                    }
-                });
+                } else
+                    ajaxLogin($privateKey, $userAddress);
             }
             return false;
         }
@@ -201,29 +163,29 @@ $(document).ready(function (){
         submitHandler: function(form) {
             if (sendAddressToBackend().localeCompare("ok") === 0){
                 const $userAddress = $("input[name='userAddress']")
-                const $divSuccess = $('div.success-p')
-                const $privateKey = $('input[name="privateKey"]').val(undefined)
+                const $privateKey = $('input[name="privateKey"]')
 
                 if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
                         .html("Nessun account rilevato. <br>Accedere a Metamask.");
                 } else
-                    ajaxRegister($privateKey, $userAddress, $divSuccess);
+                    ajaxRegister($privateKey, $userAddress);
             }
             return false;
         }
     });
 
-    $('#confirmPopupSuccess').on('click', function (){
+    $('#confirmPopupSuccessPrivateKey').on('click', function (){
         const $privateKey = $('input[name="privateKey"]')
         const $userAddress = $("input[name='userAddress']")
-        const $divSuccess = $('div.success-p')
 
         if (($privateKey.val() != null && $privateKey.val() !== '') &&
             $privateKey.val().length > 63 && $privateKey.val().length < 65) {
-            closePopupSuccess()
-            ajaxRegister($privateKey, $userAddress, $divSuccess)
+            closePopupPrivateKey()
+            if (window.location.href.indexOf("/kryptoauth/login") > -1) {
+                ajaxLogin($privateKey, $userAddress)
+            } else ajaxRegister($privateKey, $userAddress)
         } else {
             openPopupError()
             $('div.error-p').children('p').eq(1)
@@ -234,19 +196,100 @@ $(document).ready(function (){
     $(".shadow").click(function () {
         closePopupError()
         closePopupSuccess()
+        closePopupPrivateKey()
     });
 
     $('#confirmPopupError').click(function () {
         closePopupError()
-        closePopupSuccess()
+        closePopupPrivateKey()
     });
 
-    $().click(function (){
-        
-    })
+    $('#confirmPopupSuccess').click(function () {
+        closePopupSuccess()
+        window.location.replace("/kryptoauth");
+    });
 })
 
-function ajaxRegister($privateKey, $userAddress, $divSuccess){
+function ajaxLogin($privateKey, $userAddress){
+    const $password = $("input[name='password']")
+
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/login",
+        data: {
+            email: $("input[name='email']").val(),
+            password: $password.val(),
+            repeatPassword: $password.val(),
+            userAddress: $userAddress.val(),
+            privateKey: $privateKey.val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+            const $emailInput = $('#email-error')
+            const $passwordInput = $('#password-error')
+            $('input[name="privateKey"]').val(undefined)
+
+            if (data.msgError['email'] != null) {
+                if ($emailInput.length)
+                    $emailInput.remove()
+                $('input[name="email"]').after('<label id="email-error" class="error" for="email">' + data.msgError['email'] + '</label>')
+            }
+
+            if (data.msgError['password'] != null) {
+                if ($passwordInput.length)
+                    $passwordInput.remove()
+                $('input[name="password"]').after('<label id="password-error" class="error" for="password">' + data.msgError['password'] + '</label>')
+            }
+
+            if (data.msgError['userAddress'] != null) {
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
+            }
+
+            if (data.msgError['contract'] != null){
+                openPopupPrivateKey()
+            }
+
+            if (data.msgError['privateKey'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Chiave privata non corretta. <br>Riprovare.");
+            }
+
+            if (data.msgError['notEqualsAddress'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Chiave privata non associata a questo account.<br>Riprovare.");
+            }
+
+            if (data.msgError['loginError'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Credenziali errate. <br> Riprovare.");
+            }
+
+            if (data.msgError['credentialsNotVerified'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("L'admin non ha ancora accettato la registrazione: attendere...");
+            }
+
+            if (data.msgError['successAdmin'] != null){
+                window.location.replace("/kryptoauth/loginAdmin");
+            }
+
+            if (data.msgError['successUser'] != null){
+                window.location.replace("/kryptoauth");
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
+
+function ajaxRegister($privateKey, $userAddress){
     $.ajax({
         type: "POST",
         url: "/kryptoauth/register",
@@ -262,6 +305,7 @@ function ajaxRegister($privateKey, $userAddress, $divSuccess){
             const $emailInput = $('#email-error')
             const $passwordInput = $('#password-error')
             const $repeatPasswordInput = $('#repeatPassword-error')
+            $('input[name="privateKey"]').val(undefined)
 
             if (data.msgError['email'] != null) {
                 if ($emailInput.length)
@@ -297,7 +341,19 @@ function ajaxRegister($privateKey, $userAddress, $divSuccess){
                     .html("Chiave privata non corretta. <br>Riprovare.");
             }
 
-            else if (data.msgError['success'] != null){
+            if (data.msgError['notEqualsAddress'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Chiave privata non associata a questo account.<br>Riprovare.");
+            }
+
+            if (data.msgError['alredyRegistered'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Utente già registrato.");
+            }
+
+            if (data.msgError['success'] != null){
                 openPopupSuccess();
             }
         },
