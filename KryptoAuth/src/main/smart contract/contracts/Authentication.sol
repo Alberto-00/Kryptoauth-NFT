@@ -59,31 +59,40 @@ contract Authentication is AccessControl {
     }
 
     /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
-    function addUser(address account) public virtual onlyAdmin {
-        if(!hasRole(USER_ROLE, account))
+    function addUser(address account) public virtual onlyAdmin returns (bool){
+        if(!hasRole(USER_ROLE, account)){
             grantRole(USER_ROLE, account);
+            return true;
+        } return false;
     }
 
     /*Aggiunge un account con il ruolo di admin (lo possono fare solo gli admin).*/
-    function addAdmin(address account) public virtual onlyAdmin {
-        if(!hasRole(DEFAULT_ADMIN_ROLE, account))
+    function addAdmin(address account) public virtual onlyAdmin returns (bool){
+        if(!hasRole(DEFAULT_ADMIN_ROLE, account)){
             grantRole(DEFAULT_ADMIN_ROLE, account);
+            return true;
+        } return false;
     }
 
     /*Rimuove un account dal ruolo di user (lo possono fare solo gli admin).*/
-    function removeUser(address account) public virtual onlyAdmin {
-        revokeRole(USER_ROLE, account);
+    function removeUser(address account) public virtual onlyAdmin returns (bool){
+        if(hasRole(USER_ROLE, account)){
+            revokeRole(USER_ROLE, account);
+            return true;
+        } return false;
     }
-    
+
     /*Un admin rinucia ad esserlo.*/
-    function renounceAdmin() public virtual {
-        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    function renounceAdmin(address account) public virtual onlyAdmin returns (bool){
+        if(hasRole(DEFAULT_ADMIN_ROLE, account)){
+            renounceRole(DEFAULT_ADMIN_ROLE, account);
+            return true;
+        } return false;
     }
 
     function getAddress() public view returns (address) {
         return msg.sender;
     }
-
 
     /************************************************************************
     * Nella funzione di registrazione dell'utente, se l'utente non si è già  
@@ -110,7 +119,7 @@ contract Authentication is AccessControl {
     ************************************************************************/
     function loginUser(address _address, string memory _name, string memory _password) public returns (bool) {
         //keccak256(abi.encodePacked(...)) è usato per comparare le stringhe e richiede meno gas
-        if (user[_address].password == keccak256(abi.encodePacked(_password)) &&
+        if (isUser(_address) && user[_address].password == keccak256(abi.encodePacked(_password)) &&
             keccak256(abi.encodePacked(user[_address].name)) == keccak256(abi.encodePacked(_name))) {
 
             user[_address].isUserLoggedIn = true;
@@ -136,7 +145,7 @@ contract Authentication is AccessControl {
         bytes32 password;
         bool isAdminLoggedIn;
     }
-    
+
     function registerAdmin(
         address _address,
         string memory _name,
@@ -152,7 +161,7 @@ contract Authentication is AccessControl {
     }
 
     function loginAdmin(address _address, string memory _name, string memory _password) public returns (bool) {
-        if (admin[_address].password == keccak256(abi.encodePacked(_password)) &&
+        if (isAdmin(_address) && admin[_address].password == keccak256(abi.encodePacked(_password)) &&
             keccak256(abi.encodePacked(admin[_address].name)) == keccak256(abi.encodePacked(_name))) {
 
             admin[_address].isAdminLoggedIn = true;

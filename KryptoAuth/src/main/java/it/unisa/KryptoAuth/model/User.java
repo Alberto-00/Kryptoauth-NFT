@@ -28,10 +28,18 @@ public class User {
             flags = Pattern.Flag.UNICODE_CASE, message = "Repeat Password wrong.")
     private String repeatPassword;
 
+    @NotNull
     private String role;
     private boolean isLoggedIn;
 
     public User(){}
+
+    public User(String email, String password, String repeatPassword, String role) {
+        this.email = email;
+        this.password = password;
+        this.repeatPassword = repeatPassword;
+        this.role = role;
+    }
 
     public User(String email, String password, String repeatPassword) {
         this.email = email;

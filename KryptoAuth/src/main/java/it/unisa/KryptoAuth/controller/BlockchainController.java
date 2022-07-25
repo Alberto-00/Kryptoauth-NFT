@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -53,25 +57,32 @@ public class BlockchainController {
                 return ajaxResponse;
             }
 
-
-                if (service.isAdmin(address)) {
-                    if (!service.loginAdmin(address, user.getEmail(), user.getPassword()))
-                        ajaxResponse.addMsg("loginError", "incorrect");
-                    else
-                        ajaxResponse.addMsg("successAdmin", "ok");
-                }
-                else if (service.isUser(address)) {
-                    if (!service.loginUser(address, user.getEmail(), user.getPassword()))
-                        ajaxResponse.addMsg("loginError", "incorrect");
-                    else
-                        ajaxResponse.addMsg("successUser", "ok");
-                } else
-                    ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
+            if (service.isAdmin(address)) {
+                if (!service.loginAdmin(address, user.getEmail(), user.getPassword()))
+                    ajaxResponse.addMsg("loginError", "incorrect");
+                else
+                    ajaxResponse.addMsg("successAdmin", "ok");
+            }
+            else if (service.isUser(address)) {
+                if (!service.loginUser(address, user.getEmail(), user.getPassword()))
+                    ajaxResponse.addMsg("loginError", "incorrect");
+                else
+                    ajaxResponse.addMsg("successUser", "ok");
+            } else
+                ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
             return ajaxResponse;
-
         }
-        //service.registerAdmin(address, user.getEmail(), user.getPassword());
-        //ajaxResponse.addMsg("success", "ok");
+        else if (service.isUser(address)){
+            if (service.loginUser(address, user.getEmail(), user.getPassword()))
+                ajaxResponse.addMsg("successUser", "ok");
+            else ajaxResponse.addMsg("loginError", "incorrect");
+        }
+        else if (service.isAdmin(address)){
+            if (service.loginAdmin(address, user.getEmail(), user.getPassword()))
+                ajaxResponse.addMsg("successAdmin", "ok");
+            else ajaxResponse.addMsg("loginError", "incorrect");
+        }
+        else ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
         return ajaxResponse;
     }
 
@@ -87,6 +98,7 @@ public class BlockchainController {
             ajaxResponse.addMsg("email", errorMsgField(errors, "email"));
             ajaxResponse.addMsg("password", errorMsgField(errors, "password"));
             ajaxResponse.addMsg("repeatPassword", errorMsgField(errors, "repeatPassword"));
+            ajaxResponse.addMsg("role", errorMsgField(errors, "role"));
             return ajaxResponse;
         }
         else if (address == null || address.compareTo("undefined") == 0 || address.isEmpty()) {
@@ -110,21 +122,43 @@ public class BlockchainController {
             }
 
             try {
-                service.registerAdmin(address, user.getEmail(), user.getPassword());
+                if (user.getRole().compareToIgnoreCase("Utente") == 0 && !service.isAdmin(address)) {
+                    service.registerUser(address, user.getEmail(), user.getPassword());
+                    ajaxResponse.addMsg("success", "ok");
+                    writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo");
+                    return ajaxResponse;
+                }
+                else if (user.getRole().compareToIgnoreCase("Admin") == 0 && !service.isUser(address)) {
+                    service.registerAdmin(address, user.getEmail(), user.getPassword());
+                    ajaxResponse.addMsg("success", "ok");
+                    writeAddress(address);
+                    return ajaxResponse;
+                }
             } catch (Exception e){
                 ajaxResponse.addMsg("alredyRegistered", "error");
                 return ajaxResponse;
             }
-            ajaxResponse.addMsg("success", "ok");
+            ajaxResponse.addMsg("errorAdmin", "error");
             return ajaxResponse;
         }
         try {
-            service.registerAdmin(address, user.getEmail(), user.getPassword());
+            if (user.getRole().compareToIgnoreCase("Utente") == 0 &&  !service.isAdmin(address) ) {
+                service.registerUser(address, user.getEmail(), user.getPassword());
+                ajaxResponse.addMsg("success", "ok");
+                writeAddress(address);
+                return ajaxResponse;
+            }
+            else if (user.getRole().compareToIgnoreCase("Admin") == 0 && !service.isUser(address)) {
+                service.registerAdmin(address, user.getEmail(), user.getPassword());
+                ajaxResponse.addMsg("success", "ok");
+                writeAddress(address);
+                return ajaxResponse;
+            }
         } catch (Exception e){
             ajaxResponse.addMsg("alredyRegistered", "error");
             return ajaxResponse;
         }
-        ajaxResponse.addMsg("success", "ok");
+        ajaxResponse.addMsg("errorAdmin", "error");
         return ajaxResponse;
     }
 
@@ -134,5 +168,21 @@ public class BlockchainController {
                 return error.getDefaultMessage();
         }
         return "";
+    }
+
+    private void writeAddress(String address) throws IOException {
+        BufferedWriter out = null;
+        try {
+            FileWriter fstream = new FileWriter("src/main/resources/static/txt/addressRegistered.txt", true);
+            out = new BufferedWriter(fstream);
+            out.write(address + "\n");
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        finally {
+            if(out != null) {
+                out.close();
+            }
+        }
     }
 }

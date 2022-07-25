@@ -51,6 +51,15 @@
                                 <label id="repeat-pass">Repeat Password</label>
                             </div>
 
+                            <div class="radio-left">
+                                <input type="radio" id="user" name="user" value="Utente">
+                                <label for="user">User</label>
+                            </div>
+                            <div class="radio-right">
+                                <input type="radio" id="admin" name="user" value="Admin">
+                                <label for="admin">Admin</label>
+                            </div>
+
                             <!-- send address to backend -->
                             <input hidden name="userAddress" value="">
                             <div th:replace="partials/popupPrivateKey :: popupSuccessPrivateKey"></div>

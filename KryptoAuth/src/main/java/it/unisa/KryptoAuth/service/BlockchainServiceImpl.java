@@ -11,7 +11,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x1449bB334D8E4E2299F1Af625ee37d0cDF0F8b1A";
+    private final static String CONTRACT_ADDRESS = "0x0EDA37e75A51986a9A540595Dbb5DCb195c10D54";
     private static String privateKey;
     private static Authentication authentication = null;
 
@@ -36,7 +36,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public boolean isUser(String address) throws Exception {
-        return loadContract(privateKey).isAdmin(address).send();
+        return loadContract(privateKey).isUser(address).send();
     }
 
     @Override
@@ -80,18 +80,23 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     @Override
-    public void addUser(String address) throws Exception {
-        loadContract(privateKey).addUser(address).send();
+    public boolean addUser(String address) throws Exception {
+        return loadContract(privateKey).addUser(address).send().isStatusOK();
     }
 
     @Override
-    public void addAdmin(String address) throws Exception {
-        loadContract(privateKey).addAdmin(address).send();
+    public boolean addAdmin(String address) throws Exception {
+        return loadContract(privateKey).addAdmin(address).send().isStatusOK();
     }
 
     @Override
-    public void removeUser(String address) throws Exception {
-        loadContract(privateKey).removeUser(address).send();
+    public boolean removeUser(String address) throws Exception {
+        return loadContract(privateKey).removeUser(address).send().isStatusOK();
+    }
+
+    @Override
+    public boolean removeAdmin(String address) throws Exception {
+        return loadContract(privateKey).renounceAdmin(address).send().isStatusOK();
     }
 
     @Override

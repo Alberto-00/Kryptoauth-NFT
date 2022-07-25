@@ -1,3 +1,16 @@
+.radio-left, .radio-right{
+    margin-bottom: 3em;
+    color: #7f00ff;
+}
+
+.radio-left{
+    float: left;
+}
+
+.radio-right{
+    float: right;
+}
+
 .privateKey{
     margin-left: 25px;
     height: 35px;

@@ -1,0 +1,74 @@
+table {
+    border-collapse: collapse;
+    border-spacing: 5px;
+    width: 100%;
+    background-image: linear-gradient(to bottom, #7F00FF, #3f00fc);
+    background-origin: border-box;
+    border: 8px solid transparent;
+    text-align: center;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+table th{
+    color: #fff;
+}
+
+tr.title-row{
+    background-image: linear-gradient(to bottom, #7F00FF, #3f00fc);
+}
+
+tr:nth-child(even) {
+    background-color: #fff!important;
+}
+
+tr:nth-child(odd) {
+    background-color: #c3e1fb;
+}
+
+table td, table th {
+    vertical-align: middle!important;
+}
+
+body{
+    color: #000;
+}
+
+.has-gradient-table{
+    position: relative;
+    -webkit-transition: all .3s ease-out !important;
+    transition: all .3s ease-out !important;
+    border: none !important;
+    background: #00ff99;
+    background: -webkit-gradient(linear, left top, right top, from(#00ff99), to(#33ccff)) !important;
+    background: linear-gradient(to right, #00ff99, #33ccff) !important;
+    opacity: 1;
+    z-index: 0;
+}
+
+.not-active-reg{
+    color: #ff0033;
+}
+
+.active-reg{
+    background-color: rgb(0, 255, 153);
+    background-image: -moz-radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    background-image: -webkit-radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    background-image: radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00ff99",endColorstr="#33ccff",GradientType=1);
+}
+
+.container-table{
+    overflow-x:auto;
+    overflow-y: auto;
+    height: 495px;
+}
+
+@media screen and (max-width: 667px){
+    .width-checkbox{
+        width: 65px;
+    }
+}

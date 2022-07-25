@@ -21,6 +21,10 @@ $(document).ready(function (){
         $("html, body").animate({ scrollTop: 940 }, 800);
     });
 
+    $('#verify').on('click', function() {
+        $("html, body").animate({ scrollTop: 750 }, 800);
+    });
+
     // set dynamic sticky navbar
     $(window).on("load", function () {
         setWidthNav();

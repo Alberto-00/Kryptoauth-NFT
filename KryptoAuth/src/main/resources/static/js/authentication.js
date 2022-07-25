@@ -27,6 +27,7 @@ window.timer = function(event){
 timer()
 
 $(document).ready(function (){
+    sendAddressToBackend()
 
     ethereum.on('accountsChanged', function (accounts) {
         sendAddressToBackend();
@@ -78,6 +79,12 @@ $(document).ready(function (){
         const field = $('input[name="privateKey"]').val();
         return field.length > 63 && field.length < 65;
     }, "Private key is incorrect.");
+
+    $.validator.addMethod("radioCheck", function (value){
+        const user = $('input[name="user"]');
+        const admin = $('input[name="admin"]');
+        return user.is(":checked") || admin.is(":checked");
+    }, "Seleziona un campo.");
 
     $("form[name='login-form']").validate({
         rules: {
@@ -143,8 +150,14 @@ $(document).ready(function (){
             },
             privateKey: {
                 required: true,
-                lenght: true
-            }
+                lenght: true,
+            },
+            admin: {
+                radioCheck: true,
+            },
+            user: {
+                radioCheck: true,
+            },
         },
         messages: {
             password: {
@@ -299,12 +312,14 @@ function ajaxRegister($privateKey, $userAddress){
             repeatPassword: $("input[name='repeatPassword']").val(),
             userAddress: $userAddress.val(),
             privateKey: $privateKey.val(),
+            role: $('input[name="user"]:checked').val(),
         },
         dataType: 'json',
         success: function (data) {
             const $emailInput = $('#email-error')
             const $passwordInput = $('#password-error')
             const $repeatPasswordInput = $('#repeatPassword-error')
+            const $roleInput = $('#user-error')
             $('input[name="privateKey"]').val(undefined)
 
             if (data.msgError['email'] != null) {
@@ -323,6 +338,11 @@ function ajaxRegister($privateKey, $userAddress){
                 if ($repeatPasswordInput.length)
                     $repeatPasswordInput.remove()
                 $('input[name="repeatPassword"]').after('<label id="repeatPassword-error" class="error" for="email">' + data.msgError['repeatPassword'] + '</label>')
+            }
+            if (data.msgError['role'] != null) {
+                if ($roleInput.length)
+                    $roleInput.remove()
+                $('.radio-right').after('<label id="user-error" class="error" for="user">' + data.msgError['role'] + '</label>')
             }
 
             if (data.msgError['userAddress'] != null) {
@@ -351,6 +371,12 @@ function ajaxRegister($privateKey, $userAddress){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Utente già registrato.");
+            }
+
+            if (data.msgError['errorAdmin'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Account 'Admin': completare correttamente il form.");
             }
 
             if (data.msgError['success'] != null){

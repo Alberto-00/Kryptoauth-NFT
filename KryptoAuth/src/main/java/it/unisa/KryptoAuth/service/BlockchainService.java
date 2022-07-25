@@ -18,7 +18,8 @@ public interface BlockchainService {
     boolean isAdminLogged(String address) throws Exception;
     void logoutUser(String address) throws Exception;
     void logoutAdmin(String address) throws Exception;
-    void addUser(String address) throws Exception;
-    void addAdmin(String address) throws Exception;
-    void removeUser(String address) throws Exception;
+    boolean addUser(String address) throws Exception;
+    boolean addAdmin(String address) throws Exception;
+    boolean removeUser(String address) throws Exception;
+    boolean removeAdmin(String address) throws Exception;
 }

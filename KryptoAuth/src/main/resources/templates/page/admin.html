@@ -4,7 +4,9 @@
     <th:block th:include="partials/head :: head"></th:block>
     <title>Kryptoauth - Admin</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
     <script th:src="@{/js/scrollUp.js}"></script>
+    <script th:src="@{/js/admin.js}"></script>
 </head>
 <body>
     <div th:replace="partials/header :: #pageloader"></div>
@@ -30,13 +32,35 @@
                             <h2 class="subtitle is-6 is-light is-thin">
                                 Qui ci sono le credenziali degli Utenti o degli Admin da verificare.
                             </h2>
+                            <p class="buttons">
+                                <a id="verify" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                                    <span class="text">Get Started</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </p>
                         </div>
                         <!-- Hero image -->
                         <div class="column is-6">
                             <figure class="image">
-                                <img th:src="@{/img/illustrations/media.svg}" alt="">
+                                <img th:src="@{/img/illustrations/token-lock.svg}" alt="">
                             </figure>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero footer -->
+            <div class="hero-foot">
+                <div class="container">
+                    <div class="tabs is-centered">
+                        <!-- Client / partner list -->
+                        <ul>
+                            <li><a><img style="filter: invert(14%) sepia(1%) saturate(17%) hue-rotate(314deg) brightness(101%) contrast(79%);"
+                                        class="hero-logo" th:src="@{/img/logo/ethereum.svg}" alt=""></a></li>
+                            <li><a><img class="hero-logo" th:src="@{/img/logo/metamask.svg}" alt=""></a></li>
+                            <li><a><img style="filter: invert(20%) sepia(94%) saturate(0%) hue-rotate(315deg) brightness(200%) contrast(88%)"
+                                        class="hero-logo" th:src="@{/img/logo/solidity.svg}" alt=""></a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -44,11 +68,49 @@
 
         <section class="section">
             <div class="container">
+                <!-- Divider -->
+                <div class="divider is-centered"></div>
 
+                <div class="container-table">
+                    <table>
+                        <tr class="title-row">
+                            <th>Username / E-mail</th>
+                            <th>Ruolo/i</th>
+                            <th>Status Attivazione</th>
+                            <th>Privilegi</th>
+                            <th></th>
+                        </tr>
+                        <th:block th:each="address: ${listAddress}" th:with="userInfo=${#strings.arraySplit(listAddress,',')}">
+                            <tr>
+                                <td id="name" th:text="${userInfo[1]}"></td>
+                                <td id="role" th:text="${userInfo[2]}"></td>
+                                <td id="status" th:if="${userInfo[3]} == 'Not Active'" class="not-active-reg" th:text="${userInfo[3]}"></td>
+                                <td id="status" th:unless="${userInfo[3]} == 'Not Active'" class="active-reg" th:text="${userInfo[3]}"></td>
+                                <td id="privilegi">
+                                    <div class="width-checkbox">
+                                        <input th:if="${userInfo[2] == 'User'}" type="radio" name="user" value="User" checked>
+                                        <input th:unless="${userInfo[2] == 'User'}" type="radio" name="user" value="User">
+                                        <label style="padding-right: 13.89px;">User</label><br>
+
+                                        <input th:if="${userInfo[2] == 'Admin'}" type="radio"  name="user" value="Admin" checked>
+                                        <input th:unless="${userInfo[2] == 'Admin'}" type="radio"  name="user" value="Admin">
+                                        <label>Admin</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a style="padding: 0!important; min-width: 100px;"
+                                       class="size button k-button k-primary raised has-gradient-table is-fat is-bold">
+                                        <span class="text">Attiva</span>
+                                        <span class="front-gradient"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </table>
+                </div>
             </div>
         </section>
     </div>
-
     <div th:replace="partials/footer :: footer"></div>
 </body>
 </html>
