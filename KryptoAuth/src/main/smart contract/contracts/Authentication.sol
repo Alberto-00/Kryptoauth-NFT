@@ -25,7 +25,12 @@ contract Authentication is AccessControl {
         address addr;
         string name;
         bytes32 password;
-        bool isUserLoggedIn;
+    }
+
+    struct Admin {
+        address adminAddress;
+        string name;
+        bytes32 password;
     }
 
     mapping(address => User) user;
@@ -33,7 +38,7 @@ contract Authentication is AccessControl {
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        //_setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
+        _setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
     /*Ristretto ai membri che hanno l'admin role.*/
@@ -60,8 +65,7 @@ contract Authentication is AccessControl {
 
     /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
     function addUser(address account) public virtual onlyAdmin returns (bool){
-        if(!hasRole(USER_ROLE, account) &&
-            !hasRole(DEFAULT_ADMIN_ROLE, account)){
+        if(!hasRole(USER_ROLE, account)){
             grantRole(USER_ROLE, account);
             return true;
         } return false;
@@ -106,11 +110,11 @@ contract Authentication is AccessControl {
         string memory _password
     ) public returns (bool) {
         require(user[_address].addr == address(0x0000000000000000000000000000000000000000), "already registered");
+        require(admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), "already registered");
 
         user[_address].addr = _address;
         user[_address].name = _name;
         user[_address].password = keccak256(abi.encodePacked(_password));
-        user[_address].isUserLoggedIn = true;
         return true;
     }
 
@@ -119,34 +123,15 @@ contract Authentication is AccessControl {
     * e la modifica del campo isUserLoggedIn su true: questo significa che *
     * l'utente accede correttamente.                                       *
     ************************************************************************/
-    function loginUser(address _address, string memory _name, string memory _password) public returns (bool) {
+    function loginUser(address _address, string memory _name, string memory _password) public view returns (bool) {
         //keccak256(abi.encodePacked(...)) è usato per comparare le stringhe e richiede meno gas
         if (isUser(_address) && user[_address].password == keccak256(abi.encodePacked(_password)) &&
             keccak256(abi.encodePacked(user[_address].name)) == keccak256(abi.encodePacked(_name))) {
-
-            user[_address].isUserLoggedIn = true;
-            return user[_address].isUserLoggedIn;
-        } else 
-            return false;
+            return true;
+        }
+        return false;
     }
 
-    // verifica se l'utente è loggato o meno.
-    function checkIsUserLogged(address _address) public view returns (bool){
-        return user[_address].isUserLoggedIn;
-    }
-
-    // logout dell'utente
-    function logoutUser(address _address) public {
-        user[_address].isUserLoggedIn = false;
-    }
-
-
-    struct Admin {
-        address adminAddress;
-        string name;
-        bytes32 password;
-        bool isAdminLoggedIn;
-    }
 
     function registerAdmin(
         address _address,
@@ -154,31 +139,19 @@ contract Authentication is AccessControl {
         string memory _password
     ) public returns (bool) {
         require(admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), "already registered");
+        require(user[_address].addr == address(0x0000000000000000000000000000000000000000), "already registered");
 
         admin[_address].adminAddress = _address;
         admin[_address].name = _name;
         admin[_address].password = keccak256(abi.encodePacked(_password));
-        admin[_address].isAdminLoggedIn = true;
         return true;
     }
 
-    function loginAdmin(address _address, string memory _name, string memory _password) public returns (bool) {
+    function loginAdmin(address _address, string memory _name, string memory _password) public view returns (bool) {
         if (isAdmin(_address) && admin[_address].password == keccak256(abi.encodePacked(_password)) &&
             keccak256(abi.encodePacked(admin[_address].name)) == keccak256(abi.encodePacked(_name))) {
-
-            admin[_address].isAdminLoggedIn = true;
-            return admin[_address].isAdminLoggedIn;
-        } else 
-            return false;
-    }
-
-    // verifica se l'admin è loggato o meno.
-    function checkIsAdminLogged(address _address) public view returns (bool) {
-        return admin[_address].isAdminLoggedIn;
-    }
-
-    // logout dell'admin
-    function logoutAdmin(address _address) public {
-        admin[_address].isAdminLoggedIn = false;
+            return true;
+        }
+        return false;
     }
 }

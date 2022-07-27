@@ -83,7 +83,7 @@
                         </tr>
                         <tr th:each="address,iter: ${listAddress}" th:with="userInfo = ${#strings.arraySplit(address,',')}">
                             <td th:text="${userInfo[1]}"></td>
-                            <td th:text="${userInfo[2]}"></td>
+                            <td th:id="roles + ${iter.index}" th:text="${userInfo[2]}"></td>
                             <td th:id="notActive + ${iter.index}" th:if="${userInfo[3]} == 'Non Attivo'" class="not-active-reg" th:text="${userInfo[3]}"></td>
                             <td th:id="active + ${iter.index}" th:unless="${userInfo[3]} == 'Non Attivo'" class="active-reg" th:text="${userInfo[3]}"></td>
                             <td>

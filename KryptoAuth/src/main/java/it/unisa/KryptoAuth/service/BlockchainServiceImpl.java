@@ -11,7 +11,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x5Da6DB1311d4F7034FAE84FD9E7b8191376ee898";
+    private final static String CONTRACT_ADDRESS = "0x69bAd3Cd1A88ed983eb43627fc920d6015B397d6";
     private static String privateKey;
     private static Authentication authentication = null;
 
@@ -51,32 +51,12 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public boolean loginUser(String address, String name, String password) throws Exception {
-        return loadContract(privateKey).loginUser(address, name, password).send().isStatusOK();
+        return loadContract(privateKey).loginUser(address, name, password).send();
     }
 
     @Override
     public boolean loginAdmin(String address, String name, String password) throws Exception {
-        return loadContract(privateKey).loginAdmin(address, name, password).send().isStatusOK();
-    }
-
-    @Override
-    public boolean isUserLogged(String address) throws Exception {
-        return loadContract(privateKey).checkIsUserLogged(address).send();
-    }
-
-    @Override
-    public boolean isAdminLogged(String address) throws Exception {
-        return loadContract(privateKey).checkIsAdminLogged(address).send();
-    }
-
-    @Override
-    public void logoutUser(String address) throws Exception {
-        loadContract(privateKey).logoutUser(address).send();
-    }
-
-    @Override
-    public void logoutAdmin(String address) throws Exception {
-        loadContract(privateKey).logoutAdmin(address).send();
+        return loadContract(privateKey).loginAdmin(address, name, password).send();
     }
 
     @Override
@@ -101,11 +81,11 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public boolean isContractLoaded(String address) throws Exception {
-        return authentication != null && authentication.getAddress().send().compareTo(address) == 0;
+        return authentication != null && authentication.getAddress().send().compareToIgnoreCase(address) == 0;
     }
 
     @Override
     public boolean addressEquals(String address) throws Exception {
-        return authentication.getAddress().send().compareTo(address) == 0;
+        return authentication.getAddress().send().compareToIgnoreCase(address) == 0;
     }
 }

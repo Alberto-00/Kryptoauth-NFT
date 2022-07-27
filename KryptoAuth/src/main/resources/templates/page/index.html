@@ -34,7 +34,7 @@
                             </h2>
                             <!-- CTA -->
                             <p class="buttons">
-                                <a href="/kryptoauth/login" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                                <a th:if="${session.user} == null AND ${session.admin == null}" href="/kryptoauth/login" class="size button k-button k-primary raised has-gradient is-fat is-bold">
                                     <span class="text">Get Started</span>
                                     <span class="front-gradient"></span>
                                 </a>

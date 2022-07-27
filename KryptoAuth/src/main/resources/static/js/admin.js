@@ -92,23 +92,30 @@ function ajaxActiveAddress(address, status, role, privateKey){
                 openPopupErrorRevokeRole()
             }
 
+            if (data.msgError['notRevoke'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Solo l'account proprietario può rinunciare al suo ruolo di <i>Admin</i>.");
+            }
+
             if (data.msgError['success'] != null){
                 openPopupSuccess()
 
                 const datas = data.msgError['success'].split(",")
                 const $radios = $('input:radio[name="user"]')
 
-                if (datas[0].localeCompare('Attivo') === 0){
+                if (datas[0] === "Attivo"){
                     const $notActive = $('#notActive' + role)
                     if ($notActive.length){
                         $notActive.attr('class', 'active-reg')
-                        $notActive.text("Attivo")
+                        $notActive.html("Attivo")
                     }
                 }
 
-                if($radios.is(':checked') === false) {
+                if(!$radios.is(':checked')) {
                     $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
                 }
+                $('#roles' + role).html(datas[1])
             }
         },
         error: function (e) {
@@ -126,14 +133,6 @@ function ajaxRevokeAdmin(address){
         },
         dataType: 'json',
         success: function (data) {
-            if (data.msgError['success'] != null) {
-                const $active = $('#active' + globalRole)
-                if ($active.length){
-                    $active.attr('class', 'not-active-reg')
-                    $active.text("Non Attivo")
-                }
-            }
-
             if (data.msgError['redirect'] != null) {
                 window.location.href = "/kryptoauth/logout"
             }

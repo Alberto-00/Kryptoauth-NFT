@@ -234,8 +234,11 @@ public class BlockchainController {
                         return ajaxResponse;
                     }
                     else if (role.compareToIgnoreCase("user") == 0){
-                        if (service.isAdmin(address) && address.compareTo(session.getAttribute("admin").toString()) == 0){
+                        if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
                             ajaxResponse.addMsg("revokeAdmin", "ok");
+                            return ajaxResponse;
+                        } else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                            ajaxResponse.addMsg("notRevoke", "error");
                             return ajaxResponse;
                         }
 
@@ -262,8 +265,11 @@ public class BlockchainController {
                     return ajaxResponse;
                 }
                 if (role.compareToIgnoreCase("user") == 0){
-                    if (service.isAdmin(address) && address.compareTo(session.getAttribute("admin").toString()) != 0){
-                        ajaxResponse.addMsg("denied", "error");
+                    if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
+                        ajaxResponse.addMsg("revokeAdmin", "ok");
+                        return ajaxResponse;
+                    } else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                        ajaxResponse.addMsg("notRevoke", "error");
                         return ajaxResponse;
                     }
 
@@ -293,16 +299,18 @@ public class BlockchainController {
 
     @ResponseBody
     @PostMapping("/revokeAdmin")
-    public AjaxResponse activeAddress(@RequestParam(value = "address") String address,
+    public AjaxResponse renounceAdmin(@RequestParam(value = "address") String address,
                                       HttpServletRequest request) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
 
         try {
-            service.removeAdmin(address);
-            if (session != null && session.getAttribute("admin").toString().compareTo(address) == 0){
+            if (session != null && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+                service.addUser(address);
+                service.removeAdmin(address);
                 ajaxResponse.addMsg("redirect", "ok");
-            } else  ajaxResponse.addMsg("success", "ok");
+                updateAddress(address, "Attivo", "User");
+            } else  ajaxResponse.addMsg("error", "error");
             return ajaxResponse;
         } catch (Exception e) {
             ajaxResponse.addMsg("error", "error");

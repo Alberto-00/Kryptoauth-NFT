@@ -296,7 +296,7 @@ function ajaxLogin($privateKey, $userAddress){
             if (data.msgError['credentialsNotVerified'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("L'admin non ha ancora accettato la registrazione: attendere...");
+                    .html("L'admin non ha ancora accettato la registrazione oppure le credenziali sono errate.");
             }
 
             if (data.msgError['successAdmin'] != null){
