@@ -33,7 +33,7 @@ contract Authentication is AccessControl {
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
+        //_setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
     /*Ristretto ai membri che hanno l'admin role.*/
@@ -60,7 +60,8 @@ contract Authentication is AccessControl {
 
     /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
     function addUser(address account) public virtual onlyAdmin returns (bool){
-        if(!hasRole(USER_ROLE, account)){
+        if(!hasRole(USER_ROLE, account) &&
+            !hasRole(DEFAULT_ADMIN_ROLE, account)){
             grantRole(USER_ROLE, account);
             return true;
         } return false;
@@ -69,6 +70,7 @@ contract Authentication is AccessControl {
     /*Aggiunge un account con il ruolo di admin (lo possono fare solo gli admin).*/
     function addAdmin(address account) public virtual onlyAdmin returns (bool){
         if(!hasRole(DEFAULT_ADMIN_ROLE, account)){
+            removeUser(account);
             grantRole(DEFAULT_ADMIN_ROLE, account);
             return true;
         } return false;

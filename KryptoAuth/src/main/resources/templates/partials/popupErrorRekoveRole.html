@@ -1,0 +1,21 @@
+<!-- Error Popup -->
+<th:block th:fragment="popupErrorRevokeRole">
+  <div class="modal" id="popupErrorRevokeRole">
+    <div class="header-modal-error"></div>
+    <div class="content-modal error-p">
+      <p style="font-size: 35px">Attenzione!</p>
+      <p>Sei sicuro di voler rinunciare al ruolo di <i>Admin</i>?</p>
+    </div>
+    <div class="footer-modal-error">
+      <button id="revokeRole" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
+        <span style="font-size: 16px; font-weight: bolder;" class="text">SI</span>
+        <span class="front-gradient"></span>
+      </button>
+      <button id="closePopupRevokeError" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
+        <span style="font-size: 16px; font-weight: bolder;" class="text">Cancel</span>
+        <span class="front-gradient"></span>
+      </button>
+    </div>
+  </div>
+</th:block>
+<!-- Error Popup -->

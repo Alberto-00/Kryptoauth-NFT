@@ -5,8 +5,9 @@
     <title>Kryptoauth - Admin</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
     <script th:src="@{/js/scrollUp.js}"></script>
-    <script th:src="@{/js/admin.js}"></script>
+    <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
     <div th:replace="partials/header :: #pageloader"></div>
@@ -75,42 +76,45 @@
                     <table>
                         <tr class="title-row">
                             <th>Username / E-mail</th>
-                            <th>Ruolo/i</th>
+                            <th>Ruolo</th>
                             <th>Status Attivazione</th>
                             <th>Privilegi</th>
                             <th></th>
                         </tr>
-                        <th:block th:each="address: ${listAddress}" th:with="userInfo=${#strings.arraySplit(listAddress,',')}">
-                            <tr>
-                                <td id="name" th:text="${userInfo[1]}"></td>
-                                <td id="role" th:text="${userInfo[2]}"></td>
-                                <td id="status" th:if="${userInfo[3]} == 'Not Active'" class="not-active-reg" th:text="${userInfo[3]}"></td>
-                                <td id="status" th:unless="${userInfo[3]} == 'Not Active'" class="active-reg" th:text="${userInfo[3]}"></td>
-                                <td id="privilegi">
-                                    <div class="width-checkbox">
-                                        <input th:if="${userInfo[2] == 'User'}" type="radio" name="user" value="User" checked>
-                                        <input th:unless="${userInfo[2] == 'User'}" type="radio" name="user" value="User">
-                                        <label style="padding-right: 13.89px;">User</label><br>
+                        <tr th:each="address,iter: ${listAddress}" th:with="userInfo = ${#strings.arraySplit(address,',')}">
+                            <td th:text="${userInfo[1]}"></td>
+                            <td th:text="${userInfo[2]}"></td>
+                            <td th:id="notActive + ${iter.index}" th:if="${userInfo[3]} == 'Non Attivo'" class="not-active-reg" th:text="${userInfo[3]}"></td>
+                            <td th:id="active + ${iter.index}" th:unless="${userInfo[3]} == 'Non Attivo'" class="active-reg" th:text="${userInfo[3]}"></td>
+                            <td>
+                                <div class="width-checkbox">
+                                    <input th:name="role + ${iter.index}" th:if="${userInfo[2] == 'User'}" type="radio" value="User" checked>
+                                    <input th:name="role + ${iter.index}" th:unless="${userInfo[2] == 'User'}" type="radio" value="User">
+                                    <label style="padding-right: 13.89px;">User</label><br>
 
-                                        <input th:if="${userInfo[2] == 'Admin'}" type="radio"  name="user" value="Admin" checked>
-                                        <input th:unless="${userInfo[2] == 'Admin'}" type="radio"  name="user" value="Admin">
-                                        <label>Admin</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a style="padding: 0!important; min-width: 100px;"
-                                       class="size button k-button k-primary raised has-gradient-table is-fat is-bold">
-                                        <span class="text">Attiva</span>
-                                        <span class="front-gradient"></span>
-                                    </a>
-                                </td>
-                            </tr>
-                        </th:block>
+                                    <input th:name="role + ${iter.index}" th:if="${userInfo[2] == 'Admin'}" type="radio" value="Admin" checked>
+                                    <input th:name="role + ${iter.index}" th:unless="${userInfo[2] == 'Admin'}" type="radio" value="Admin">
+                                    <label>Admin</label>
+                                </div>
+                            </td>
+                            <td>
+                                <a th:attr="onclick=|activeAddress('${userInfo[0]}', '${userInfo[3]}', '${iter.index}')|"  style="padding: 0!important; min-width: 100px;"
+                                   class="size button k-button k-primary raised has-gradient-table is-fat is-bold">
+                                    <span class="text">Attiva</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
         </section>
     </div>
     <div th:replace="partials/footer :: footer"></div>
+    <div th:replace="partials/popupPrivateKey :: popupSuccessPrivateKey"></div>
+    <div th:replace="partials/popupError :: popupError"></div>
+    <div th:replace="partials/popupErrorRekoveRole :: popupErrorRevokeRole"></div>
+    <div th:replace="partials/popupSuccess :: popupSuccess"></div>
+    <div class="shadow"></div>
 </body>
 </html>

@@ -1,15 +1,17 @@
 package it.unisa.KryptoAuth.controller;
 
 import it.unisa.KryptoAuth.model.User;
-import it.unisa.KryptoAuth.service.BlockchainServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.expression.Maps;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.*;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -17,9 +19,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @Controller
 @RequestMapping(value = "/kryptoauth", method = GET)
 public class KryptoController {
-
-    @Autowired
-    private BlockchainServiceImpl service;
 
     @GetMapping("")
     public String home(){
@@ -46,38 +45,64 @@ public class KryptoController {
         return "/page/blog-single";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (request.getAttribute("user") != null){
+            session.removeAttribute("user");
+        } else if (request.getAttribute("admin") != null) {
+            session.removeAttribute("admin");
+        }
+        session.invalidate();
+        return "redirect:/kryptoauth";
+    }
+
     @GetMapping("/register")
-    public String register(Model model){
-        model.addAttribute("user", new User());
-        return "/page/register";
+    public String register(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null && session.getAttribute("admin") == null) {
+            model.addAttribute("user", new User());
+            return "/page/register";
+        } return "/error/500";
     }
 
     @GetMapping("/login")
-    public String login(Model model){
-        model.addAttribute("user", new User());
-        return "/page/login";
+    public String login(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null && session.getAttribute("admin") == null) {
+            model.addAttribute("user", new User());
+            return "/page/login";
+        } return "/error/500";
     }
 
     @GetMapping("/loginAdmin")
-    public String loginAdmin(Model model) throws Exception{
-        model.addAttribute( "listAddress", readFileAddress());
-        return "/page/admin";
+    public String loginAdmin(Model model, HttpServletRequest request) throws Exception{
+        HttpSession session = request.getSession();
+        if (session.getAttribute("admin") != null) {
+            model.addAttribute( "listAddress", readFileAddress());
+            return "/page/admin";
+        } else if (session.getAttribute("user") != null) {
+            return "/error/401";
+        } return "/error/500";
     }
 
     private List<String> readFileAddress(){
         List<String> address = new ArrayList<>();
+        JSONParser jsonParser = new JSONParser();
 
         try {
-            File file = new File("src/main/resources/static/txt/addressRegistered.txt");
-            Scanner myReader = new Scanner(file);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                if (!data.isEmpty())
-                    address.add(data);
+            Object obj = jsonParser.parse(new FileReader("src/main/resources/static/txt/addressRegistered.json"));
+            JSONArray root = (JSONArray) obj;
+
+            for (Object o : root) {
+                JSONObject element = (JSONObject) o;
+                String addressJson = element.get("address").toString();
+                String nameJson = element.get("name").toString();
+                String roleJson = element.get("role").toString();
+                String statusJson = element.get("status").toString();
+                address.add(addressJson + "," + nameJson + "," + roleJson + "," + statusJson);
             }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
         return address;

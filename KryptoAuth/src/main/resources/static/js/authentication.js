@@ -26,6 +26,8 @@ window.timer = function(event){
 }
 timer()
 
+var roleAddress = ""
+
 $(document).ready(function (){
     sendAddressToBackend()
 
@@ -219,7 +221,11 @@ $(document).ready(function (){
 
     $('#confirmPopupSuccess').click(function () {
         closePopupSuccess()
-        window.location.replace("/kryptoauth");
+
+        if (roleAddress.localeCompare("admin") === 0)
+            window.location.href = "/kryptoauth/loginAdmin";
+        else
+            window.location.href = "/kryptoauth";
     });
 })
 
@@ -242,7 +248,12 @@ function ajaxLogin($privateKey, $userAddress){
             const $passwordInput = $('#password-error')
             $('input[name="privateKey"]').val(undefined)
 
+            if (data.msgError['sessionEmpty'] != null) {
+                window.location.href = "/kryptoauth/404";
+            }
+
             if (data.msgError['email'] != null) {
+                console.log("hhhh")
                 if ($emailInput.length)
                     $emailInput.remove()
                 $('input[name="email"]').after('<label id="email-error" class="error" for="email">' + data.msgError['email'] + '</label>')
@@ -289,11 +300,11 @@ function ajaxLogin($privateKey, $userAddress){
             }
 
             if (data.msgError['successAdmin'] != null){
-                window.location.replace("/kryptoauth/loginAdmin");
+                window.location.href = "/kryptoauth/loginAdmin"
             }
 
             if (data.msgError['successUser'] != null){
-                window.location.replace("/kryptoauth");
+                window.location.href = "/kryptoauth"
             }
         },
         error: function (e) {
@@ -322,6 +333,10 @@ function ajaxRegister($privateKey, $userAddress){
             const $roleInput = $('#user-error')
             $('input[name="privateKey"]').val(undefined)
 
+            if (data.msgError['sessionEmpty'] != null) {
+                window.location.href = "/kryptoauth/404"
+            }
+
             if (data.msgError['email'] != null) {
                 if ($emailInput.length)
                     $emailInput.remove()
@@ -339,6 +354,7 @@ function ajaxRegister($privateKey, $userAddress){
                     $repeatPasswordInput.remove()
                 $('input[name="repeatPassword"]').after('<label id="repeatPassword-error" class="error" for="email">' + data.msgError['repeatPassword'] + '</label>')
             }
+
             if (data.msgError['role'] != null) {
                 if ($roleInput.length)
                     $roleInput.remove()
@@ -376,11 +392,18 @@ function ajaxRegister($privateKey, $userAddress){
             if (data.msgError['errorAdmin'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("Account 'Admin': completare correttamente il form.");
+                    .html("Account <i>Admin</i>: completare correttamente il form.");
             }
 
             if (data.msgError['success'] != null){
                 openPopupSuccess();
+            }
+
+            if (data.msgError['adminActive'] != null){
+                openPopupSuccess();
+                $('#popupSuccess').children('div').eq(1)
+                    .children('p').eq(1).html("Salvataggio effettuato.")
+                roleAddress = "admin"
             }
         },
         error: function (e) {

@@ -54,11 +54,18 @@ body{
 }
 
 .active-reg{
+    background-size: 100%;
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+
     background-color: rgb(0, 255, 153);
-    background-image: -moz-radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
-    background-image: -webkit-radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
-    background-image: radial-gradient(circle, rgba(0, 255, 153, 1) 0%, rgba(51, 204, 255, 1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00ff99",endColorstr="#33ccff",GradientType=1);
+    background-image: -moz-radial-gradient(circle, rgba(0, 143, 57, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    background-image: -webkit-radial-gradient(circle, rgba(0, 143, 57, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    background-image: radial-gradient(circle, rgba(0, 143, 57, 1) 0%, rgba(51, 204, 255, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#008f39",endColorstr="#33ccff",GradientType=1);
 }
 
 .container-table{

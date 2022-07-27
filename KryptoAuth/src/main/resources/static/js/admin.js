@@ -1,3 +1,196 @@
-$(document).ready(function (){
 
+var globalAddress, globalStatus, globalRole
+
+$(document).ready(function (){
+    $(".shadow").click(function () {
+        closePopupError()
+        closePopupSuccess()
+        closePopupPrivateKey()
+    });
+
+    $('#confirmPopupError').click(function () {
+        closePopupError()
+        closePopupPrivateKey()
+    });
+
+    $('#confirmPopupSuccess').click(function () {
+        closePopupSuccess()
+    });
+
+    $('#confirmPopupSuccessPrivateKey').on('click', function (){
+        const $privateKey = $('input[name="privateKey"]')
+
+        if (($privateKey.val() != null && $privateKey.val() !== '') &&
+            $privateKey.val().length > 63 && $privateKey.val().length < 65) {
+            closePopupPrivateKey()
+            ajaxActiveAddress(globalAddress, globalStatus, globalRole, $privateKey.val())
+        } else {
+            openPopupError()
+            $('div.error-p').children('p').eq(1)
+                .html("Chiave privata non corretta. <br>Riprovare.");
+        }
+    })
+
+    $('#closePopupRevokeError').on('click', function (){
+        closePopupErrorRevokeRole()
+    })
+
+    $('#revokeRole').on('click', function (){
+        ajaxRevokeAdmin(globalAddress)
+    })
 })
+
+function activeAddress(address, status, role){
+    globalStatus = status
+    globalAddress = address
+    globalRole = role
+
+    openPopupPrivateKey()
+}
+
+function ajaxActiveAddress(address, status, role, privateKey){
+    var $role
+    if (role.localeCompare("User") === 0)
+        $role = "User"
+    else {
+        const name = "input[name='role" + role + "']:checked"
+        $role = $(name).val()
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/activeAddress",
+        data: {
+            address: address,
+            role: $role,
+            status: status,
+            privateKey: privateKey
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['sessionEmpty'] != null) {
+                window.location.href = "/kryptoauth/404"
+            }
+
+            if (data.msgError['contract'] != null){
+                openPopupPrivateKey()
+            }
+
+            if (data.msgError['privateKey'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Chiave privata non corretta. <br>Riprovare.");
+            }
+
+            if (data.msgError['notEqualsAddress'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Chiave privata non associata a questo account.<br>Riprovare.");
+            }
+
+            if (data.msgError['revokeAdmin'] != null){
+                openPopupErrorRevokeRole()
+            }
+
+            if (data.msgError['success'] != null){
+                openPopupSuccess()
+
+                const datas = data.msgError['success'].split(",")
+                const $radios = $('input:radio[name=user]')
+
+                if (datas[0].localeCompare('Attivo') === 0){
+                    const $notActive = $('#notActive' + role)
+                    if ($notActive.length){
+                        $notActive.attr('class', 'active-reg')
+                        $notActive.text("Attivo")
+                    }
+                }
+
+                if($radios.is(':checked') === false) {
+                    $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                }
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
+
+function ajaxRevokeAdmin(address){
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/revokeAdmin",
+        data: {
+            address: address,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['success'] != null) {
+                const $active = $('#active' + globalRole)
+                if ($active.length){
+                    $active.attr('class', 'not-active-reg')
+                    $active.text("Non Attivo")
+                }
+            }
+
+            if (data.msgError['redirect'] != null) {
+                window.location.href = "/kryptoauth/logout"
+            }
+
+            if (data.msgError['error'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Qualcosa è andato storto.<br>Riprovare.");
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
+
+function openPopupError(){
+    $(".shadow").css("display", "block");
+    $("#popupError").css("display", "block");
+}
+
+function closePopupError(){
+    $(".shadow").fadeOut();
+    $("#popupError").fadeOut();
+}
+
+function openPopupSuccess(){
+    $('#popupSuccess').children('div').eq(1)
+        .children('p').eq(1).html("Salvataggio effettuato." +
+        "<div class='icon-box-success'>" +
+        "   <img src='/img/icons/check-solid.svg' alt='check'>" +
+        "</div>");
+    $(".shadow").css("display","block");
+    $("#popupSuccess").css("display","block");
+}
+
+function closePopupSuccess(){
+    $(".shadow").fadeOut();
+    $("#popupSuccess").fadeOut();
+}
+
+function openPopupPrivateKey(){
+    $(".shadow").css("display","block");
+    $("#popupSuccessPrivateKey").css("display","block");
+}
+
+function closePopupPrivateKey(){
+    $(".shadow").fadeOut();
+    $("#popupSuccessPrivateKey").fadeOut();
+}
+
+function openPopupErrorRevokeRole(){
+    $(".shadow").css("display","block");
+    $("#popupErrorRevokeRole").css("display","block");
+}
+
+function closePopupErrorRevokeRole(){
+    $(".shadow").fadeOut();
+    $("#popupErrorRevokeRole").fadeOut();
+}

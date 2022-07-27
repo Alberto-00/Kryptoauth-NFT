@@ -58,10 +58,18 @@
           </div>
           <!-- Sign up -->
           <div class="navbar-item is-nav-link">
-            <a href="/kryptoauth/register" class="button k-button k-primary raised has-gradient slanted">
-              <span class="text">Register</span>
-              <span class="front-gradient"></span>
-            </a>
+            <th:block th:if="${session.user} == null AND ${session.admin} == null">
+              <a href="/kryptoauth/register" class="button k-button k-primary raised has-gradient slanted">
+                <span class="text">Register</span>
+                <span class="front-gradient"></span>
+              </a>
+            </th:block>
+            <th:block th:unless="${session.user} == null AND ${session.admin} == null">
+              <a href="/kryptoauth/logout" class="button k-button k-primary raised has-gradient slanted">
+                <span class="text">Logout</span>
+                <span class="front-gradient"></span>
+              </a>
+            </th:block>
           </div>
         </div>
       </div>
@@ -113,10 +121,18 @@
           </div>
           <!-- Sign up -->
           <div class="navbar-item is-nav-link">
-            <a href="/kryptoauth/register" class="button k-button k-primary raised has-gradient slanted">
-              <span class="text">Register</span>
-              <span class="front-gradient"></span>
-            </a>
+            <th:block th:if="${session.user} == null AND ${session.admin} == null">
+              <a href="/kryptoauth/register" class="button k-button k-primary raised has-gradient slanted">
+                <span class="text">Register</span>
+                <span class="front-gradient"></span>
+              </a>
+            </th:block>
+            <th:block th:unless="${session.user} == null AND ${session.admin} == null">
+              <a href="/kryptoauth/logout" class="button k-button k-primary raised has-gradient slanted">
+                <span class="text">Logout</span>
+                <span class="front-gradient"></span>
+              </a>
+            </th:block>
           </div>
         </div>
       </div>
