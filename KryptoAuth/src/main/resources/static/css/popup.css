@@ -69,10 +69,13 @@
 
 #confirmPopupSuccess,
 #confirmPopupError,
-#confirmPopupSuccessPrivateKey,
-#revokeRole, #closePopupRevokeError{
+#confirmPopupSuccessPrivateKey{
     border: none;
     margin-right: 15.5em;
+}
+
+#revokeRole, #closePopupRevokeError{
+    margin-right: 6.7em;
 }
 
 #confirmPopupSuccess,
@@ -203,7 +206,6 @@
 }
 
 @media screen and (min-width: 600px){
-
     .modal{
         width: 500px;
         height: 300px;
@@ -236,9 +238,7 @@
 @media screen and (max-width: 600px){
     #confirmPopupSuccess,
     #confirmPopupError,
-    #confirmPopupSuccessPrivateKey,
-    #closePopupRevokeError,
-    #revokeRole{
+    #confirmPopupSuccessPrivateKey{
         margin-right: 0;
     }
 }

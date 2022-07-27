@@ -96,7 +96,7 @@ function ajaxActiveAddress(address, status, role, privateKey){
                 openPopupSuccess()
 
                 const datas = data.msgError['success'].split(",")
-                const $radios = $('input:radio[name=user]')
+                const $radios = $('input:radio[name="user"]')
 
                 if (datas[0].localeCompare('Attivo') === 0){
                     const $notActive = $('#notActive' + role)
