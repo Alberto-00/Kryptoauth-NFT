@@ -76,6 +76,7 @@
 
 #revokeRole, #closePopupRevokeError{
     margin-right: 6.7em;
+    border: none;
 }
 
 #confirmPopupSuccess,
@@ -120,7 +121,7 @@
     z-index: 40001;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px #000;
+    box-shadow: 0 0 10px #000;
     margin-top: 30px;
     margin-left: 10%;
 
@@ -131,7 +132,7 @@
 .header-modal-success, .header-modal-error{
     width: 100%;
     height: 70px;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 10px 10px 0 0;
     border-bottom: 2px solid;
 }
 
@@ -194,7 +195,7 @@
 #privateKey-error{
     color: #7f00ff;
     font-size: 12px;
-    font-family: "Arial";
+    font-family: "Arial", serif;
 }
 
 /****MEDIA QUERIES****/

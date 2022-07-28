@@ -11,7 +11,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x69bAd3Cd1A88ed983eb43627fc920d6015B397d6";
+    private final static String CONTRACT_ADDRESS = "0x8D234c808e4D47C00C7611325D780bB98093561E";
     private static String privateKey;
     private static Authentication authentication = null;
 
@@ -42,11 +42,6 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public boolean registerUser(String address, String name, String password) throws Exception {
         return loadContract(privateKey).registerUser(address, name, password).send().isStatusOK();
-    }
-
-    @Override
-    public boolean registerAdmin(String address, String name, String password) throws Exception {
-        return loadContract(privateKey).registerAdmin(address, name, password).send().isStatusOK();
     }
 
     @Override

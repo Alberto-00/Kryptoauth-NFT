@@ -10,7 +10,7 @@ $(document).ready(function (){
 
     // down page without anchor
     $('#info-roadmap').on('click', function() {
-        $("html, body").animate({ scrollTop: 580 }, 800);
+        $("html, body").animate({ scrollTop: 700 }, 800);
     });
 
     $('#info-home').on('click', function() {

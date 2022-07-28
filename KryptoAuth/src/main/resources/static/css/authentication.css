@@ -1,3 +1,7 @@
+label{
+    font-size: 14px!important;
+}
+
 .radio-left, .radio-right{
     margin-bottom: 3em;
     color: #7f00ff;
@@ -60,5 +64,11 @@ ul#countdown li .label{
 @media screen and (min-width: 769px) and (max-width: 1216px){
     .hero-image{
         width: 50%!important;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait){
+    .landing-caption {
+        padding: 0;
     }
 }

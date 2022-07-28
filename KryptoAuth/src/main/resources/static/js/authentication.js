@@ -395,6 +395,12 @@ function ajaxRegister($privateKey, $userAddress){
                     .html("Account <i>Admin</i>: completare correttamente il form.");
             }
 
+            if (data.msgError['errorUser'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Account <i>User</i>: completare correttamente il form.");
+            }
+
             if (data.msgError['success'] != null){
                 openPopupSuccess();
             }

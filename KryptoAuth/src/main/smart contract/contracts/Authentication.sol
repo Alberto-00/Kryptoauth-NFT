@@ -27,14 +27,7 @@ contract Authentication is AccessControl {
         bytes32 password;
     }
 
-    struct Admin {
-        address adminAddress;
-        string name;
-        bytes32 password;
-    }
-
     mapping(address => User) user;
-    mapping(address => Admin) admin;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -109,8 +102,7 @@ contract Authentication is AccessControl {
         string memory _name,
         string memory _password
     ) public returns (bool) {
-        require(user[_address].addr == address(0x0000000000000000000000000000000000000000), "already registered");
-        require(admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), "already registered");
+        require(user[_address].addr != _address, "already registered");
 
         user[_address].addr = _address;
         user[_address].name = _name;
@@ -132,24 +124,9 @@ contract Authentication is AccessControl {
         return false;
     }
 
-
-    function registerAdmin(
-        address _address,
-        string memory _name,
-        string memory _password
-    ) public returns (bool) {
-        require(admin[_address].adminAddress == address(0x0000000000000000000000000000000000000000), "already registered");
-        require(user[_address].addr == address(0x0000000000000000000000000000000000000000), "already registered");
-
-        admin[_address].adminAddress = _address;
-        admin[_address].name = _name;
-        admin[_address].password = keccak256(abi.encodePacked(_password));
-        return true;
-    }
-
     function loginAdmin(address _address, string memory _name, string memory _password) public view returns (bool) {
-        if (isAdmin(_address) && admin[_address].password == keccak256(abi.encodePacked(_password)) &&
-            keccak256(abi.encodePacked(admin[_address].name)) == keccak256(abi.encodePacked(_name))) {
+        if (isAdmin(_address) && user[_address].password == keccak256(abi.encodePacked(_password)) &&
+            keccak256(abi.encodePacked(user[_address].name)) == keccak256(abi.encodePacked(_name))) {
             return true;
         }
         return false;

@@ -30,7 +30,6 @@ public class User {
 
     @NotNull
     private String role;
-    private boolean isLoggedIn;
 
     public User(){}
 
@@ -82,13 +81,5 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        isLoggedIn = loggedIn;
     }
 }
