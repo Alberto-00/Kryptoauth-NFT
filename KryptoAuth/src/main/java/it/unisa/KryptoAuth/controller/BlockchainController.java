@@ -50,7 +50,7 @@ public class BlockchainController {
                 return ajaxResponse;
             }
             else if (!service.isContractLoaded(address)) {
-                if (checkPrivateKey(address, privateKey, ajaxResponse)) 
+                if (checkPrivateKeyAndAddress(address, privateKey, ajaxResponse))
                     return ajaxResponse;
 
                 if (service.isAdmin(address)) {
@@ -117,7 +117,7 @@ public class BlockchainController {
                 return ajaxResponse;
             }
             else if (!service.isContractLoaded(address)) {
-                if (checkPrivateKey(address, privateKey, ajaxResponse)) 
+                if (checkPrivateKeyAndAddress(address, privateKey, ajaxResponse))
                     return ajaxResponse;
                 return registerForRoles(user, address, ajaxResponse, session);
             }
@@ -144,15 +144,8 @@ public class BlockchainController {
                     status != null && !status.isEmpty()){
 
                 if (!service.isContractLoaded(address)){
-                    if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
-                        ajaxResponse.addMsg("contract", "incorrect");
+                    if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
                         return ajaxResponse;
-                    }
-                    else if (privateKey.length() != 64) {
-                        ajaxResponse.addMsg("privateKey", "incorrect");
-                        return ajaxResponse;
-                    }
-                    service.loadContract(privateKey);
                     if (!service.addressEquals(session.getAttribute("admin").toString())){
                         ajaxResponse.addMsg("notEqualsAddress", "incorrect");
                         return ajaxResponse;
@@ -216,6 +209,35 @@ public class BlockchainController {
     }
 
     @ResponseBody
+    @PostMapping("/disactiveAddress")
+    public AjaxResponse disactiveAddress(@RequestParam(value = "address") String address,
+                                      @RequestParam(value = "role") String role,
+                                      @RequestParam(value = "status") String status,
+                                      @RequestParam(value = "privateKey") String privateKey,
+                                      HttpServletRequest request) throws Exception {
+
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("admin") != null){
+            if (address != null && !address.isEmpty() &&
+                    role != null && !role.isEmpty() &&
+                    status != null && !status.isEmpty()){
+
+                if (!service.isContractLoaded(address)){
+                    if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
+                        return ajaxResponse;
+                    return checkRevokeRole(address, role, status, ajaxResponse, session);
+                }
+                return checkRevokeRole(address, role, status, ajaxResponse, session);
+            } else
+                ajaxResponse.addMsg("errorPage", "error");
+        } else
+            ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
     @PostMapping("/revokeAdmin")
     public AjaxResponse renounceAdmin(@RequestParam(value = "address") String address,
                                       HttpServletRequest request) {
@@ -236,9 +258,33 @@ public class BlockchainController {
         return ajaxResponse;
     }
 
-    private boolean checkPrivateKey(@RequestParam("userAddress") String address,
-                                    @RequestParam("privateKey") String privateKey,
-                                    AjaxResponse ajaxResponse) throws Exception {
+    @ResponseBody
+    @PostMapping("/revokeRoles")
+    public AjaxResponse renounceRoles(@RequestParam(value = "address") String address,
+                                      HttpServletRequest request) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+
+        try {
+            if (session != null && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+                service.removeUser(address);
+                service.removeAdmin(address);
+                ajaxResponse.addMsg("redirect", "ok");
+                updateAddress(address, "Non Attivo", "User");
+            } else  ajaxResponse.addMsg("error", "error");
+            return ajaxResponse;
+        } catch (Exception e) {
+            ajaxResponse.addMsg("error", "error");
+        }
+        return ajaxResponse;
+    }
+
+    private boolean checkPrivateKeyAndLoadContract(@RequestParam("privateKey") String privateKey,
+                                                   AjaxResponse ajaxResponse) {
+        return checkPrivateKey(privateKey, ajaxResponse);
+    }
+
+    private boolean checkPrivateKey(@RequestParam("privateKey") String privateKey, AjaxResponse ajaxResponse) {
         if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
             ajaxResponse.addMsg("contract", "incorrect");
             return true;
@@ -247,8 +293,15 @@ public class BlockchainController {
             ajaxResponse.addMsg("privateKey", "incorrect");
             return true;
         }
-
         service.loadContract(privateKey);
+        return false;
+    }
+
+    private boolean checkPrivateKeyAndAddress(@RequestParam("userAddress") String address,
+                                              @RequestParam("privateKey") String privateKey,
+                                              AjaxResponse ajaxResponse) throws Exception {
+        if (checkPrivateKey(privateKey, ajaxResponse))
+            return true;
         if (!service.addressEquals(address)) {
             ajaxResponse.addMsg("notEqualsAddress", "incorrect");
             return true;
@@ -288,6 +341,32 @@ public class BlockchainController {
             return ajaxResponse;
         }
         ajaxResponse.addMsg("errorAdmin", "error");
+        return ajaxResponse;
+    }
+
+    @NotNull
+    private AjaxResponse checkRevokeRole(@RequestParam("address") String address,
+                                         @RequestParam("role") String role,
+                                         @RequestParam("status") String status,
+                                         AjaxResponse ajaxResponse,
+                                         HttpSession session) throws Exception {
+        if (!service.addressEquals(session.getAttribute("admin").toString())){
+            ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+            return ajaxResponse;
+        }
+        if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
+            ajaxResponse.addMsg("revoke", "ok");
+            return ajaxResponse;
+        }
+        else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+            ajaxResponse.addMsg("notRevoke", "error");
+            return ajaxResponse;
+        }
+        service.removeUser(address);
+        if (status.compareToIgnoreCase("Attivo") == 0)
+            status = "Non Attivo";
+        updateAddress(address, status, role);
+        ajaxResponse.addMsg("success", status + "," + role);
         return ajaxResponse;
     }
 

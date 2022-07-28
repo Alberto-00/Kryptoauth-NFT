@@ -80,6 +80,7 @@
                             <th>Status Attivazione</th>
                             <th>Privilegi</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         <tr th:each="address,iter: ${listAddress}" th:with="userInfo = ${#strings.arraySplit(address,',')}">
                             <td th:text="${userInfo[1]}"></td>
@@ -101,6 +102,13 @@
                                 <a th:attr="onclick=|activeAddress('${userInfo[0]}', '${userInfo[3]}', '${iter.index}')|"  style="padding: 0!important; min-width: 100px;"
                                    class="size button k-button k-primary raised has-gradient-table is-fat is-bold">
                                     <span class="text">Attiva</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a th:attr="onclick=|disactiveAddress('${userInfo[0]}', '${userInfo[3]}', '${iter.index}')|"  style="padding: 0!important; min-width: 100px;"
+                                   class="size button k-button k-primary raised has-gradient-table-error is-fat is-bold">
+                                    <span class="text">Disattiva</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </td>

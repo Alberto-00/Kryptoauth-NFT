@@ -1,5 +1,5 @@
 
-var globalAddress, globalStatus, globalRole
+var globalAddress, globalStatus, globalRole, operation
 
 $(document).ready(function (){
     $(".shadow").click(function () {
@@ -23,7 +23,10 @@ $(document).ready(function (){
         if (($privateKey.val() != null && $privateKey.val() !== '') &&
             $privateKey.val().length > 63 && $privateKey.val().length < 65) {
             closePopupPrivateKey()
-            ajaxActiveAddress(globalAddress, globalStatus, globalRole, $privateKey.val())
+            if (operation !== undefined && operation === "disactive")
+                ajaxDisactiveAddress(globalAddress, globalStatus, globalRole, $privateKey.val())
+            else
+                ajaxActiveAddress(globalAddress, globalStatus, globalRole, $privateKey.val())
         } else {
             openPopupError()
             $('div.error-p').children('p').eq(1)
@@ -36,7 +39,10 @@ $(document).ready(function (){
     })
 
     $('#revokeRole').on('click', function (){
-        ajaxRevokeAdmin(globalAddress)
+        if (operation !== undefined && operation === "disactive")
+            ajaxRevokeAllRoles(globalAddress)
+        else
+            ajaxRevokeAdmin(globalAddress)
     })
 })
 
@@ -44,6 +50,16 @@ function activeAddress(address, status, role){
     globalStatus = status
     globalAddress = address
     globalRole = role
+    operation = undefined
+
+    openPopupPrivateKey()
+}
+
+function disactiveAddress(address, status, role){
+    globalStatus = status
+    globalAddress = address
+    globalRole = role
+    operation = "disactive"
 
     openPopupPrivateKey()
 }
@@ -116,6 +132,108 @@ function ajaxActiveAddress(address, status, role, privateKey){
                     $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
                 }
                 $('#roles' + role).html(datas[1])
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
+
+function ajaxDisactiveAddress(address, status, role, privateKey){
+    if (status === "Attivo"){
+        let $role
+        if (role.localeCompare("User") === 0)
+            $role = "User"
+        else {
+            const name = "input[name='role" + role + "']:checked"
+            $role = $(name).val()
+        }
+        $.ajax({
+            type: "POST",
+            url: "/kryptoauth/disactiveAddress",
+            data: {
+                address: address,
+                role: $role,
+                status: status,
+                privateKey: privateKey
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.msgError['notEqualsAddress'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Chiave privata non associata a questo account.<br>Riprovare.");
+                }
+
+                if (data.msgError['revoke'] != null){
+                    openPopupErrorRevokeRole()
+                }
+
+                if (data.msgError['notRevoke'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Non sei l'account proprietario.<br>Non puoi disattivarlo.");
+                }
+
+                if (data.msgError['success'] != null){
+                    openPopupSuccess()
+
+                    const datas = data.msgError['success'].split(",")
+                    const $radios = $('input:radio[name="user"]')
+
+                    if (datas[0] === "Non Attivo"){
+                        const $active = $('#active' + role)
+                        if ($active.length){
+                            $active.attr('class', 'not-active-reg')
+                            $active.html("Non Attivo")
+                        }
+                    }
+
+                    if(!$radios.is(':checked')) {
+                        $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                    }
+                    $('#roles' + role).html(datas[1])
+                }
+
+                if (data.msgError['contract'] != null){
+                    openPopupPrivateKey()
+                }
+
+                if (data.msgError['privateKey'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Chiave privata non corretta. <br>Riprovare.");
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    } else {
+        openPopupError()
+        $('div.error-p').children('p').eq(1)
+            .html("Account già disattivato.");
+    }
+}
+
+function ajaxRevokeAllRoles(address){
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/revokeRoles",
+        data: {
+            address: address,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['redirect'] != null) {
+                window.location.href = "/kryptoauth/logout"
+            }
+
+            if (data.msgError['error'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Qualcosa è andato storto.<br>Riprovare.");
             }
         },
         error: function (e) {

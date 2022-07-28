@@ -49,6 +49,17 @@ body{
     z-index: 0;
 }
 
+.has-gradient-table-error{
+    position: relative;
+    -webkit-transition: all .3s ease-out !important;
+    transition: all .3s ease-out !important;
+    border: none !important;
+    background: rgb(194,5,5);
+    background: linear-gradient(90deg, rgba(194,5,5,1) 0%, rgba(130,0,0,1) 52%, rgba(84,1,1,1) 100%);
+    opacity: 1;
+    z-index: 0;
+}
+
 .not-active-reg{
     color: #ff0033;
 }
