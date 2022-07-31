@@ -52,7 +52,7 @@ function activeAddress(address, status, role){
     globalRole = role
     operation = undefined
 
-    openPopupPrivateKey()
+    ajaxActiveAddress(globalAddress, globalStatus, globalRole, $('input[name="privateKey"]').val())
 }
 
 function disactiveAddress(address, status, role){
@@ -61,7 +61,7 @@ function disactiveAddress(address, status, role){
     globalRole = role
     operation = "disactive"
 
-    openPopupPrivateKey()
+    ajaxDisactiveAddress(globalAddress, globalStatus, globalRole, $('input[name="privateKey"]').val())
 }
 
 function ajaxActiveAddress(address, status, role, privateKey){

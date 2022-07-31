@@ -143,7 +143,7 @@ public class BlockchainController {
                     role != null && !role.isEmpty() &&
                     status != null && !status.isEmpty()){
 
-                if (!service.isContractLoaded(address)){
+                if (!service.isContractLoaded(session.getAttribute("admin").toString())){
                     if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
                         return ajaxResponse;
                     if (!service.addressEquals(session.getAttribute("admin").toString())){
@@ -224,7 +224,7 @@ public class BlockchainController {
                     role != null && !role.isEmpty() &&
                     status != null && !status.isEmpty()){
 
-                if (!service.isContractLoaded(address)){
+                if (!service.isContractLoaded(session.getAttribute("admin").toString())){
                     if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
                         return ajaxResponse;
                     return checkRevokeRole(address, role, status, ajaxResponse, session);
