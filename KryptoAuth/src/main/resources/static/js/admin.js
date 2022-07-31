@@ -65,83 +65,96 @@ function disactiveAddress(address, status, role){
 }
 
 function ajaxActiveAddress(address, status, role, privateKey){
-    var $role
-    if (role.localeCompare("User") === 0)
-        $role = "User"
-    else {
-        const name = "input[name='role" + role + "']:checked"
-        $role = $(name).val()
-    }
+    const $statusActive = $('#active' + role)
+    const $statusNotActive = $('#notActive' + role)
 
-    $.ajax({
-        type: "POST",
-        url: "/kryptoauth/activeAddress",
-        data: {
-            address: address,
-            role: $role,
-            status: status,
-            privateKey: privateKey
-        },
-        dataType: 'json',
-        success: function (data) {
-            if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/404"
-            }
-
-            if (data.msgError['contract'] != null){
-                openPopupPrivateKey()
-            }
-
-            if (data.msgError['privateKey'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Chiave privata non corretta. <br>Riprovare.");
-            }
-
-            if (data.msgError['notEqualsAddress'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Chiave privata non associata a questo account.<br>Riprovare.");
-            }
-
-            if (data.msgError['revokeAdmin'] != null){
-                openPopupErrorRevokeRole()
-            }
-
-            if (data.msgError['notRevoke'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Solo l'account proprietario può rinunciare al suo ruolo di <i>Admin</i>.");
-            }
-
-            if (data.msgError['success'] != null){
-                openPopupSuccess()
-
-                const datas = data.msgError['success'].split(",")
-                const $radios = $('input:radio[name="user"]')
-
-                if (datas[0] === "Attivo"){
-                    const $notActive = $('#notActive' + role)
-                    if ($notActive.length){
-                        $notActive.attr('class', 'active-reg')
-                        $notActive.html("Attivo")
-                    }
-                }
-
-                if(!$radios.is(':checked')) {
-                    $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
-                }
-                $('#roles' + role).html(datas[1])
-            }
-        },
-        error: function (e) {
-            console.log(e)
+    if ($statusNotActive.length && (!$statusActive.length || $statusActive.val().localeCompare("Attivo") !== 0)){
+        var $role
+        if (role.localeCompare("User") === 0)
+            $role = "User"
+        else {
+            const name = "input[name='role" + role + "']:checked"
+            $role = $(name).val()
         }
-    });
+
+        $.ajax({
+            type: "POST",
+            url: "/kryptoauth/activeAddress",
+            data: {
+                address: address,
+                role: $role,
+                status: status,
+                privateKey: privateKey
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.msgError['sessionEmpty'] != null) {
+                    window.location.href = "/kryptoauth/404"
+                }
+
+                if (data.msgError['contract'] != null){
+                    openPopupPrivateKey()
+                }
+
+                if (data.msgError['privateKey'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Chiave privata non corretta. <br>Riprovare.");
+                }
+
+                if (data.msgError['notEqualsAddress'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Chiave privata non associata a questo account.<br>Riprovare.");
+                }
+
+                if (data.msgError['revokeAdmin'] != null){
+                    openPopupErrorRevokeRole()
+                }
+
+                if (data.msgError['notRevoke'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Solo l'account proprietario può rinunciare al suo ruolo di <i>Admin</i>.");
+                }
+
+                if (data.msgError['success'] != null){
+                    openPopupSuccess()
+
+                    const datas = data.msgError['success'].split(",")
+                    const $radios = $('input:radio[name="user"]')
+
+                    if (datas[0] === "Attivo"){
+                        const $notActive = $('#notActive' + role)
+                        if ($notActive.length){
+                            $notActive.attr('class', 'active-reg')
+                            $notActive.attr('id', 'active' + role)
+                            $notActive.html("Attivo")
+                        }
+                    }
+
+                    if(!$radios.is(':checked')) {
+                        $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                    }
+                    $('#roles' + role).html(datas[1])
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    } else {
+        openPopupError()
+        $('div.error-p').children('p').eq(1)
+            .html("Account già attivato.");
+    }
 }
 
 function ajaxDisactiveAddress(address, status, role, privateKey){
-    if (status === "Attivo"){
+    const $statusActive = $('#active' + role)
+    const $statusNotActive = $('#notActive' + role)
+
+    if (!$statusNotActive.length || ($statusActive.length && $statusActive.val().localeCompare("Attivo") === 0)){
         let $role
         if (role.localeCompare("User") === 0)
             $role = "User"
@@ -177,15 +190,15 @@ function ajaxDisactiveAddress(address, status, role, privateKey){
                 }
 
                 if (data.msgError['success'] != null){
-                    openPopupSuccess()
-
                     const datas = data.msgError['success'].split(",")
                     const $radios = $('input:radio[name="user"]')
+                    openPopupSuccess()
 
                     if (datas[0] === "Non Attivo"){
                         const $active = $('#active' + role)
                         if ($active.length){
                             $active.attr('class', 'not-active-reg')
+                            $active.attr('id', 'notActive' + role)
                             $active.html("Non Attivo")
                         }
                     }

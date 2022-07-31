@@ -1,0 +1,33 @@
+<svg width="1050" height="700" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1">
+ <defs>
+  <linearGradient y2="0.5" x2="1.01947" y1="0.5" x1="-0.01947" id="SVGID_1_">
+   <stop stop-color="#00FF99" offset="0"/>
+   <stop stop-color="#33CCFF" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.5" x2="1" y1="0.5" x1="0" id="SVGID_2_">
+   <stop stop-color="#00FF99" offset="0"/>
+   <stop stop-color="#33CCFF" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.50017" x2="0.99987" y1="0.50017" x1="0.00078" id="SVGID_3_">
+   <stop stop-color="#00FF99" offset="0"/>
+   <stop stop-color="#33CCFF" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.50044" x2="0.99946" y1="0.50044" x1="0.00126" id="SVGID_4_">
+   <stop stop-color="#00FF99" offset="0"/>
+   <stop stop-color="#33CCFF" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0" x2="1" y1="0" x1="0" id="svg_8">
+   <stop offset="0" stop-opacity="0.99609" stop-color="#00ff99"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#33ccff"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <circle stroke="url(#SVGID_1_)" id="svg_1" stroke-miterlimit="10" stroke-width="16" fill="none" r="204.39998" cy="241.95857" cx="498.34745" class="st0"/>
+  <circle id="svg_2" fill="url(#SVGID_2_)" r="108" cy="241.11111" cx="497.49999" class="st1"/>
+  <circle id="svg_3" fill="url(#SVGID_3_)" r="40.29999" cy="95.11111" cx="640.29999" class="st2"/>
+  <circle id="svg_4" fill="url(#SVGID_4_)" r="24.89999" cy="280.61111" cx="296.29999" class="st3"/>
+  <text stroke="#000000" transform="translate(0 80.8704) translate(0 -507.698) translate(-97.7777 0) translate(205.226 0) translate(0 -213.414) translate(-97.7777 0) translate(205.226 0) translate(18.0556 0) translate(-162.5 -13.8889) translate(0 8.33333) translate(-12.5 -4.16667) translate(13.8889 0) translate(55.5556 2.77778) translate(-12.5 0) translate(-100 -8.33333) translate(144.444 22.2222) translate(-1.38889 -2.77778) translate(8.33333 -1.38889) translate(-2.77778 0) translate(11.1111 0) translate(-9.72222 -12.5) translate(6.94444 12.5) translate(38.8889 -27.7778) translate(0 1.38889) translate(-5.55556 0) translate(-68.0556 -30.5556) translate(97.7777 503.539) scale(3.25605 2.91998) translate(-97.7777 -503.539) translate(97.7777 507.674) scale(1.55944 1.83826) translate(-97.7777 -507.674) translate(97.7777 507.685) scale(1.35689 1.2209) translate(-97.7777 -507.685) translate(97.7777 507.621) scale(0.643099 0.647467) translate(-97.7777 -507.621) translate(97.7777 507.643) scale(1.299 1.22029) translate(-97.7777 -507.643) translate(97.7777 507.661) scale(0.855326 0.911985) translate(-97.7777 -507.661) translate(97.7777 507.619) scale(1 0.73492) translate(-97.7777 -507.619) translate(97.7777 507.566) scale(1 1.30917) translate(-97.7777 -507.566)" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Fira Code'" font-size="24" id="svg_5" y="531.38889" x="97.77771" stroke-width="0" fill="url(#gradbox_fill)">KRYPTOAUTH</text>
+  <text font-weight="bold" transform="matrix(6.28319, 0, 0, 6.77959, -818.51, -2757.13)" stroke="null" xml:space="preserve" text-anchor="start" font-family="'Fira Code'" font-size="24" stroke-width="0" id="svg_7" y="500.38376" x="136.05729" fill="url(#svg_8)">KRYPTOAUTH</text>
+ </g>
+</svg>
