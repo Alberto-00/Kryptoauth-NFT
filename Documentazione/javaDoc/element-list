@@ -1,0 +1,6 @@
+it.unisa.KryptoAuth
+it.unisa.KryptoAuth.contracts
+it.unisa.KryptoAuth.controller
+it.unisa.KryptoAuth.model
+it.unisa.KryptoAuth.service
+it.unisa.KryptoAuth.service.validator

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unisa.KryptoAuth"},{"l":"it.unisa.KryptoAuth.contracts"},{"l":"it.unisa.KryptoAuth.controller"},{"l":"it.unisa.KryptoAuth.model"},{"l":"it.unisa.KryptoAuth.service"},{"l":"it.unisa.KryptoAuth.service.validator"}];updateSearchResults();

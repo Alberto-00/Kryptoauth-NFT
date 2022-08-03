@@ -16,6 +16,10 @@ import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+/**
+ * Gestisce tutte le chiamate GET per la visualizzazione delle pagine dell'applicazione
+ * e la funzione di logout riservata all'utente e all'admin.
+ */
 @Controller
 @RequestMapping(value = "/kryptoauth", method = GET)
 public class KryptoController {

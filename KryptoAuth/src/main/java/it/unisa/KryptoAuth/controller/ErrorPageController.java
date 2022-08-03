@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Si occupa di gestire e di lanciare le pagine personalizzate
+ * degli errori HTTP: 401, 404, 500.
+ */
 @Controller
 public class ErrorPageController implements ErrorController {
 

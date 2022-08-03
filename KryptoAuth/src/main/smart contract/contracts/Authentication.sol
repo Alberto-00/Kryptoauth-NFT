@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 
 /********************************************************************************************** 
-* Questo smart contract implementa una configurazione tra admin e utenti:                     *
+* Il seguente Smart Contract fornisce il servizio di autenticazione assicurando la sicurezza  *
+* mediante la definizione di ruoli specifici tra il semplice utente e l'amministratore;       *
+* il tutto è permesso grazie all'utilizzo di OpenZeppelin:                                    *
 *                                                                                             *
-* -  DEFAULT_ADMIN_ROLE è il ruolo di admin di USER (default);                                *
-* -  l'indirizzo passato al costruttore è l'admin iniziale;                                   *
+* -  DEFAULT_ADMIN_ROLE è il ruolo di admin;                                                  *
+* -  USER_ROLE è il ruolo di utente;                                                          *
 * -  gli admin possono aggiungere altri amministratori;                                       *
 * -  gli admin possono concedere e revocare le autorizzazioni utente a qualsiasi account;     *
 * -  l'unico modo per un admin di perdere il proprio ruolo di admin è di rinunciarvi.         *
@@ -34,29 +36,29 @@ contract Authentication is AccessControl {
         _setRoleAdmin(USER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
-    /*Ristretto ai membri che hanno l'admin role.*/
+    /* Ristretto ai membri che hanno l'admin role. */
     modifier onlyAdmin(){
         require(isAdmin(msg.sender), "Restricted to admins.");
         _;
     }
 
-    /*Ristretto ai membri che hanno l'user role.*/
+    /* Ristretto ai membri che hanno l'user role. */
     modifier onlyUser(){
         require(isUser(msg.sender), "Restricted to users.");
         _;
     }
 
-    /*Ritorna 'true' se l'account ha il ruolo di admin.*/
+    /* Ritorna 'true' se l'account ha il ruolo di admin. */
     function isAdmin(address account) public virtual view returns (bool) {
         return hasRole(DEFAULT_ADMIN_ROLE, account);
     }
     
-    /*Ritorna 'true' se l'account ha il ruolo di user.*/
+    /* Ritorna 'true' se l'account ha il ruolo di user. */
     function isUser(address account) public virtual view returns (bool) {
         return hasRole(USER_ROLE, account);
     }
 
-    /*Aggiunge un account con il ruolo di user (lo possono fare solo gli admin).*/
+    /* Aggiunge un account con il ruolo di user (lo possono fare solo gli admin). */
     function addUser(address account) public virtual onlyAdmin returns (bool){
         if(!hasRole(USER_ROLE, account)){
             grantRole(USER_ROLE, account);
@@ -64,7 +66,8 @@ contract Authentication is AccessControl {
         } return false;
     }
 
-    /*Aggiunge un account con il ruolo di admin (lo possono fare solo gli admin).*/
+    /* Aumenta i privilegi ad un account assegnandogli il ruolo di admin e revocando
+     * quello di user (lo possono fare solo gli admin). */
     function addAdmin(address account) public virtual onlyAdmin returns (bool){
         if(!hasRole(DEFAULT_ADMIN_ROLE, account)){
             removeUser(account);
@@ -73,7 +76,7 @@ contract Authentication is AccessControl {
         } return false;
     }
 
-    /*Rimuove un account dal ruolo di user (lo possono fare solo gli admin).*/
+    /* Rimuove un account dal ruolo di user (lo possono fare solo gli admin). */
     function removeUser(address account) public virtual onlyAdmin returns (bool){
         if(hasRole(USER_ROLE, account)){
             revokeRole(USER_ROLE, account);
@@ -81,7 +84,7 @@ contract Authentication is AccessControl {
         } return false;
     }
 
-    /*Un admin rinucia ad esserlo.*/
+    /* Un admin rinucia ad esserlo. */
     function renounceAdmin(address account) public virtual onlyAdmin returns (bool){
         if(hasRole(DEFAULT_ADMIN_ROLE, account)){
             renounceRole(DEFAULT_ADMIN_ROLE, account);
@@ -96,7 +99,7 @@ contract Authentication is AccessControl {
     /************************************************************************
     * Nella funzione di registrazione dell'utente, se l'utente non si è già  
     * registrato i suoi dati vengono registrati sulla blockchain.
-    */
+    **************************************************************************/
     function registerUser(
         address _address,
         string memory _name,
@@ -111,9 +114,8 @@ contract Authentication is AccessControl {
     }
 
     /***********************************************************************
-    * La funzione di login fornisce la possibilità di accedere alla DApp   *
-    * e la modifica del campo isUserLoggedIn su true: questo significa che *
-    * l'utente accede correttamente.                                       *
+    * La funzione di login fornisce la possibilità di accedere alla pagina *
+    * personale dell'admin                                                 *
     ************************************************************************/
     function loginUser(address _address, string memory _name, string memory _password) public view returns (bool) {
         //keccak256(abi.encodePacked(...)) è usato per comparare le stringhe e richiede meno gas
@@ -124,6 +126,10 @@ contract Authentication is AccessControl {
         return false;
     }
 
+    /***********************************************************************
+    * La funzione di login fornisce la possibilità di accedere alla pagina *
+    * personale dell'user                                                  *
+    ************************************************************************/
     function loginAdmin(address _address, string memory _name, string memory _password) public view returns (bool) {
         if (isAdmin(_address) && user[_address].password == keccak256(abi.encodePacked(_password)) &&
             keccak256(abi.encodePacked(user[_address].name)) == keccak256(abi.encodePacked(_name))) {

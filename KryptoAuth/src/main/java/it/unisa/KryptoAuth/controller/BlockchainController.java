@@ -22,6 +22,16 @@ import java.io.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+/**
+ * Gestisce tutte le chiamate POST per effettuare le operazioni di:
+ * <ul>
+ *     <li>registrazione;</li>
+ *     <li>login;</li>
+ *     <li>attivazione account;</li>
+ *     <li>disattivazione account;</li>
+ *     <li>cambio privilegi ad un account.</li>
+ * </ul>
+ */
 @Controller
 @RequestMapping(value = "/kryptoauth", method = POST)
 public class BlockchainController {

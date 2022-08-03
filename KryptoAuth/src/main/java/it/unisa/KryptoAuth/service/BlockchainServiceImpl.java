@@ -7,11 +7,15 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+/**
+ * Implementa i servizi di business dell'applicazione, in particolare, richiama i metodi dello
+ * Smart Contract {@link Authentication} per effettuare le transazioni sulla Blockchain.
+ */
 @Service
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x8D234c808e4D47C00C7611325D780bB98093561E";
+    private final static String CONTRACT_ADDRESS = "0x62259579BAf566d844DE7D00Cd67Ea68c9D82f80";
     private static String privateKey;
     private static Authentication authentication = null;
 
