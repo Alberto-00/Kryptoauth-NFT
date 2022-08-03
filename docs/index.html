@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KryptoAuth - Documentazione</title>
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" integrity="sha512-Oy18vBnbSJkXTndr2n6lDMO5NN31UljR8e/ICzVPrGpSud4Gkckb8yUpqhKuUNoE+o9gAb4O/rAxxw1ojyUVzg==" crossorigin="anonymous" />
+    <!-- Page document width -->
+    <style>
+    	.markdown-body {
+    		box-sizing: border-box;
+    		min-width: 200px;
+    		max-width: 980px;
+    		margin: 0 auto;
+    		padding: 45px;
+        color: #fff;
+    	}
+    	@media (max-width: 767px) {
+    		.markdown-body {
+    			padding: 15px;
+    		}
+    	}
+      canvas{
+        position: absolute;
+        z-index: -22;
+      }
+      body{
+        background: rgb(9,9,121);
+        background: linear-gradient(270deg, rgba(9,9,121,1) 42%, rgba(0,135,254,1) 100%); 
+        font-size: 1em;
+        font-weight: 400;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+    <article class="markdown-body">
+      <h1>KryptoAuth Documentation</h1>
+      <h2>Introduzione</h2>
+      <p>
+        Le Web Application odierne si basano sul principio di offrire servizi in cambio dei dati degli utenti.
+        Questo principio comporta una centralizzazione dei dati che può generare problemi di sicurezza ed un
+        non effettivo controllo dei propri dati da parte degli utenti. Di conseguenza, l’obiettivo è di sviluppare
+        un sistema decentralizzato per effettuare transazioni con smart contracts in modo distribuito e peer-to-
+        peer (P2P).
+      </p>
+      <p>
+        La Web DApp KryptoAuth è realizzata con l’obiettivo di offrire maggiore 
+        sicurezza durante l’operazione di autenticazione sfruttando la tecnologia Blockchain Ethereum. Il Sistema 
+        permette ad un qualsiasi utente di effettuare l’operazione di Registrazione e attendere che un
+        amministratore gli fornisca i permessi di “User” o di “Admin” per effettuare, in seguito, l’operazione di Login.
+      </p>
+      <h2>Scopo della pagina</h2>
+      <p>
+          Nella presente pagina vengono riportati i links alla documentazione del sistema, per ciò che riguarda la sua parte software.
+      </p>
+      <h2>Links alla documentazione</h2>
+      <p><a href="./javaDoc/index.html" style="color: #fff">Javadoc del sito</a</p>
+      <p><a href="https://github.com/Alberto-00/Blockchain-Authentication/tree/main/docs/deliverables" style="color: #fff">Documentazione KryptoAuth</a></p>
+    </article>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="./javaDoc/bundle.js"></script>
+  </body>
+</html>
