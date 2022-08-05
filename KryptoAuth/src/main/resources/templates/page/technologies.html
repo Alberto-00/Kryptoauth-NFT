@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
     <script th:src="@{/js/scrollUp.js}"></script>
+    <script th:src="@{/js/technologies.js}"></script>
 </head>
 <body>
     <div th:replace="partials/header :: #pageloader"></div>
@@ -25,10 +26,10 @@
                         <!-- Landing page Title -->
                         <div class="column is-5 is-offset-1 landing-caption">
                             <div class="divider"></div>
-                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Technologies</h1>
+                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Tecnologie</h1>
                             <h2 class="subtitle is-6 is-light is-thin">
-                                SSI brought to the next level. <br>
-                                For more information join our community.
+                                SSI: il futuro dell'identità digitale. <br>
+                                Entra a far parte della nostra community.
                             </h2>
     
                         </div>
@@ -46,105 +47,142 @@
         <section class="section">
             <div class="container">
                 <div class="columns">
-    
                     <div class="column is-9">
                         <!-- Content wrapper -->
                         <div class="content-wrapper">
     
-                            <!-- Post -->
-                            <div class="blog-post">
+                            <!-- Post Blockchain-->
+                            <div class="blog-post hide">
                                 <a href="/kryptoauth/blog">
                                     <!-- Featured image -->
                                     <div class="featured-image">
-                                        <img th:src="@{/img/media/post4.svg}" alt="">
+                                        <img th:src="@{/img/media/post-blockchain.svg}" alt="">
                                     </div>
                                     <!-- Content -->
                                     <div class="content">
-                                        <div class="post-title">Featured on Coinative  <span class="blog-date">02.06.2020</span></div>
+                                        <div class="post-title">Blockchain  <span class="blog-date">03.03.2022</span></div>
                                         <p>
-                                            Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı
-                                            bilinmeyen bir matbaacının bir hurufat numune kitabı...
+                                            Una blockchain è una struttura di database distribuita e crittograficamente sicura che
+                                            consente ai partecipanti alla rete di stabilire un record...
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Post Ethereum -->
+                            <div class="blog-post hide">
+                                <a href="/kryptoauth/blog">
+                                    <!-- Featured image -->
+                                    <div class="featured-image">
+                                        <img th:src="@{/img/media/post-eth.svg}" alt="">
+                                    </div>
+                                    <!-- Content -->
+                                    <div class="content">
+                                        <div class="post-title">Ethereum  <span class="blog-date">07.03.2022</span></div>
+                                        <p>
+                                            Piattaforma decentralizzata del Web 3.0 per la creazione e pubblicazione peer-to-peer di
+                                            contratti intelligenti creati in un linguaggio...
                                         </p>
                                     </div>
                                 </a>
                             </div>
     
-                            <!-- Post -->
-                            <div class="blog-post">
+                            <!-- Post Solidity -->
+                            <div class="blog-post hide">
                                 <a href="/kryptoauth/blog">
                                     <!-- Featured image -->
                                     <div class="featured-image">
-                                        <img th:src="@{/img/media/post1.svg}" alt="">
+                                        <img th:src="@{/img/media/post-sol.svg}" alt="">
                                     </div>
                                     <!-- Content -->
                                     <div class="content">
-                                        <div class="post-title">Blockchain for dummies  <span class="blog-date">27.05.2020</span></div>
+                                        <div class="post-title">Solidity <span class="blog-date">05.04.2022</span></div>
                                         <p>
-                                            Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı
-                                            bilinmeyen bir matbaacının bir hurufat numune kitabı...
+                                            Solidity è un linguaggio di alto livello orientato agli oggetti per l'implementazione di
+                                            Smart Contracts. Gli Smart Contracts sono programmi...
                                         </p>
                                     </div>
                                 </a>
                             </div>
     
-                            <!-- Post -->
-                            <div class="blog-post">
+                            <!-- Post Ganache -->
+                            <div class="blog-post hide">
                                 <a href="/kryptoauth/blog">
                                     <!-- Featured image -->
                                     <div class="featured-image">
-                                        <img th:src="@{/img/media/post5.svg}" alt="">
+                                        <img th:src="@{/img/media/post-ganache.svg}" alt="">
                                     </div>
                                     <!-- Content -->
                                     <div class="content">
-                                        <div class="post-title">Featured on Bit It  <span class="blog-date">23.04.2020</span></div>
+                                        <div class="post-title">Ganache <span class="blog-date">22.04.2022</span></div>
                                         <p>
-                                            Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı
-                                            bilinmeyen bir matbaacının bir hurufat numune kitabı...
+                                            Blockchain di test basata su Ethereum per eseguire comandi e ispezionare lo stato
+                                            controllando il funzionamento della catena...
                                         </p>
                                     </div>
                                 </a>
                             </div>
     
-                            <!-- Post -->
-                            <div class="blog-post">
+                            <!-- Post Metamask -->
+                            <div class="blog-post hide">
                                 <a href="/kryptoauth/blog">
                                     <!-- Featured image -->
                                     <div class="featured-image">
-                                        <img th:src="@{/img/media/post2.svg}" alt="">
-                                    </div>
-                                    <!-- Content -->
-                                    <div class="content">
-                                        <div class="post-title">The Krypton chain algorythm  <span class="blog-date">15.04.2020</span></div>
-                                        <p>
-                                            Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı
-                                            bilinmeyen bir matbaacının bir hurufat numune kitabı...
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-    
-                            <!-- Post -->
-                            <div class="blog-post">
-                                <a href="/kryptoauth/blog">
-                                    <!-- Featured image -->
-                                    <div class="featured-image">
-                                        <img th:src="@{/img/media/post3.svg}" alt="">
+                                        <img th:src="@{/img/media/post-metamask.svg}" alt="">
                                     </div>
                                     <!-- Content -->
                                     <div class="content">
                                         <!--div class="rounded"></div-->
-                                        <div class="post-title">What is Crypto mining ?  <span class="blog-date">02.04.2020</span></div>
+                                        <div class="post-title">Metamask <span class="blog-date">22.04.2022</span></div>
                                         <p>
-                                            Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı
-                                            bilinmeyen bir matbaacının bir hurufat numune kitabı...
+                                            Un portafoglio crittografico e un gateway per le app blockchain scaricabile facilmente
+                                            dai marketplace dei vari browser...
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Post Web3 -->
+                            <div class="blog-post hide">
+                                <a href="/kryptoauth/blog">
+                                    <!-- Featured image -->
+                                    <div class="featured-image">
+                                        <img th:src="@{/img/media/post-web3.svg}" alt="">
+                                    </div>
+                                    <!-- Content -->
+                                    <div class="content">
+                                        <!--div class="rounded"></div-->
+                                        <div class="post-title">Web3 (Web3j - Web3js) <span class="blog-date">17.06.2022</span></div>
+                                        <p>
+                                            Web3 si usa per indicare le innovazioni digitali di ultima generazione e le loro applicazioni su internet.
+                                            Spesso ci si riferisce al Web3 come a una fase di internet...
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Post Spring Boot -->
+                            <div class="blog-post hide">
+                                <a href="/kryptoauth/blog">
+                                    <!-- Featured image -->
+                                    <div class="featured-image">
+                                        <img th:src="@{/img/media/post-spring.svg}" alt="">
+                                    </div>
+                                    <!-- Content -->
+                                    <div class="content">
+                                        <!--div class="rounded"></div-->
+                                        <div class="post-title">Spring Boot <span class="blog-date">06.07.2022</span></div>
+                                        <p>
+                                            Spring Boot semplifica la creazione di applicazioni basate sul linguaggio Java
+                                            fornendo diversi livelli di supporto per lo sviluppatore...
                                         </p>
                                     </div>
                                 </a>
                             </div>
                             <!-- CTA -->
                             <div class="cta-wrapper has-text-centered">
-                                <a href="#" class="button k-button k-primary raised has-gradient is-bold">
-                                    <span class="text">Load More</span>
+                                <a href="#" id="loadMore" class="button k-button k-primary raised has-gradient is-bold">
+                                    <span class="text">Carica Altro</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </div>
@@ -157,7 +195,7 @@
                             <div class="control">
                                 <!-- Field -->
                                 <div class="control-material is-primary">
-                                    <input class="material-input " type="email" required>
+                                    <input class="material-input " type="text" required>
                                     <span class="material-highlight"></span>
                                     <span class="bar"></span>
                                     <label>Search articles</label>
@@ -172,35 +210,32 @@
                                 <li>
                                     <a class="is-active" href="#">
                                         <span>All Posts</span>
-                                        <span class="tag">8</span>
+                                        <span class="tag">7</span>
                                     </a>
                                 </li>
                                 <li><a href="#">Blockchain</a></li>
                                 <li><a href="#">Ethereum</a></li>
-                                <li><a href="#">Metamask</a></li>
+                                <li><a href="#">Solidity</a></li>
                                 <li><a href="#">Ganache</a></li>
-                                <li><a href="#">Smart Contracts</a></li>
-                                <li><a href="#">Web3j</a></li>
-                                <li><a href="#">Spring Boot security</a></li>
-                                <li><a href="#">OAuth 2.0</a></li>
+                                <li><a href="#">Metamask</a></li>
+                                <li><a href="#">Web3</a></li>
+                                <li><a href="#">Spring Boot</a></li>
                             </ul>
                         </div>
 
                         <div class="tags-widget">
-                            <div class="widget-title">
-                                Tags
-                            </div>
-
+                            <div class="widget-title">Tags</div>
                             <div class="tags">
                                 <span class="tag">Blockchain</span>
                                 <span class="tag">Ethereum</span>
+                                <span class="tag">Solidity</span>
+                                <span class="tag">Smart Contracts</span>
                                 <span class="tag">Metamask</span>
                                 <span class="tag">Ganache</span>
-                                <span class="tag">Smart Contracts</span>
+                                <span class="tag">Web 3.0</span>
                                 <span class="tag">Web3j</span>
-                                <span class="tag">Spring Boot security</span>
-                                <span class="tag">OAuth 2.0</span>
-                                <span class="tag">Okta</span>
+                                <span class="tag">Web3js</span>
+                                <span class="tag">Spring Boot</span>
                             </div>
                         </div>
                     </div>

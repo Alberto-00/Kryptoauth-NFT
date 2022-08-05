@@ -9,3 +9,7 @@
 html{
     background: #0F0330;
 }
+
+.hide{
+    display: none;
+}

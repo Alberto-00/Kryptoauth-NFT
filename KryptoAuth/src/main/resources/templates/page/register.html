@@ -28,14 +28,16 @@
     
                     <!-- Landing page Title -->
                     <div class="column is-5 landing-caption">
-                        <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Register to KRYPTOAUTH</h1>
+                        <h1 style="margin-bottom: 3.5rem;" class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">
+                            Registrati a KRYPTOAUTH
+                        </h1>
                         <form name="register-form" class="login-form" method="post" th:action="@{/kryptoauth/register}">
                             <!-- Field -->
                             <div class="control-material is-primary">
                                 <input class="material-input" type="text" id="email" name="email" th:field="${user.email}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
-                                <label>Email or Username</label>
+                                <label>Email o Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
@@ -48,7 +50,7 @@
                                 <input class="material-input" type="password" id="repeatPassword" name="repeatPassword" th:field="${user.repeatPassword}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
-                                <label id="repeat-pass">Repeat Password</label>
+                                <label id="repeat-pass">Ripeti Password</label>
                             </div>
 
                             <div class="radio-left">
@@ -67,18 +69,18 @@
                             <!-- Submit -->
                             <div>
                                 <button id="registerButton" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
-                                    <span class="text">Register</span>
+                                    <span class="text">Registrati</span>
                                     <span class="front-gradient"></span>
                                 </button>
                             </div>
                             <div class="format-password">
-                                <span>Password format:</span>
+                                <span>Formato Password:</span>
                                 <ul>
-                                    <li>- min lenght 8 characters;</li>
-                                    <li>- at last one upper character;</li>
-                                    <li>- at last one lower character;</li>
-                                    <li>- at last one digit;</li>
-                                    <li>- at last one special character.</li>
+                                    <li>- min 8 caratteri;</li>
+                                    <li>- almeno un carattere Maiuscolo;</li>
+                                    <li>- almeno un carattere minuscolo;</li>
+                                    <li>- almeno un numero;</li>
+                                    <li>- almeno un carattere speciale.</li>
                                 </ul>
                             </div>
                         </form>
@@ -119,7 +121,7 @@
                             <!-- Button -->
                             <div class="button-block">
                                 <a style="padding: 25px 0 25px 0;" href="/kryptoauth/login" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
-                                    <span class="text">Login <br>for KRYPTOAUTH</span>
+                                    <span class="text">Accedi <br>a KRYPTOAUTH</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </div>

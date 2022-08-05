@@ -14,7 +14,7 @@ $(document).ready(function (){
     });
 
     $('#info-home').on('click', function() {
-        $("html, body").animate({ scrollTop: 940 }, 800);
+        $("html, body").animate({ scrollTop: 840 }, 800);
     });
 
     $('#info-goals').on('click', function() {

@@ -1,0 +1,31 @@
+<svg width="900" height="563" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1">
+ <defs>
+  <linearGradient y2="0.5" x2="1" y1="0.5" x1="0" id="SVGID_1_">
+   <stop stop-color="#7F00FF" offset="0"/>
+   <stop stop-color="#7C00FF" offset="0.2752"/>
+   <stop stop-color="#7200FF" offset="0.4903"/>
+   <stop stop-color="#6100FF" offset="0.6852"/>
+   <stop stop-color="#4A00FF" offset="0.867"/>
+   <stop stop-color="#3400FF" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect id="svg_1" fill="url(#SVGID_1_)" height="563" width="900" class="st0"/>
+  <g>
+   <g id="svg_16">
+    <metadata id="svg_18"/>
+    <g id="svg_17">
+     <g>
+      <polygon points="445.64373779296875,53 442.56951904296875,63.442352294921875 442.56951904296875,366.42889404296875 445.64373779296875,369.4959716796875 586.2838745117188,286.36236572265625 " fill-rule="nonzero" fill="#343434"/>
+      <polygon points="445.64373779296875,53 305,286.36236572265625 445.64373779296875,369.4959716796875 445.64373779296875,222.4346923828125 " fill-rule="nonzero" fill="#8C8C8C"/>
+      <polygon points="445.64373779296875,396.123779296875 443.9111328125,398.23663330078125 443.9111328125,506.16510009765625 445.64373779296875,511.2230224609375 586.3699951171875,313.03326416015625 " fill-rule="nonzero" fill="#3C3C3B"/>
+      <polygon points="445.64373779296875,511.2230224609375 445.64373779296875,396.123779296875 305,313.03326416015625 " fill-rule="nonzero" fill="#8C8C8C"/>
+      <polygon points="445.64373779296875,369.4959716796875 586.2838745117188,286.36236572265625 445.64373779296875,222.4346923828125 " fill-rule="nonzero" fill="#141414"/>
+      <polygon points="305,286.36236572265625 445.64373779296875,369.4959716796875 445.64373779296875,222.4346923828125 " fill-rule="nonzero" fill="#393939"/>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

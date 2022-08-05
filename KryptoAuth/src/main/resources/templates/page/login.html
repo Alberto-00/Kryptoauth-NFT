@@ -28,14 +28,16 @@
     
                     <!-- Landing page Title -->
                     <div class="column is-5 landing-caption">
-                        <h1 class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">Login to KRYPTOAUTH</h1>
+                        <h1 style="margin-bottom: 3.5rem;" class="title is-3 is-light is-semibold is-spaced main-title has-text-centered">
+                            Accedi a KRYPTOAUTH
+                        </h1>
                         <form name="login-form" class="login-form" method="post" th:action="@{/kryptoauth/login}">
                             <!-- Field -->
                             <div class="control-material is-primary">
                                 <input class="material-input" type="text" id="email" name="email" th:field="${user.email}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
-                                <label>Email or Username</label>
+                                <label>Email o Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
@@ -95,7 +97,7 @@
                             <!-- Button -->
                             <div class="button-block">
                                 <a style="padding: 25px 0 25px 0;" href="/kryptoauth/register" class="button k-button k-secondary raised has-gradient is-bold is-fullwidth rounded">
-                                    <span class="text">Register <br>for KRYPTOAUTH</span>
+                                    <span class="text">Registrati <br>a KRYPTOAUTH</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </div>

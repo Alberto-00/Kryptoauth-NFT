@@ -1,0 +1,24 @@
+<svg width="900" height="563" xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve">
+ <defs>
+  <linearGradient id="SVGID_1_" x1="0" y1="0.5" x2="1" y2="0.5">
+   <stop offset="0" stop-color="#7F00FF"/>
+   <stop offset="0.2752" stop-color="#7C00FF"/>
+   <stop offset="0.4903" stop-color="#7200FF"/>
+   <stop offset="0.6852" stop-color="#6100FF"/>
+   <stop offset="0.867" stop-color="#4A00FF"/>
+   <stop offset="1" stop-color="#3400FF"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect class="st0" width="900" height="563" fill="url(#SVGID_1_)" id="svg_1"/>
+  <g fill="url(#SVGID_1_)" id="svg_10">
+   <path stroke="#ffffff" fill="#ffffff" id="svg_11" d="m515.44341,67.43991l-69.82808,124.10913l-139.56534,0l69.77466,-124.10913l139.61876,0z" opacity="0.45"/>
+   <path stroke="#ffffff" fill="#ffffff" id="svg_12" d="m445.61533,191.54904l139.60274,0l-69.76931,-124.10913l-139.62411,0l69.79068,124.10913z" opacity="0.6"/>
+   <path stroke="#ffffff" fill="#ffffff" id="svg_13" d="m375.82465,315.60474l69.79068,-124.0557l-69.79068,-124.10913l-69.77466,124.10913l69.77466,124.0557z" opacity="0.8"/>
+   <path stroke="#ffffff" fill="#ffffff" id="svg_14" d="m376.5085,501.77912l69.82808,-124.10913l139.61342,0l-69.82808,124.10913l-139.61342,0z" opacity="0.45"/>
+   <path stroke="#ffffff" fill="#ffffff" id="svg_15" d="m446.33658,377.66999l-139.60274,0l69.77466,124.10913l139.61342,0l-69.78534,-124.10913z" opacity="0.6"/>
+   <path stroke="#ffffff" fill="#ffffff" id="svg_19" d="m516.12193,253.6036l-69.78534,124.06639l69.78534,124.10913l69.82808,-124.10913l-69.82808,-124.06639z" opacity="0.8"/>
+  </g>
+ </g>
+</svg>

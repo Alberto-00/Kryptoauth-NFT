@@ -38,49 +38,49 @@ $(document).ready(function (){
 
     $.validator.addMethod("username_email", function (value){
         return /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,}[a-zA-Z0-9]$/.test(value) | /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
-    }, "Email or Username field wrong.");
+    }, "Email o Username errati.");
 
     $.validator.addMethod("username_email_lenght", function (value){
         return /^.{3,}$/.test(value);
-    }, "Email or Username must have at last 3 characters.");
+    }, "Email o Username deve avere almeno 3 caratteri.");
 
     $.validator.addMethod("strong_password", function (value) {
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\d=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$/.test(value)
-    }, "Password wrong.");
+    }, "Password errata.");
 
     $.validator.addMethod("checklenght", function (value) {
         return /^.{8,}$/.test(value)
-    }, "Password must have at last 8 characters.");
+    }, "Password deve avere almeno 8 caratteri.");
 
     $.validator.addMethod("checklower", function (value){
         $('#repeat-pass').empty();
         return /^(?=.*[a-z])/.test(value);
-    }, "Password must have at last one lower character.");
+    }, "Password deve avere almeno un carattere minuscolo.");
 
     $.validator.addMethod("checkupper", function (value){
         $('#repeat-pass').empty();
         return /^(?=.*[A-Z])/.test(value);
-    }, "Password must have at last one upper character.");
+    }, "Password deve avere almeno un carattere maiuscolo.");
 
     $.validator.addMethod("checkdigit", function (value){
         $('#repeat-pass').empty();
         return /^(?=.*[0-9])/.test(value);
-    },"Password must have at last one digit.");
+    },"Password deve avere almeno un numero.");
 
     $.validator.addMethod("checkspecial", function (value){
         $('#repeat-pass').empty();
         return /^(?=.*[={}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])/.test(value);
-    }, "Password must have at last one special character.");
+    }, "Password deve avere almeno un carattere speciale.");
 
     $.validator.addMethod("isEqual", function (value){
         $('#repeat-pass').empty();
         return $('input[name="password"]').val().localeCompare($('input[name="repeatPassword"]').val()) === 0
-    }, "Repeat Password and Password are not equals.");
+    }, "Ripeti Password e Password non coincidono.");
 
     $.validator.addMethod("lenght", function (value){
         const field = $('input[name="privateKey"]').val();
         return field.length > 63 && field.length < 65;
-    }, "Private key is incorrect.");
+    }, "Private key errata.");
 
     $.validator.addMethod("radioCheck", function (value){
         const user = $('input[name="user"]');
@@ -103,10 +103,10 @@ $(document).ready(function (){
         },
         messages: {
             password: {
-                required: "Password field is empty.",
+                required: "Password vuota.",
             },
             email: {
-                required: "Email or Username field is empty.",
+                required: "Email o Username vuoti.",
             }
         },
         submitHandler: function(form) {
@@ -163,16 +163,16 @@ $(document).ready(function (){
         },
         messages: {
             password: {
-                required: "Password field is empty.",
+                required: "Password vuota.",
             },
             email: {
-                required: "Email or Username field is empty.",
+                required: "Email o Username vuoti.",
             },
             repeatPassword: {
-                required: "Repeat Password field is empty.",
+                required: "Ripeti Password vuota.",
             },
             privateKey: {
-                required: "Private key field is empty.",
+                required: "Private key vuota.",
             }
         },
         submitHandler: function(form) {

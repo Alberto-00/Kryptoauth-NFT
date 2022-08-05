@@ -6,26 +6,26 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@PasswordsEquals(message = "Passwords are not equals.")
+@PasswordsEquals(message = "Passwords non concidono.")
 public class User {
-    @NotNull(message = "Email or Username field is empty.")
-    @NotBlank(message = "Email or Username field is empty.")
+    @NotNull(message = "Email o Username vuoti.")
+    @NotBlank(message = "Email o Username vuoti.")
     @Pattern(regexp = "^.{3,}$", message = "Email or Username must have at last 3 characters.")
     @Pattern(regexp = "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,}[a-zA-Z0-9]$|^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
             flags = Pattern.Flag.UNICODE_CASE,
             message = "Email or Username field wrong.")
     private String email;
 
-    @NotNull(message = "Password field is empty.")
-    @NotBlank(message = "Password field is empty.")
+    @NotNull(message = "Password vuota.")
+    @NotBlank(message = "Password vuota.")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\\d=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$",
-            flags = Pattern.Flag.UNICODE_CASE, message = "Password wrong.")
+            flags = Pattern.Flag.UNICODE_CASE, message = "Password errata.")
     private String password;
 
-    @NotNull(message = "Repeat Password field is empty.")
-    @NotBlank(message = "Repeat Password field is empty.")
+    @NotNull(message = "Ripeti Password vuota.")
+    @NotBlank(message = "Ripeti Password vuota.")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-])[A-Za-z\\d=^ ì{}()£/+çò°àù§èé#@$!%€*?&:,;'._<>|-]{8,}$",
-            flags = Pattern.Flag.UNICODE_CASE, message = "Repeat Password wrong.")
+            flags = Pattern.Flag.UNICODE_CASE, message = "Ripeti Password errata.")
     private String repeatPassword;
 
     @NotNull
