@@ -45,8 +45,8 @@ public class KryptoController {
     }
 
     @GetMapping("/blog")
-    public String blog(){
-        return "/page/blog-single";
+    public String blog(@RequestParam("name") String value){
+        return "/page/blog/" + value;
     }
 
     @GetMapping("/logout")

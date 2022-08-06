@@ -13,3 +13,7 @@ html{
 .hide{
     display: none;
 }
+
+.ganache:hover{
+    color: #7f00ff;
+}

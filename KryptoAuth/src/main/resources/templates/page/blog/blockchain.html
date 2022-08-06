@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="partials/head :: head"></th:block>
+    <title>Kryptoauth - Blockchain</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
+    <script th:src="@{/js/scrollUp-alternative.js}"></script>
+</head>
+<body>
+    <div th:replace="partials/header :: #pageloader"></div>
+    <div th:replace="partials/header :: #infraloader"></div>
+    <div th:replace="partials/header :: #scrollUp"></div>
+
+    <div class="media-wrapper">
+        <!-- Landing page Hero -->
+        <section class="hero">
+            <div th:replace="partials/header :: header"></div>
+    
+            <!-- Hero Image and Title -->
+            <div class="hero-body">
+                <div class="container">
+                    <div class="columns is-vcentered">
+    
+                        <!-- Landing page Title -->
+                        <div class="column is-5 is-offset-1 post-caption">
+                            <div class="divider"></div>
+                            <h1 class="title is-2 is-light is-semibold is-spaced main-title">La Blockchain</h1>
+                            <p>
+                                Una blockchain è una struttura dati distribuita e crittograficamente sicura che
+                                consente ai partecipanti alla rete di stabilire un record affidabile e immutabile di
+                                dati transazionali senza la necessità di intermediari.
+                            </p>
+                        </div>
+                        <!-- Hero image -->
+                        <div class="column is-5">
+                            <figure class="image">
+                                <img class="blog-featured" th:src="@{/img/media/post-blockchain.svg}" alt="">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <section class="section">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-9">
+                        <!-- Content wrapper -->
+                        <div class="post-body">
+                            <p class="intro">
+                                La tecnologia Blockchain offre un'ampia varietà di vantaggi, sia per le imprese globali
+                                che per le comunità locali. I vantaggi più comunemente citati di una Blockchain sono il
+                                coordinamento affidabile dei dati, la resistenza agli attacchi, l'infrastruttura IT condivisa,
+                                la tokenizzazione e l'incentivazione integrata.
+                            </p>
+
+                            <h2>Qual è la rivoluzione Blockchain?</h2>
+                            <p>
+                                Blockchain è considerata una tecnologia dirompente a causa della sua capacità di salvaguardare
+                                le informazioni personali, ridurre gli intermediari, sbloccare risorse digitali e potenzialmente
+                                aprire l'economia globale a milioni di partecipanti in più. A volte chiamata Trust Machine,
+                                la tecnologia Blockchain sta portando trasparenza e sicurezza alle reti digitali in innumerevoli settori.
+                                In molti modi, la rivoluzione Blockchain può essere considerata una rivoluzione nella fiducia.
+                            </p>
+    
+                            <blockquote>
+                                La tecnologia Blockchain viene utilizzata per memorizzare le informazioni in modo estremamente sicuro.
+                                Grazie alla Blockchain, i dati possono essere sia pubblici che a prova di falsificazione, il che
+                                rappresenta un formidabile strumento per consolidare la fiducia nelle relazioni tra le persone.
+                            </blockquote>
+    
+                            <p>
+                                La Blockchain è stata inventata nel 2008 da una persona anonima che si nascondeva dietro lo pseudonimo
+                                di Satoshi Nakamoto e che ha inventato la criptovaluta peer-to-peer nota come Bitcoin.
+                                La tecnologia Blockchain era originariamente utilizzata come un registro di transazioni pubbliche
+                                che permetteva alle persone che usavano pseudonimi di commerciare con piena fiducia.
+                                Così è nata la Blockchain Bitcoin, che esiste ancora oggi. Il termine Blockchain è usato per descrivere
+                                sia i dati, sia il protocollo che memorizza questi dati. Il termine deriva dal fatto che i dati sono
+                                organizzati in blocchi collegati l’uno all’altro in modo sequenziale mediante la crittografia.
+                            </p>
+    
+                            <h2>Cos'è un blocco in una Blockchain? </h2>
+
+                            <p>
+                                Il "blocco" in una Blockchain si riferisce a un blocco di transazioni che è stato trasmesso alla rete.
+                                La "catena" si riferisce a una stringa di questi blocchi. Quando un nuovo blocco di transazioni viene
+                                convalidato dalla rete, viene collegato alla fine di una catena esistente. Questa catena di blocchi è
+                                un registro in continua crescita di transazioni che la rete ha convalidato. Chiamiamo Blockchain questa
+                                storia unica e concordata delle transazioni. Può esistere un solo blocco a una data altezza della catena.
+                                Esistono diversi modi per aggiungere nuovi blocchi a una catena esistente. Questi sono spesso definiti
+                                "prove", ovvero Proof of Work (PoW), Proof of Stake (PoS) e Proof of Authority (PoA).
+                                Tutti coinvolgono algoritmi crittografici con vari gradi di complessità.
+                            </p>
+    
+                            <p>
+                                A seconda di come è stato sviluppato un particolare protocollo blockchain, il tempo necessario per aggiungere
+                                un blocco alla catena canonica può variare notevolmente. Una Blockchain è un costrutto lineare in quanto ogni
+                                nuovo blocco si verifica in un momento successivo rispetto a quello che lo ha preceduto e non può essere annullato.
+                                La linearità di una Blockchain funge da forma ideale di convalida. Secondo ethstats.io a luglio 2019, per la
+                                Blockchain di Ethereum, vengono aggiunti nuovi blocchi ogni 14 secondi circa.
+                            </p>
+    
+                            <h2>Conclusioni</h2>
+    
+                            <p>
+                                Le Blockchain sono nate come open source. Le Blockchain private sono state sviluppate quando le società e altri
+                                enti amministrativi hanno iniziato a realizzare i vantaggi della tecnologia del registro distribuito,
+                                in particolare all'interno dei sistemi di un'impresa privata e durante la gestione di dati di transazione sensibili.
+                                Con soluzioni di privacy e autorizzazioni sempre più robuste e modulari, gli esperti del settore prevedono che
+                                le reti Blockchain private e pubbliche convergeranno.
+                            </p>
+    
+                            <hr>
+                        </div>
+                        <!-- /Content wrapper -->
+                    </div>
+                    <div class="column is-3">
+                        <div class="search-widget">
+                            <div class="control">
+                                <!-- Field -->
+                                <div class="control-material is-primary">
+                                    <input class="material-input " type="text" required>
+                                    <span class="material-highlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Search articles</label>
+                                    <i data-feather="search"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="categories-widget">
+                            <div class="widget-title">Categories</div>
+                            <ul class="categories-list">
+                                <li><a href="/kryptoauth/technologies">All Posts</a></li>
+                                <li>
+                                    <a href="/kryptoauth/blog?name=blockchain" class="is-active">
+                                    <span>Blockchain</span>
+                                    <span class="tag">1</span>
+                                    </a>
+                                </li>
+                                <li><a href="/kryptoauth/blog?name=ethereum">Ethereum</a></li>
+                                <li><a href="/kryptoauth/blog?name=solidity">Solidity</a></li>
+                                <li><a href="/kryptoauth/blog?name=ganache">Ganache</a></li>
+                                <li><a href="/kryptoauth/blog?name=metamask">MetaMask</a></li>
+                                <li><a href="/kryptoauth/blog?name=web3">Web3</a></li>
+                                <li><a href="/kryptoauth/blog?name=spring_boot">Spring Boot</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="tags-widget">
+                            <div class="widget-title">Tags</div>
+                            <div class="tags">
+                                <span class="tag">Blockchain</span>
+                                <span class="tag">Ethereum</span>
+                                <span class="tag">Solidity</span>
+                                <span class="tag">Smart Contracts</span>
+                                <span class="tag">Metamask</span>
+                                <span class="tag">Ganache</span>
+                                <span class="tag">Web 3.0</span>
+                                <span class="tag">Web3j</span>
+                                <span class="tag">Web3js</span>
+                                <span class="tag">Spring Boot</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="follow-us is-small">
+                    <div data-aos="fade-up" data-aos-delay="100" data-aos-offset="100" data-aos-easing="ease-out-quart">
+                        <a target="_blank" href="https://github.com/Alberto-00">
+                            <svg aria-labelledby="simpleicons-gitlab-icon" role="img" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189c-.135-.423-.73-.423-.867 0L16.418 9.45H7.582L4.919 1.263C4.783.84 4.185.84 4.05 1.26L1.386 9.449.044 13.587c-.121.375.014.789.331 1.023L12 23.054l11.625-8.443c.318-.235.453-.647.33-1.024" />
+                            </svg>
+                        </a>
+                    </div>
+    
+                    <div data-aos="fade-up" data-aos-delay="400" data-aos-offset="100" data-aos-easing="ease-out-quart">
+                        <a target="_blank" href="https://www.instagram.com/alberto_montefusco_/">
+                            <svg aria-labelledby="simpleicons-slack-icon" role="img" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.879 10.995l1.035 3.085 3.205-1.074-1.035-3.074-3.205 1.08v-.017z" />
+                                <path d="M18.824 14.055l-1.555.521.54 1.61c.218.65-.135 1.355-.786 1.574-.15.045-.285.067-.435.063-.511-.015-.976-.338-1.155-.849l-.54-1.607-3.21 1.073.539 1.608c.211.652-.135 1.358-.794 1.575-.15.048-.285.067-.435.064-.51-.015-.976-.34-1.156-.85l-.539-1.619-1.561.524c-.15.045-.285.061-.435.061-.511-.016-.976-.345-1.155-.855-.225-.66.135-1.364.78-1.575l1.56-.525L7.5 11.76l-1.551.525c-.141.048-.285.066-.428.064-.495-.016-.975-.338-1.141-.848-.209-.65.135-1.354.796-1.574l1.56-.52-.54-1.605c-.21-.654.136-1.359.796-1.575.659-.22 1.363.136 1.574.783l.539 1.608L12.3 7.544l-.54-1.605c-.209-.645.135-1.35.789-1.574.652-.211 1.359.135 1.575.791l.54 1.621 1.555-.51c.651-.219 1.356.135 1.575.779.218.654-.135 1.359-.784 1.575l-1.557.524 1.035 3.086 1.551-.516c.652-.211 1.358.135 1.575.795.22.66-.135 1.365-.779 1.574l-.011-.029zm4.171-5.356C20.52.456 16.946-1.471 8.699 1.005.456 3.479-1.471 7.051 1.005 15.301c2.475 8.245 6.046 10.17 14.296 7.694 8.245-2.475 10.17-6.046 7.694-14.296z" />
+                            </svg>
+                        </a>
+                    </div>
+    
+                    <div data-aos="fade-up" data-aos-delay="500" data-aos-offset="100" data-aos-easing="ease-out-quart">
+                        <a target="_blank" href="https://www.linkedin.com/in/alberto-montefusco">
+                            <svg aria-labelledby="simpleicons-linkedin-icon" role="img" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div th:replace="partials/footer :: footer"></div>
+</body>
+</html>
