@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <th:block th:include="partials/head :: head"></th:block>
-    <title>Kryptoauth - Web 3.0</title>
+    <title>Kryptoauth - Spring Boot</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
     <script th:src="@{/js/scrollUp-alternative.js}"></script>
 </head>
@@ -24,17 +24,18 @@
                         <!-- Landing page Title -->
                         <div class="column is-5 is-offset-1 post-caption">
                             <div class="divider"></div>
-                            <h1 class="title is-2 is-light is-semibold is-spaced main-title">Web3</h1>
+                            <h1 class="title is-2 is-light is-semibold is-spaced main-title">Spring Boot</h1>
                             <p>
-                                Il Web3, chiamato anche web semantico, è un recente sviluppo del concetto di Internet.
-                                Una nuova idea di web totalmente decentralizzato, basato su
-                                protocolli inediti e, soprattutto, sulla tecnologia Blockchain.
+                                Sprint Boot è un framework basato su Java utilizzato per lo sviluppo rapido di
+                                applicazioni (per creare microservizi autonomi). Ha un supporto aggiuntivo per
+                                la configurazione automatica e il server delle applicazioni incorporato come
+                                Tomcat, Jetty, ecc...
                             </p>
                         </div>
                         <!-- Hero image -->
                         <div class="column is-5">
                             <figure class="image">
-                                <img class="blog-featured" th:src="@{/img/media/post-web3.svg}" alt="">
+                                <img class="blog-featured" th:src="@{/img/media/post-spring.svg}" alt="">
                             </figure>
                         </div>
                     </div>
@@ -49,66 +50,31 @@
                         <!-- Content wrapper -->
                         <div class="post-body">
                             <p class="intro">
-                                Il Web3 non va confuso con il Web 3.0. Quest’ultimo rappresenta l’evoluzione dei precedenti Web 1.0 e Web 2.0
-                                e mira alla creazione di contenuti semanticamente collegati tra loro. Il Web3, invece, vuole
-                                reinventare Internet, cambiando profondamente i presupposti che, ad oggi, danno vita a pagine, siti e piattaforme.
-                                Il Web3 può essere considerato una rivoluzione della rete, che potrebbe portare diversi vantaggi per l’utente.
+                                I vantaggi di Spring Boot sono la facilità nel capire e sviluppare applicazioni spring.
+                                Spring Boot non è altro che un framework esistente con l'aggiunta di un server HTTP incorporato
+                                e di una configurazione di annotazione che semplifica la comprensione e velocizza il processo di sviluppo.
+                                Aumenta la produttività e riduce i tempi di sviluppo. Possiede una configurazione minima e non è necessario
+                                scrivere alcuna configurazione XML, sono necessarie solo alcune annotazioni per eseguire la configurazione.
                             </p>
 
-                            <h2>Che cos'è il Web3?</h2>
+                            <h2>Caratteristiche</h2>
                             <p>
-                                Il Web3 è un recente sviluppo del concetto di Internet. Una nuova idea di web totalmente decentralizzato,
-                                basato su protocolli inediti e, soprattutto, sulla tecnologia blockchain. Secondo alcune teorie, il Web3
-                                è l’attualizzazione del Web 3.0. Infatti, i due concetti sono collegati tra loro, ma hanno comunque significati diversi.
-                                Il Web 3.0 immagina una rete all’insegna di metadati sempre più precisi, in grado di specificare il contesto semantico
-                                di ogni singola pagina.
+                                Spring Boot consente agli sviluppatori di eseguire la stessa applicazione in ambienti diversi.
+                                Questo viene fatto con il supporto che fornisce per la configurazione esterna. Utilizza variabili
+                                di ambiente, file di proprietà, argomenti a riga di comando, file YAML e proprietà di sistema
+                                per menzionare le proprietà di configurazione richieste. Inoltre, l'annotazione @value
+                                viene utilizzata per accedere alle proprietà.
                             </p>
     
                             <blockquote>
-                                L'obiettivo alla base del Web3 è quella di cambiare radicalmente l’attuale funzionamento della rete, sia per
-                                quanto riguarda la fruizione dei contenuti, sia per quanto riguarda i rapporti gerarchici che stanno alla base di Internet.
+                                Quando un'applicazione Spring Boot viene eseguita come <i>"Esegui come applicazione Java"</i>, Spring Boot
+                                avvia automaticamente il server Tomcat non appena rileva l'applicazione web.
                             </blockquote>
     
                             <p>
-                                Ad oggi la struttura di Internet vede una netta distinzione tra client e server. Il Web3 vuole cambiare radicalmente
-                                questa gerarchia in cui soltanto una parte detiene l’informazione. E proprio la Blockchain permetterebbe di rivoluzionare
-                                completamente il criterio secondo cui vengono gestiti i dati. <br>La Blockchain prevede che l’informazione venga archiviata
-                                in più copie e distribuita all’interno di una rete di computer peer-to-peer. Questo insieme di tecnologie potrebbe
-                                quindi slegarsi dal semplice ruolo di database delle criptovalute, per diventare la base su cui verrà costruita una nuova rete.
-                            </p>
-    
-                            <h2>Rischi del Web3</h2>
-
-                            <p>
-                                E' importante sottolineare come anche il Web3 presenti dei fattori di rischio. Secondo alcuni utenti, un nuovo
-                                Internet interamente costruito su Blockchain e reti peer-to-peer sarebbe molto pericoloso. Quindi, sono
-                                nate vere e proprie campagne di boicottaggio. Una delle più famose è <i>“Keep the Web free, say no to Web3”</i>,
-                                che può essere tradotta in italiano come <i>“Mantieni la rete libera, dì no al Web3”</i>.
-                                Secondo questa scuola di pensiero, lo sviluppo di applicazioni interamente decentralizzate potrebbe provocare
-                                danni agli utenti ed esporli a un maggiore rischio di truffe.
-                                </p>
-    
-                            <p>
-                                Il rischio, sostengono alcuni, consiste nella creazione di un problema di asimmetria informativa dove l’utente finale
-                                avrebbe molte meno informazioni di quanto promesso. La sicurezza degli utenti e l’effettiva eliminazione delle
-                                gerarchie sono dei rischi tutto sommato relativi, condivisi soltanto da una parte della rete. Ad oggi,
-                                il maggior problema legato al Web3 e alle applicazioni decentralizzate è un altro.<br>
-                                Un nuovo Internet costruito sulla blockchain rischia di avere ripercussioni pesantissime sull’ambiente.
-                                Questo genere di tecnologie richiede una potenza di calcolo impressionante e, di conseguenza, un consumo di
-                                energia elettrica gigantesco.
-                            </p>
-    
-                            <h2>Web3j e Web3.js</h2>
-    
-                            <p>
-                                Web3j è una libreria Java e Android altamente modulare, reattiva e sicura per lavorare con Smart Contract e
-                                integrare con i client (nodi) sulla rete Ethereum. Ciò consente di lavorare con la rete Ethereum, senza il
-                                sovraccarico aggiuntivo di dover scrivere il codice di integrazione per la piattaforma.
-                            </p>
-
-                            <p>
-                                Web3.js è una raccolta di librerie che consentono di interagire con un nodo Ethereum locale o remoto
-                                utilizzando HTTP, IPC o WebSocket.
+                                La gestione delle dipendenze Spring Boot viene fondamentalmente utilizzata per gestire
+                                automaticamente le dipendenze e la configurazione senza che si specifichi la versione
+                                per nessuna di queste dipendenze.
                             </p>
                             <hr>
                         </div>
@@ -137,13 +103,13 @@
                                 <li><a href="/kryptoauth/blog?name=solidity">Solidity</a></li>
                                 <li><a href="/kryptoauth/blog?name=ganache">Ganache</a></li>
                                 <li><a href="/kryptoauth/blog?name=metamask">MetaMask</a></li>
+                                <li><a href="/kryptoauth/blog?name=web3">Web3</a></li>
                                 <li>
-                                    <a href="/kryptoauth/blog?name=web3" class="is-active">
-                                    <span>Web3</span>
-                                    <span class="tag">6</span>
+                                    <a href="/kryptoauth/blog?name=spring_boot" class="is-active">
+                                    <span>Spring Boot</span>
+                                    <span class="tag">7</span>
                                     </a>
                                 </li>
-                                <li><a href="/kryptoauth/blog?name=spring_boot">Spring Boot</a></li>
                             </ul>
                         </div>
 
