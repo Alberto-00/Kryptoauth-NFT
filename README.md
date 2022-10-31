@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="500px" src="./KryptoAuth/src/main/resources/static/img/logo/logo-blu.png">
+  <img width="400px" src="./KryptoAuth/src/main/resources/static/img/logo/logo-blu.png">
 </p>
 <p align="center" dir="auto">
   <img align="middle" width="85px" src="./KryptoAuth/src/main/resources/static/img/illustrations/token-lock.svg"/> 
