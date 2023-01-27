@@ -15,7 +15,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x62259579BAf566d844DE7D00Cd67Ea68c9D82f80";
+    private final static String CONTRACT_ADDRESS = "0x9AceE478A19ceCCd17614e35EE9f054c6ADD0772";
     private static String privateKey;
     private static Authentication authentication = null;
 

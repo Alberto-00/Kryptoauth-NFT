@@ -1,0 +1,9 @@
+{
+  "name": "Space Shuttle",
+  "description": "Space Shuttle gives you a huge discount on accessories that can be purchased in the KryptoAuth's marketplace",
+  "image": "",
+  "properties": {
+    "rarity": "legendary",
+    "price": 2
+  }
+}
