@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Authentication.sol";
 
-contract NFT is ERC1155, Authentication {
+contract KryptoNFT is ERC1155, Authentication {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     uint256 private priceToken = 0.04 ether;
-    bool private isSaleActive;
+    bool private isSaleActive = false;
 
     struct NFTtoken {
         uint256 id;
@@ -22,11 +22,10 @@ contract NFT is ERC1155, Authentication {
         bool sold;
     }
 
-    mapping (uint256 => NFTtoken) nft;
+    mapping (uint256 => NFTtoken) private nft;
 
     constructor() ERC1155("") {
         _tokenIds.increment();
-        isSaleActive = false;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155, AccessControl) returns (bool) {

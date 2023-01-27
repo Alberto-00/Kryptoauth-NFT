@@ -21,7 +21,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract Authentication is AccessControl {
-    bytes32 public constant USER_ROLE = keccak256("USER");
+    bytes32 private constant USER_ROLE = keccak256("USER");
 
     struct User {
         address addr;
@@ -29,7 +29,7 @@ contract Authentication is AccessControl {
         bytes32 password;
     }
 
-    mapping(address => User) user;
+    mapping(address => User) private user;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);

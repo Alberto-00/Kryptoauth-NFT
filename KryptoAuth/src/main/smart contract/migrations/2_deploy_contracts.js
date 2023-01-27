@@ -1,5 +1,5 @@
-var Authentication = artifacts.require("./Authentication.sol");
+var KryptoNFT = artifacts.require("./KryptoNFT.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(Authentication);
+  deployer.deploy(KryptoNFT);
 };
