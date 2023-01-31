@@ -33,6 +33,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### API Pinata Keys ###
+src/main/resources/static/js/pinata_IPFS/scripts/.env
+
 ### node_modules ###
 src/main/resources/static/js/pinata_IPFS/node_modules/
 src/main/resources/static/js/pinata_IPFS/package.json
