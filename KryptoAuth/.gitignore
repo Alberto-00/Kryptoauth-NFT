@@ -1,6 +1,6 @@
 HELP.md
 target/
-src/main/smart contract/build
+src/main/smart*contract/build
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,3 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### node_modules ###
+src/main/resources/static/js/pinata_IPFS/node_modules/
+src/main/resources/static/js/pinata_IPFS/package.json
+src/main/resources/static/js/pinata_IPFS/package-lock.json
