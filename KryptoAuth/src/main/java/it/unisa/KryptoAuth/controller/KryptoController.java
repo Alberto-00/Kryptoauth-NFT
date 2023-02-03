@@ -52,11 +52,13 @@ public class KryptoController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         HttpSession session = request.getSession();
-        if (request.getAttribute("user") != null){
+
+        if (request.getAttribute("user") != null)
             session.removeAttribute("user");
-        } else if (request.getAttribute("admin") != null) {
+
+        if (request.getAttribute("admin") != null)
             session.removeAttribute("admin");
-        }
+
         session.invalidate();
         return "redirect:/kryptoauth";
     }
@@ -79,12 +81,42 @@ public class KryptoController {
         } return "/error/500";
     }
 
-    @GetMapping("/loginAdmin")
+    @GetMapping("/amministrazione")
     public String loginAdmin(Model model, HttpServletRequest request) throws Exception{
         HttpSession session = request.getSession();
         if (session.getAttribute("admin") != null) {
             model.addAttribute( "listAddress", readFileAddress());
             return "/page/admin";
+        } else if (session.getAttribute("user") != null) {
+            return "/error/401";
+        } return "/error/500";
+    }
+
+    @GetMapping("/marketplace")
+    public String adminMarketplace(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (session.getAttribute("admin") != null) {
+            return "/page/NFT-marketplace/admin/admin-marketplace";
+        } else if (session.getAttribute("user") != null) {
+            return "/error/401";
+        } return "/error/500";
+    }
+
+    @GetMapping("/setup-nft")
+    public String setupNft(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (session.getAttribute("admin") != null) {
+            return "/page/NFT-marketplace/admin/setup-nft";
+        } else if (session.getAttribute("user") != null) {
+            return "/error/401";
+        } return "/error/500";
+    }
+
+    @GetMapping("/create-nft")
+    public String createNft(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (session.getAttribute("admin") != null) {
+            return "/page/NFT-marketplace/admin/create-nft";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
         } return "/error/500";
