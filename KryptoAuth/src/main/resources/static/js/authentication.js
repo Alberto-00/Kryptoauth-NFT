@@ -223,7 +223,7 @@ $(document).ready(function (){
         closePopupSuccess()
 
         if (roleAddress.localeCompare("admin") === 0)
-            window.location.href = "/kryptoauth/loginAdmin";
+            window.location.href = "/kryptoauth/amministrazione";
         else
             window.location.href = "/kryptoauth";
     });
@@ -300,7 +300,7 @@ function ajaxLogin($privateKey, $userAddress){
             }
 
             if (data.msgError['successAdmin'] != null){
-                window.location.href = "/kryptoauth/loginAdmin"
+                window.location.href = "/kryptoauth/amministrazione"
             }
 
             if (data.msgError['successUser'] != null){
