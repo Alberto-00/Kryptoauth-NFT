@@ -4,7 +4,7 @@ src/main/smart*contract/build
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/main/resources/static/txt/*
+src/main/resources/static/txt/addressRegistered.json
 
 ### STS ###
 .apt_generated
