@@ -17,3 +17,66 @@ html{
 .ganache:hover{
     color: #7f00ff;
 }
+
+.green-gradient, .red-gradient{
+    position: relative;
+    -webkit-transition: all .6s ease-out;
+    transition: all .6s ease-out;
+    border: none !important;
+    opacity: 1;
+    z-index: 0;
+}
+
+.green-gradient > span{
+    color: rgba(0,0,0,0.80);
+}
+
+.green-gradient{
+    background: #00ff99!important;
+    background: -webkit-gradient(linear, left bottom, left top, from(#00ff99), to(#33ccff))!important;
+    background: linear-gradient(to top, #00ff99, #33ccff)!important;
+}
+
+.red-gradient{
+    background: #ff0033!important;
+    background: -webkit-gradient(linear, left bottom, left top, from(#ff0033), to(#4f0111))!important;
+    background: linear-gradient(to top, #ff0033, #4f0111)!important;
+}
+
+.front-green-gradient, .front-red-gradient{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    opacity: 1;
+    -webkit-transition: all .6s ease-out !important;
+    transition: all .6s ease-out !important;
+    z-index: 1;
+}
+
+.front-green-gradient{
+    background: #00ff99!important;
+    background: -webkit-gradient(linear, left bottom, left top, from(#00ff99), to(#33ccff))!important;
+    background: linear-gradient(to right, #00ff99, #33ccff)!important;
+}
+
+.front-red-gradient{
+    background: #ff0033!important;
+    background: -webkit-gradient(linear, left bottom, left top, from(#ff0033), to(#4f0111))!important;
+    background: linear-gradient(to right, #ff0033, #4f0111)!important;
+}
+
+.front-green-gradient:hover, .front-red-gradient:hover{
+    opacity: 0;
+}

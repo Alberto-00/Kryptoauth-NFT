@@ -118,8 +118,9 @@ $(document).ready(function (){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
                         .html("Nessun account rilevato. <br>Accedere a Metamask.");
-                } else
+                } else {
                     ajaxLogin($privateKey, $userAddress);
+                }
             }
             return false;
         }
@@ -205,6 +206,8 @@ $(document).ready(function (){
             openPopupError()
             $('div.error-p').children('p').eq(1)
                 .html("Chiave privata non corretta. <br>Riprovare.");
+
+            $privateKey.val('')
         }
     })
 
@@ -285,6 +288,13 @@ function ajaxLogin($privateKey, $userAddress){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Chiave privata non associata a questo account.<br>Riprovare.");
+            }
+
+            if (data.msgError['changeAccount'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Il seguente account non ha caricato il contratto.<br>" +
+                        "Cambia account in Metamask.");
             }
 
             if (data.msgError['loginError'] != null){
@@ -381,6 +391,13 @@ function ajaxRegister($privateKey, $userAddress){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Chiave privata non associata a questo account.<br>Riprovare.");
+            }
+
+            if (data.msgError['changeAccount'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Il seguente account non ha caricato il contratto.<br>" +
+                        "Cambia account in Metamask.");
             }
 
             if (data.msgError['alredyRegistered'] != null){

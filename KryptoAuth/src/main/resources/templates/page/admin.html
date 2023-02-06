@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <th:block th:include="partials/head :: head"></th:block>
-    <title>Kryptoauth - Admin</title>
+    <title>Kryptoauth - Amministrazione</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
@@ -29,8 +29,8 @@
                         <!-- Landing page Title -->
                         <div class="column is-5 is-offset-1 landing-caption">
                             <div class="divider"></div>
-                            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Verifica delle Credenziali</h1>
-                            <h2 class="subtitle is-6 is-light is-thin">
+                            <h1 class="title is-2 is-light is-semibold is-spaced main-title">Verifica delle Credenziali</h1>
+                            <h2 class="title subtitle is-5 is-light is-thin">
                                 Qui ci sono le credenziali degli Utenti o degli Admin da verificare.
                             </h2>
                             <p class="buttons">
@@ -118,8 +118,9 @@
             </div>
         </section>
     </div>
+    <!-- send address to backend -->
+    <input hidden name="userAddress" value="">
     <div th:replace="partials/footer :: footer"></div>
-    <div th:replace="partials/popupPrivateKey :: popupSuccessPrivateKey"></div>
     <div th:replace="partials/popupError :: popupError"></div>
     <div th:replace="partials/popupErrorRekoveRole :: popupErrorRevokeRole"></div>
     <div th:replace="partials/popupSuccess :: popupSuccess"></div>

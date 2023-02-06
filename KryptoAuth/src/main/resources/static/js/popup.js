@@ -9,7 +9,7 @@ export function openPopupErrorMetamask(){
 }
 
 export function openPopupError(){
-    $(".shadow").css("display", "block");
+    $(".shadow").fadeIn().css("display", "block");
     $("#popupError").css("display", "block");
     $("html, body").animate({scrollTop: 0}, 700);
 }

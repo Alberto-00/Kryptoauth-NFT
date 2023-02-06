@@ -34,31 +34,31 @@
                         <form name="register-form" class="login-form" method="post" th:action="@{/kryptoauth/register}">
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="text" id="email" name="email" th:field="${user.email}">
+                                <input class="material-input" type="text" id="email" name="email" autocomplete="off" th:field="${user.email}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Email o Username</label>
                             </div>
                             <!-- Field -->
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" id="password" name="password" th:field="${user.password}">
+                                <input class="material-input" type="password" id="password" name="password" autocomplete="off" th:field="${user.password}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label>Password</label>
                             </div>
                             <div class="control-material is-primary">
-                                <input class="material-input" type="password" id="repeatPassword" name="repeatPassword" th:field="${user.repeatPassword}">
+                                <input class="material-input" type="password" id="repeatPassword" name="repeatPassword" autocomplete="off" th:field="${user.repeatPassword}">
                                 <span class="material-highlight"></span>
                                 <span class="bar"></span>
                                 <label id="repeat-pass">Ripeti Password</label>
                             </div>
 
                             <div class="radio-left">
-                                <input type="radio" id="user" name="user" value="User">
+                                <input type="radio" id="user" name="user" autocomplete="off" value="User">
                                 <label for="user">User</label>
                             </div>
                             <div class="radio-right">
-                                <input type="radio" id="admin" name="user" value="Admin">
+                                <input type="radio" id="admin" name="user" autocomplete="off" value="Admin">
                                 <label for="admin">Admin</label>
                             </div>
 
