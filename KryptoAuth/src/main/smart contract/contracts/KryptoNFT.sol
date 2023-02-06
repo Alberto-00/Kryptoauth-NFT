@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@BokkyPooBahsDateTimeLibrary/contracts/BokkyPooBahsDateTimeLibrary.sol";
 import "./Authentication.sol";
 
 contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
@@ -21,7 +22,9 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         address seller;
         address owner;
         string name;
+        string url;
         string category;
+        string description;
         uint256 price;
         uint256 validUntil;
         uint256 sale;
@@ -41,12 +44,14 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     function mintNft(
         string memory _name,
         string memory _category,
+        string memory _description,
+        string memory _url,
         uint256 _price,
         uint256 _daysLimit,
         uint256 _sale
     ) public onlyAdmin {
         require(_daysLimit > 0 && _price > 0, "Days limit and price must be greater than zero");
-        require(_sale > 4 &&_sale < 50, "Sale error");
+        require(_sale > 4 && _sale < 51, "Sale error");
 
         _nftCount.increment();
         uint256 newTokenId = _nftCount.current();
@@ -58,7 +63,9 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
             msg.sender,
             msg.sender,
             _name,
+            _url,
             _category,
+            _description,
             _price,
             block.timestamp + (_daysLimit * 1 days),
             _sale,
@@ -97,11 +104,11 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
 
     /*================================ User functions =====================================*/
     /* Only User can buy KryptoToken (KT) */
-    function buyFt(uint256 amounts) public payable onlyUser nonReentrant{
-        require(amounts > 0, "Amounts must be greater than zero");
-        require(msg.value == priceToken * amounts, "WRONG! Not enough money sent");
+    function buyFt(uint256 _amounts) public payable onlyUser nonReentrant{
+        require(_amounts > 0, "Amounts must be greater than zero");
+        require(msg.value == priceToken * _amounts, "WRONG! Not enough money sent");
 
-        _mint(msg.sender, 0, amounts, "KryptoToken");
+        _mint(msg.sender, 0, _amounts, "KryptoToken");
     }
 
     /* User buy NFTs and the seller gets paid; the User has to wait admin to assign him the NFT */
@@ -121,12 +128,12 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     }
 
     /* Assigns the ether to the User that sold his coins */
-    function sellFt(uint256 amounts) public payable onlyUser nonReentrant {
-        require(amounts > 0, "Amounts have not be 0");
-        require(balanceOf(msg.sender, 0) >= amounts, "Not enough token");
+    function sellFt(uint256 _amounts) public payable onlyUser nonReentrant {
+        require(_amounts > 0, "Amounts have not be 0");
+        require(balanceOf(msg.sender, 0) >= _amounts, "Not enough token");
 
-        _burn(msg.sender, 0, amounts);
-        payable(msg.sender).transfer(amounts * priceToken);
+        _burn(msg.sender, 0, _amounts);
+        payable(msg.sender).transfer(_amounts * priceToken);
     }
 
     /* Assigns the coins to the User that sold his NFT and transfers the NFT to seller */
@@ -171,18 +178,10 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     }
 
     /*================================= Other Functions ====================================*/
-    /* Returns uri of a specific Token */
-    function tokenURI(uint256 _tokenId) public view returns (string memory) {
-        NFT storage nft = _idToNFT[_tokenId];
-        require(!nft.burned, "URI: not exist this NFT");
-
-        return string(abi.encodePacked(super.uri(_tokenId), Strings.toString(_tokenId), ".json"));
-    }
-
     /* Returns true if NFT doesn't expired */
     function isValid(uint256 _tokenId) public view returns (bool) {
         NFT storage nft = _idToNFT[_tokenId];
-        return block.timestamp < nft.validUntil;
+        return block.timestamp <= nft.validUntil;
     }
 
     /* Updates the state of the sale */
@@ -201,7 +200,24 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     }
 
     /* Returns NFTs of an address  */
-    function getMyNfts() public view returns (NFT[] memory) {
+    function getMyNfts() public view returns (string memory) {
+        string memory data = string(abi.encodePacked("["));
+        uint size = _nftCount.current();
+
+        for (uint i = 0; i < size; i++) {
+            if (balanceOf(msg.sender, _idToNFT[i + 1].tokenId) == 1){
+                if(i == size - 1)
+                    data = string.concat(data, getNft(i + 1));
+                else
+                    data = string.concat(data, getNft(i + 1), ',');
+            }
+        }
+        data = string.concat(data, "]");
+        return data;
+    }
+
+    /* Returns size of my NFTs */
+    function getSizeMyNfts() public view returns (uint){
         uint nftCount = _nftCount.current();
         uint myNftCount = 0;
         for (uint i = 0; i < nftCount; i++) {
@@ -209,15 +225,69 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
                 myNftCount++;
             }
         }
+        return myNftCount;
+    }
 
-        NFT[] memory nfts = new NFT[](myNftCount);
-        uint nftsIndex = 0;
-        for (uint i = 0; i < nftCount; i++) {
-            if (balanceOf(msg.sender, _idToNFT[i + 1].tokenId) == 1) {
-                nfts[nftsIndex] = _idToNFT[i + 1];
-                nftsIndex++;
-            }
+    /* Returns NFT by id */
+    function getNft(uint256 _id) public view returns (string memory) {
+        string memory data = string.concat('{"tokenId":"', Strings.toString(_idToNFT[_id].tokenId),
+            '", "seller":"', _addressToString(_idToNFT[_id].seller),'", "owner":"', _addressToString(_idToNFT[_id].owner),
+            '", "name":"', _idToNFT[_id].name,'", "category":"', _idToNFT[_id].category, '", "url":"', _idToNFT[_id].url,
+            '", "description":"', _idToNFT[_id].description,'", "price":"', Strings.toString(_idToNFT[_id].price),
+            '", "validUntil":"', getDateToString(_idToNFT[_id].validUntil));
+
+        data = string.concat(data,'", "sale":"', Strings.toString(_idToNFT[_id].sale),'", "sold":"');
+
+        if(_idToNFT[_id].sold)
+            data = string.concat(data,'true"}');
+        else
+            data = string.concat(data,'false"}');
+
+        return data;
+    }
+
+    /* Converts address type to string type */
+    function _addressToString(address addr) private pure returns(string memory) {
+        bytes memory addressBytes = abi.encodePacked(addr);
+        bytes memory stringBytes = new bytes(42);
+
+        stringBytes[0] = '0';
+        stringBytes[1] = 'x';
+
+        for(uint i = 0; i < 20; i++){
+            uint8 leftValue = uint8(addressBytes[i]) / 16;
+            uint8 rightValue = uint8(addressBytes[i]) - 16 * leftValue;
+
+            bytes1 leftChar = leftValue < 10 ? bytes1(leftValue + 48) : bytes1(leftValue + 87);
+            bytes1 rightChar = rightValue < 10 ? bytes1(rightValue + 48) : bytes1(rightValue + 87);
+
+            stringBytes[2 * i + 3] = rightChar;
+            stringBytes[2 * i + 2] = leftChar;
         }
-        return nfts;
+        return string(stringBytes);
+    }
+
+    /* Returns day of month of timestamp */
+    function day(uint timestamp) private pure returns (uint256){
+        return BokkyPooBahsDateTimeLibrary.getDay(timestamp);
+    }
+
+    /* Returns year of month of timestamp */
+    function year(uint timestamp) private pure returns (uint256){
+        return BokkyPooBahsDateTimeLibrary.getYear(timestamp);
+    }
+
+    /* Returns month of month of timestamp */
+    function month(uint timestamp) private pure returns (uint256){
+        return BokkyPooBahsDateTimeLibrary.getMonth(timestamp);
+    }
+
+    /* Returns date in format YYYY-MM-DD */
+    function getDateToString(uint _timestamp) private pure returns (string memory){
+        uint _day = BokkyPooBahsDateTimeLibrary.getDay(_timestamp);
+        uint _month = BokkyPooBahsDateTimeLibrary.getMonth(_timestamp);
+        uint _year = BokkyPooBahsDateTimeLibrary.getYear(_timestamp);
+
+        return string.concat(Strings.toString(_year), '-', Strings.toString(_month),'-', Strings.toString(_day));
     }
 }
