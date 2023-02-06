@@ -8,7 +8,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -19,7 +18,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import java.io.*;
-
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
@@ -35,17 +39,17 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Controller
 @RequestMapping(value = "/kryptoauth", method = POST)
 public class BlockchainController {
+    private final static String PINATA_KEY = "1eeb0837f8d0ae21e000";
+    private final static String PINATA_SECRET = "f638ab8f499066727efb6eab377503fb30bd0a797c732cfbfbdada4c89f4f890";
 
-    @Autowired
-    private BlockchainServiceImpl service;
 
+    /*========================================== Authentication Servlet ==============================================*/
     @ResponseBody
     @PostMapping("/login")
     public AjaxResponse loginPost(@Valid @ModelAttribute("user") User user, Errors errors,
                                   @RequestParam(value = "userAddress") String address,
                                   @RequestParam(value = "privateKey") String privateKey,
                                   HttpServletRequest request) throws Exception {
-
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
 
@@ -59,16 +63,28 @@ public class BlockchainController {
                 ajaxResponse.addMsg("userAddress", "Nessun account rilevato. Accedere a Metamask.");
                 return ajaxResponse;
             }
-            else if (!service.isContractLoaded(address)) {
-                if (checkPrivateKeyAndAddress(address, privateKey, ajaxResponse))
+            else if (session.getAttribute("service") == null) {
+                if (checkPrivateKey(privateKey, ajaxResponse))
                     return ajaxResponse;
+
+                BlockchainServiceImpl service = new BlockchainServiceImpl(privateKey);
+
+                if (!service.addressEquals(address)){
+                    ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+                    return ajaxResponse;
+                }
 
                 if (service.isAdmin(address)) {
                     if (!service.loginAdmin(address, user.getEmail(), user.getPassword()))
                         ajaxResponse.addMsg("loginError", "incorrect");
                     else {
                         ajaxResponse.addMsg("successAdmin", "ok");
+                        if (session.getAttribute("noRole") != null &&
+                                session.getAttribute("noRole").toString().compareToIgnoreCase(address) == 0)
+                            session.removeAttribute("noRole");
+
                         session.setAttribute("admin", address);
+                        session.setAttribute("service", service);
                     }
                 }
                 else if (service.isUser(address)) {
@@ -76,29 +92,41 @@ public class BlockchainController {
                         ajaxResponse.addMsg("loginError", "incorrect");
                     else {
                         ajaxResponse.addMsg("successUser", "ok");
+                        if (session.getAttribute("noRole") != null &&
+                                session.getAttribute("noRole").toString().compareToIgnoreCase(address) == 0)
+                            session.removeAttribute("noRole");
+
                         session.setAttribute("user", address);
+                        session.setAttribute("service", service);
                     }
                 } else
                     ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
                 return ajaxResponse;
             }
-            else if (service.isUser(address)){
-                if (service.loginUser(address, user.getEmail(), user.getPassword())) {
-                    ajaxResponse.addMsg("successUser", "ok");
-                    session.setAttribute("user", address);
+            else {
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (!currentService.addressEquals(address)){
+                    ajaxResponse.addMsg("changeAccount", "incorrect");
+                    return ajaxResponse;
                 }
-                else ajaxResponse.addMsg("loginError", "incorrect");
+                else if (currentService.isUser(address)){
+                    if (currentService.loginUser(address, user.getEmail(), user.getPassword())) {
+                        ajaxResponse.addMsg("successUser", "ok");
+                        session.setAttribute("user", address);
+                    }
+                    else ajaxResponse.addMsg("loginError", "incorrect");
+                }
+                else if (currentService.isAdmin(address)){
+                    if (currentService.loginAdmin(address, user.getEmail(), user.getPassword())) {
+                        ajaxResponse.addMsg("successAdmin", "ok");
+                        session.setAttribute("admin", address);
+                    }
+                    else ajaxResponse.addMsg("loginError", "incorrect");
+                }
+                else
+                    ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
+                return ajaxResponse;
             }
-            else if (service.isAdmin(address)){
-                if (service.loginAdmin(address, user.getEmail(), user.getPassword())) {
-                    ajaxResponse.addMsg("successAdmin", "ok");
-                    session.setAttribute("admin", address);
-                } 
-                else ajaxResponse.addMsg("loginError", "incorrect");
-            }
-            else 
-                ajaxResponse.addMsg("credentialsNotVerified", "incorrect");
-            return ajaxResponse;
         }
         ajaxResponse.addMsg("sessionEmpty", "error");
         return ajaxResponse;
@@ -126,14 +154,84 @@ public class BlockchainController {
                 ajaxResponse.addMsg("userAddress", "Nessun account rilevato. Accedere a Metamask.");
                 return ajaxResponse;
             }
-            else if (!service.isContractLoaded(address)) {
-                if (checkPrivateKeyAndAddress(address, privateKey, ajaxResponse))
+            else if (session.getAttribute("service") == null) {
+                if (checkPrivateKey(privateKey, ajaxResponse))
                     return ajaxResponse;
-                return registerForRoles(user, address, ajaxResponse, session);
+
+                BlockchainServiceImpl service = new BlockchainServiceImpl(privateKey);
+
+                if (!service.addressEquals(address)){
+                    ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+                    return ajaxResponse;
+                }
+                return registerForRoles(user, address, ajaxResponse, session, service);
             }
-            return registerForRoles(user, address, ajaxResponse, session);
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(address)){
+                ajaxResponse.addMsg("changeAccount", "incorrect");
+                return ajaxResponse;
+            }
+            return registerForRoles(user, address, ajaxResponse, session, currentService);
         }
         ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    private boolean checkPrivateKey(@RequestParam("privateKey") String privateKey, AjaxResponse ajaxResponse) {
+        if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
+            ajaxResponse.addMsg("contract", "incorrect");
+            return true;
+        }
+        else if (privateKey.length() != 64) {
+            ajaxResponse.addMsg("privateKey", "incorrect");
+            return true;
+        }
+        return false;
+    }
+
+    @NotNull
+    private AjaxResponse registerForRoles(@ModelAttribute("user") @Valid User user,
+                                          @RequestParam("userAddress") String address,
+                                          AjaxResponse ajaxResponse, HttpSession session,
+                                          BlockchainServiceImpl service) {
+        try {
+            if (user.getRole().compareToIgnoreCase("User") == 0 && !service.isAdmin(address)) {
+                service.registerUser(address, user.getEmail(), user.getPassword());
+
+                if (session.getAttribute("service") == null)
+                    session.setAttribute("service", service);
+
+                session.setAttribute("noRole", address);
+                ajaxResponse.addMsg("success", "user");
+                writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo,");
+                return ajaxResponse;
+            }
+            else if (user.getRole().compareToIgnoreCase("Admin") == 0 && !service.isUser(address)) {
+                service.registerUser(address, user.getEmail(), user.getPassword());
+
+                if (session.getAttribute("service") == null)
+                    session.setAttribute("service", service);
+
+                if (service.isAdmin(address)) {
+                    session.setAttribute("admin", address);
+                    writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Attivo,");
+                    ajaxResponse.addMsg("adminActive", "admin");
+                } else {
+                    session.setAttribute("noRole", address);
+                    writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo,");
+                    ajaxResponse.addMsg("success", "admin");
+                }
+                return ajaxResponse;
+            } else if (user.getRole().compareToIgnoreCase("Admin") == 0 && service.isUser(address)){
+                ajaxResponse.addMsg("errorUser", "error");
+                return ajaxResponse;
+            }
+        } catch (Exception e){
+            ajaxResponse.addMsg("alredyRegistered", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("errorAdmin", "error");
         return ajaxResponse;
     }
 
@@ -142,61 +240,35 @@ public class BlockchainController {
     public AjaxResponse activeAddress(@RequestParam(value = "address") String address,
                                       @RequestParam(value = "role") String role,
                                       @RequestParam(value = "status") String status,
-                                      @RequestParam(value = "privateKey") String privateKey,
+                                      @RequestParam(value = "addressMetamask") String addressMetamask,
                                       HttpServletRequest request) throws Exception {
 
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("admin") != null){
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null){
             if (address != null && !address.isEmpty() &&
                     role != null && !role.isEmpty() &&
-                    status != null && !status.isEmpty()){
+                    status != null && !status.isEmpty() &&
+                    addressMetamask != null && !addressMetamask.isEmpty()){
 
-                if (!service.isContractLoaded(session.getAttribute("admin").toString())){
-                    if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
-                        return ajaxResponse;
-                    if (!service.addressEquals(session.getAttribute("admin").toString())){
-                        ajaxResponse.addMsg("notEqualsAddress", "incorrect");
-                        return ajaxResponse;
-                    }
-                    if (role.compareToIgnoreCase("user") == 0){
-                        if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
-                            ajaxResponse.addMsg("revokeAdmin", "ok");
-                            return ajaxResponse;
-                        } else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
-                            ajaxResponse.addMsg("notRevoke", "error");
-                            return ajaxResponse;
-                        }
-                        service.addUser(address);
-                        if (status.compareToIgnoreCase("non attivo") == 0)
-                            status = "Attivo";
-                        updateAddress(address, status, role);
-                        ajaxResponse.addMsg("success", status + "," + role);
-                        return ajaxResponse;
-                    }
-                    else if (role.compareToIgnoreCase("admin") == 0) {
-                        service.addAdmin(address);
-                        if (status.compareToIgnoreCase("non attivo") == 0)
-                            status = "Attivo";
-                        updateAddress(address, status, role);
-                        ajaxResponse.addMsg("success", status + "," + role);
-                        return ajaxResponse;
-                    }
-                }
-                if (!service.addressEquals(session.getAttribute("admin").toString())){
-                    ajaxResponse.addMsg("notEqualsAddress", "incorrect");
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (!currentService.addressEquals(session.getAttribute("admin").toString())){
+                    ajaxResponse.addMsg("notEqualsAddress", "error");
                     return ajaxResponse;
                 }
                 if (role.compareToIgnoreCase("user") == 0){
-                    if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
+                    if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
                         ajaxResponse.addMsg("revokeAdmin", "ok");
                         return ajaxResponse;
-                    } else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                    } else if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
                         ajaxResponse.addMsg("notRevoke", "error");
                         return ajaxResponse;
+                    } else if (currentService.isUser(address)){
+                        ajaxResponse.addMsg("alreadyActive", "error");
+                        return ajaxResponse;
                     }
-                    service.addUser(address);
+                    currentService.addUser(address);
                     if (status.compareToIgnoreCase("non attivo") == 0)
                         status = "Attivo";
                     updateAddress(address, status, role);
@@ -204,7 +276,12 @@ public class BlockchainController {
                     return ajaxResponse;
                 }
                 else if (role.compareToIgnoreCase("admin") == 0) {
-                    service.addAdmin(address);
+                    if (currentService.isAdmin(address)){
+                        ajaxResponse.addMsg("alreadyActive", "error");
+                        return ajaxResponse;
+                    }
+
+                    currentService.addAdmin(address);
                     if (status.compareToIgnoreCase("non attivo") == 0)
                         status = "Attivo";
                     updateAddress(address, status, role);
@@ -223,23 +300,24 @@ public class BlockchainController {
     public AjaxResponse disactiveAddress(@RequestParam(value = "address") String address,
                                       @RequestParam(value = "role") String role,
                                       @RequestParam(value = "status") String status,
-                                      @RequestParam(value = "privateKey") String privateKey,
+                                      @RequestParam(value = "addressMetamask") String addressMetamask,
                                       HttpServletRequest request) throws Exception {
 
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("admin") != null){
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null){
             if (address != null && !address.isEmpty() &&
                     role != null && !role.isEmpty() &&
-                    status != null && !status.isEmpty()){
+                    status != null && !status.isEmpty() &&
+                    addressMetamask != null && !addressMetamask.isEmpty()){
 
-                if (!service.isContractLoaded(session.getAttribute("admin").toString())){
-                    if (checkPrivateKeyAndLoadContract(privateKey, ajaxResponse))
-                        return ajaxResponse;
-                    return checkRevokeRole(address, role, status, ajaxResponse, session);
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (!currentService.addressEquals(session.getAttribute("admin").toString())){
+                    ajaxResponse.addMsg("notEqualsAddress", "error");
+                    return ajaxResponse;
                 }
-                return checkRevokeRole(address, role, status, ajaxResponse, session);
+                return checkRevokeRole(address, role, status, addressMetamask, ajaxResponse, session);
             } else
                 ajaxResponse.addMsg("errorPage", "error");
         } else
@@ -255,9 +333,16 @@ public class BlockchainController {
         HttpSession session = request.getSession();
 
         try {
-            if (session != null && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
-                service.addUser(address);
-                service.removeAdmin(address);
+            if (session.getAttribute("admin") != null && session.getAttribute("service") != null
+                    && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+                currentService.addUser(address);
+                currentService.removeAdmin(address);
+
+                session.removeAttribute("admin");
+                session.setAttribute("user", address);
+
                 ajaxResponse.addMsg("redirect", "ok");
                 updateAddress(address, "Attivo", "User");
             } else  ajaxResponse.addMsg("error", "error");
@@ -276,9 +361,19 @@ public class BlockchainController {
         HttpSession session = request.getSession();
 
         try {
-            if (session != null && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
-                service.removeUser(address);
-                service.removeAdmin(address);
+            if (session.getAttribute("admin") != null && session.getAttribute("service") != null
+                    && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (currentService.isUser(address)) {
+                    currentService.removeUser(address);
+                    session.removeAttribute("user");
+                }
+
+                if (currentService.isAdmin(address)) {
+                    currentService.removeAdmin(address);
+                    session.removeAttribute("admin");
+                }
+
                 ajaxResponse.addMsg("redirect", "ok");
                 updateAddress(address, "Non Attivo", "User");
             } else  ajaxResponse.addMsg("error", "error");
@@ -289,92 +384,31 @@ public class BlockchainController {
         return ajaxResponse;
     }
 
-    private boolean checkPrivateKeyAndLoadContract(@RequestParam("privateKey") String privateKey,
-                                                   AjaxResponse ajaxResponse) {
-        return checkPrivateKey(privateKey, ajaxResponse);
-    }
-
-    private boolean checkPrivateKey(@RequestParam("privateKey") String privateKey, AjaxResponse ajaxResponse) {
-        if (privateKey == null || privateKey.compareTo("undefined") == 0 || privateKey.isEmpty()){
-            ajaxResponse.addMsg("contract", "incorrect");
-            return true;
-        }
-        else if (privateKey.length() != 64) {
-            ajaxResponse.addMsg("privateKey", "incorrect");
-            return true;
-        }
-        service.loadContract(privateKey);
-        return false;
-    }
-
-    private boolean checkPrivateKeyAndAddress(@RequestParam("userAddress") String address,
-                                              @RequestParam("privateKey") String privateKey,
-                                              AjaxResponse ajaxResponse) throws Exception {
-        if (checkPrivateKey(privateKey, ajaxResponse))
-            return true;
-        if (!service.addressEquals(address)) {
-            ajaxResponse.addMsg("notEqualsAddress", "incorrect");
-            return true;
-        }
-        return false;
-    }
-
-    @NotNull
-    private AjaxResponse registerForRoles(@ModelAttribute("user") @Valid User user,
-                                          @RequestParam("userAddress") String address,
-                                          AjaxResponse ajaxResponse, HttpSession session) {
-        try {
-            if (user.getRole().compareToIgnoreCase("User") == 0 && !service.isAdmin(address)) {
-                service.registerUser(address, user.getEmail(), user.getPassword());
-                ajaxResponse.addMsg("success", "user");
-                writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo,");
-                return ajaxResponse;
-            }
-            else if (user.getRole().compareToIgnoreCase("Admin") == 0 && !service.isUser(address)) {
-                service.registerUser(address, user.getEmail(), user.getPassword());
-
-                if (service.isAdmin(address)) {
-                    writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Attivo,");
-                    session.setAttribute("admin", address);
-                    ajaxResponse.addMsg("adminActive", "admin");
-                } else {
-                    writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo,");
-                    ajaxResponse.addMsg("success", "admin");
-                }
-                return ajaxResponse;
-            } else if (user.getRole().compareToIgnoreCase("Admin") == 0 && service.isUser(address)){
-                ajaxResponse.addMsg("errorUser", "error");
-                return ajaxResponse;
-            }
-        } catch (Exception e){
-            ajaxResponse.addMsg("alredyRegistered", "error");
-            return ajaxResponse;
-        }
-        ajaxResponse.addMsg("errorAdmin", "error");
-        return ajaxResponse;
-    }
-
     @NotNull
     private AjaxResponse checkRevokeRole(@RequestParam("address") String address,
                                          @RequestParam("role") String role,
                                          @RequestParam("status") String status,
-                                         AjaxResponse ajaxResponse,
-                                         HttpSession session) throws Exception {
-        if (!service.addressEquals(session.getAttribute("admin").toString())){
+                                         @RequestParam("addressMetamask") String addressMetamask,
+                                         AjaxResponse ajaxResponse, HttpSession session) throws Exception {
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+        if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                addressMetamask.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
             ajaxResponse.addMsg("notEqualsAddress", "incorrect");
             return ajaxResponse;
         }
-        if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
+        if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
             ajaxResponse.addMsg("revoke", "ok");
             return ajaxResponse;
         }
-        else if (service.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+        else if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
             ajaxResponse.addMsg("notRevoke", "error");
             return ajaxResponse;
         }
-        service.removeUser(address);
+        currentService.removeUser(address);
         if (status.compareToIgnoreCase("Attivo") == 0)
             status = "Non Attivo";
+
+        session.removeAttribute("user");
         updateAddress(address, status, role);
         ajaxResponse.addMsg("success", status + "," + role);
         return ajaxResponse;
@@ -415,7 +449,6 @@ public class BlockchainController {
 
     private void updateAddress(String address, String status, String role){
         JSONParser jsonParser = new JSONParser();
-
         try {
             Object obj = jsonParser.parse(new FileReader("src/main/resources/static/txt/addressRegistered.json"));
             JSONArray root = (JSONArray) obj;
@@ -428,7 +461,6 @@ public class BlockchainController {
                     element.put("role", role);
                 }
             }
-
             FileWriter file = new FileWriter("src/main/resources/static/txt/addressRegistered.json");
             file.write(root.toJSONString());
             file.flush();
@@ -437,4 +469,244 @@ public class BlockchainController {
             e.printStackTrace();
         }
     }
+
+
+    /*================================== NFT Marketplace Servlet (Admin Role) ========================================*/
+    @ResponseBody
+    @PostMapping("/marketplace")
+    public AjaxResponse adminViewMarketplace(@RequestParam(value = "addressMetamask") String addrMetamask,
+                                             HttpServletRequest request) throws Exception {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("admin") != null &&
+                session.getAttribute("service") != null && addrMetamask != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                    (!currentService.addressEquals(addrMetamask) && addrMetamask.compareTo("start") != 0)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            ajaxResponse.addMsg("jsonData", currentService.getMyNfts_string());
+            ajaxResponse.addMsg("adminAddress", session.getAttribute("admin").toString());
+        }
+        else
+            ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/pinata/create-nft")
+    public AjaxResponse adminViewNftsOnPinata(HttpServletRequest request){
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("admin") != null){
+            ajaxResponse.addMsg("adminAddress", session.getAttribute("admin").toString());
+            ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+            ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+        }
+        else ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/create-nft")
+    public AjaxResponse createNft(@RequestParam(value = "name") String name,
+                            @RequestParam(value = "category") String category,
+                            @RequestParam(value = "price") String price,
+                            @RequestParam(value = "validUntil") String validUntil,
+                            @RequestParam(value = "sale") String sale,
+                            @RequestParam(value = "addressMetamask") String addressMetamask,
+                            @RequestParam(value = "description") String description,
+                            HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (addressMetamask != null && session.getAttribute("admin") != null &&
+            session.getAttribute("service") != null) {
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                    addressMetamask.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0 ) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+
+            if (name == null || name.isBlank() || name.compareToIgnoreCase("KriptoToken") == 0) {
+                ajaxResponse.addMsg("name", "error");
+                return ajaxResponse;
+            }
+
+            if (!regexField("category", category)) {
+                ajaxResponse.addMsg("category", "error");
+                return ajaxResponse;
+            }
+
+            if (!regexField("^[0-9]*$", price) && Integer.parseInt(price) < 1
+                    && Integer.parseInt(price) > 99999) {
+                ajaxResponse.addMsg("price", "error");
+                return ajaxResponse;
+            }
+
+            if (!regexField("^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", validUntil)) {
+                ajaxResponse.addMsg("validUntil", "error");
+                return ajaxResponse;
+            }
+
+            if (!regexField("^[0-9]*$", sale) &&
+                    Integer.parseInt(price) < 5 && Integer.parseInt(price) > 50) {
+                ajaxResponse.addMsg("sale", "error");
+                return ajaxResponse;
+            }
+
+            if (description == null){
+                ajaxResponse.addMsg("description", "error");
+                return ajaxResponse;
+            }
+            else if (description.isEmpty() || description.length() > 2000){
+                ajaxResponse.addMsg("description", "error");
+                return ajaxResponse;
+            }
+
+            String upper = category.substring(0, 1);
+            String str = upper.toUpperCase() + category.substring(1);
+
+            ajaxResponse.addMsg("ok", "ok");
+            ajaxResponse.addMsg("name", name);
+            ajaxResponse.addMsg("category", str);
+            ajaxResponse.addMsg("seller", addressMetamask);
+            ajaxResponse.addMsg("owner", addressMetamask);
+            ajaxResponse.addMsg("price", price);
+            ajaxResponse.addMsg("validUntil", validUntil);
+            ajaxResponse.addMsg("sale", sale);
+            ajaxResponse.addMsg("description", description);
+            ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+            ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/save-nft")
+    public AjaxResponse saveNftOnBlockchain(@RequestParam(value = "name") String name,
+                                  @RequestParam(value = "category") String category,
+                                  @RequestParam(value = "url") String url,
+                                  @RequestParam(value = "description") String description,
+                                  @RequestParam(value = "price") String price,
+                                  @RequestParam(value = "validUntil") String validUntil,
+                                  @RequestParam(value = "sale") String sale,
+                                  @RequestParam(value = "address") String address,
+                                  HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (address != null && session.getAttribute("admin") != null &&
+            session.getAttribute("service") != null) {
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            String upper = category.substring(0, 1);
+            String str = upper.toUpperCase() + category.substring(1);
+
+            long days = givenValidUntilDifference(validUntil);
+            if (!currentService.mintNft(name, str, description, url, new BigInteger(price),
+                    BigInteger.valueOf(days), new BigInteger(sale))){
+                ajaxResponse.addMsg("errorMint", "error");
+                return ajaxResponse;
+            }
+            ajaxResponse.addMsg("ok", "ok");
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/delete-nft")
+    public AjaxResponse deleteNft(@RequestParam(value = "id") String id,
+                                  @RequestParam(value = "address") String address,
+                                  HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (address != null && session.getAttribute("admin") != null &&
+                session.getAttribute("service") != null) {
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                    address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0 ) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            if (currentService.balanceOf(session.getAttribute("admin").toString(), new BigInteger(id)) == 1L){
+                String jsonString = currentService.getNftById(
+                        session.getAttribute("admin").toString(), new BigInteger(id));
+                JSONObject obj = (JSONObject) new JSONParser().parse(jsonString);
+
+                if (obj.get("sold").toString().compareTo("false") == 0 &&
+                    obj.get("owner").toString().compareToIgnoreCase(address) == 0){
+                    if (currentService.burnNft(new BigInteger(id))){
+                        String[] url = (obj.get("url").toString()).split("https://gateway.pinata.cloud/ipfs/");
+                        ajaxResponse.addMsg("hash", url[1]);
+                        ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+                        ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+                        return ajaxResponse;
+                    }
+                    ajaxResponse.addMsg("errorBurn", "error");
+                    return ajaxResponse;
+                }
+                ajaxResponse.addMsg("bought", "error");
+                return ajaxResponse;
+            }
+            ajaxResponse.addMsg("notNft", "ok");
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    private boolean regexField(String pattern, String field) {
+        if (field != null && !field.isBlank() && pattern != null) {
+            if (pattern.compareTo("category") == 0) {
+                return field.compareToIgnoreCase("Accessori") == 0 || field.compareToIgnoreCase("Corsi") == 0 ||
+                        field.compareToIgnoreCase("Documentazione") == 0 || field.compareToIgnoreCase("Incontri") == 0;
+            }
+            else {
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(field);
+                return m.find();
+            }
+        }
+        return false;
+    }
+
+    private long givenValidUntilDifference(String validUntil) throws java.text.ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date firstDate = sdf.parse(validUntil);
+        Date secondDate = new Date();
+
+        long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
+        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS) + 1;
+    }
+
+
+    /*=================================== NFT Marketplace Servlet (User Role) ========================================*/
+    
 }

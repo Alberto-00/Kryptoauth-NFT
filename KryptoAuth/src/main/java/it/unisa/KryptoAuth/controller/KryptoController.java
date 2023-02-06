@@ -1,6 +1,7 @@
 package it.unisa.KryptoAuth.controller;
 
 import it.unisa.KryptoAuth.model.User;
+import it.unisa.KryptoAuth.service.BlockchainServiceImpl;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -51,15 +53,7 @@ public class KryptoController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession();
-
-        if (request.getAttribute("user") != null)
-            session.removeAttribute("user");
-
-        if (request.getAttribute("admin") != null)
-            session.removeAttribute("admin");
-
-        session.invalidate();
+        invalidateSession(request.getSession());
         return "redirect:/kryptoauth";
     }
 
@@ -69,7 +63,9 @@ public class KryptoController {
         if (session.getAttribute("user") == null && session.getAttribute("admin") == null) {
             model.addAttribute("user", new User());
             return "/page/register";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 
     @GetMapping("/login")
@@ -78,48 +74,95 @@ public class KryptoController {
         if (session.getAttribute("user") == null && session.getAttribute("admin") == null) {
             model.addAttribute("user", new User());
             return "/page/login";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 
     @GetMapping("/amministrazione")
-    public String loginAdmin(Model model, HttpServletRequest request) throws Exception{
+    public String administration(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null) {
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
             model.addAttribute( "listAddress", readFileAddress());
             return "/page/admin";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 
     @GetMapping("/marketplace")
     public String adminMarketplace(HttpServletRequest request){
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null) {
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
             return "/page/NFT-marketplace/admin/admin-marketplace";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 
-    @GetMapping("/setup-nft")
-    public String setupNft(HttpServletRequest request){
+    @GetMapping("/marketplace/info-nft")
+    public String infoNft(@RequestParam("id") String id,
+                          Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null) {
-            return "/page/NFT-marketplace/admin/setup-nft";
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            try {
+                String jsonString = currentService.getNftById(session.getAttribute("admin").toString(), new BigInteger(id));
+                if (jsonString.compareTo("[]") == 0){
+                    invalidateSession(session);
+                    return "/error/500";
+                }
+                List<String> nft = new ArrayList<>();
+                JSONObject obj = (JSONObject) new JSONParser().parse(jsonString);
+                nft.add(obj.get("name").toString());
+                nft.add(obj.get("description").toString());
+                nft.add(obj.get("url").toString());
+                nft.add(obj.get("category").toString());
+                nft.add(obj.get("price").toString());
+                nft.add(obj.get("validUntil").toString());
+                nft.add(obj.get("sale").toString());
+                nft.add(obj.get("tokenId").toString());
+
+                model.addAttribute("nft", nft);
+            } catch (Exception e) {
+                invalidateSession(session);
+                return "/error/500";
+            }
+            return "/page/NFT-marketplace/admin/info-nft";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 
-    @GetMapping("/create-nft")
-    public String createNft(HttpServletRequest request){
+    @GetMapping("/marketplace/create-nft")
+    public String createNft(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null) {
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
             return "/page/NFT-marketplace/admin/create-nft";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
-        } return "/error/500";
+        }
+        invalidateSession(session);
+        return "/error/500";
+    }
+
+    private void invalidateSession(HttpSession session){
+        if (session.getAttribute("user") != null)
+            session.removeAttribute("user");
+
+        if (session.getAttribute("admin") != null)
+            session.removeAttribute("admin");
+
+        if (session.getAttribute("service") != null)
+            session.removeAttribute("service");
+
+        session.invalidate();
     }
 
     private List<String> readFileAddress(){
