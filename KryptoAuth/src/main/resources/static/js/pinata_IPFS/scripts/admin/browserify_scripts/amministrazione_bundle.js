@@ -44081,7 +44081,8 @@ function ajaxActiveAddress(address, status, role, addressMetamask){
             }
 
             if (data.msgError['success'] != null){
-                openPopupSuccess("Salvataggio effettuato.")
+                openPopupSuccess()
+                $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
 
                 const datas = data.msgError['success'].split(",")
                 const $radios = $('input:radio[name="user"]')
@@ -44158,7 +44159,8 @@ function ajaxDisactiveAddress(address, status, role, addressMetamask){
                 if (data.msgError['success'] != null){
                     const datas = data.msgError['success'].split(",")
                     const $radios = $('input:radio[name="user"]')
-                    openPopupSuccess("Salvataggio effettuato.")
+                    openPopupSuccess()
+                    $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
 
                     if (datas[0] === "Non Attivo"){
                         const $active = $('#active' + role)
@@ -44205,14 +44207,11 @@ function ajaxRevokeAllRoles(address){
                     pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
                     pinata.testAuthentication().then((result) => {
-                        openPopupSuccess("")
-
-                        $('#popupSuccess').children('div').eq(1)
-                            .children('p').eq(0).html("Attendi...").eq(1).
-                        html("A breve verrai reindirizzato<br> all'HomePage" +
-                            "<div class='icon-box-success'>" +
-                            "   <img src='/img/icons/check-solid.svg' alt='check'>" +
-                            "</div>");
+                        openPopupSuccess()
+                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(2)')
+                            .html("A breve verrai reindirizzato<br> all'HomePage")
+                        $('#confirmPopupSuccess').remove()
 
                         deleteNft(burned).then((result) => {
                             window.location.href = "/kryptoauth/logout"
@@ -44264,14 +44263,11 @@ function ajaxRevokeAdmin(address){
                     pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
                     pinata.testAuthentication().then((result) => {
-                        openPopupSuccess("")
-
-                        $('#popupSuccess').children('div').eq(1)
-                            .children('p').eq(0).html("Attendi...").eq(1).
-                            html("A breve verrai reindirizzato<br> all'HomePage" +
-                            "<div class='icon-box-success'>" +
-                            "   <img src='/img/icons/check-solid.svg' alt='check'>" +
-                            "</div>");
+                        openPopupSuccess()
+                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(2)')
+                            .html("A breve verrai reindirizzato<br> all'HomePage")
+                        $('#confirmPopupSuccess').remove()
 
                         deleteNft(burned).then((result) => {
                             window.location.href = "/kryptoauth/logout"
@@ -44320,12 +44316,7 @@ function closePopupError(){
     $("#popupError").fadeOut();
 }
 
-function openPopupSuccess(text){
-    $('#popupSuccess').children('div').eq(1)
-        .children('p').eq(1).html(text +
-        "<div class='icon-box-success'>" +
-        "   <img src='/img/icons/check-solid.svg' alt='check'>" +
-        "</div>");
+function openPopupSuccess(){
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
 }

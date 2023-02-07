@@ -44027,7 +44027,7 @@ function ajaxDeleteNft(addr){
                 flag = false;
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("Impossibile eliminare: questo NFT" +
+                    .html("Eliminazione fallita: questo NFT" +
                         "<br>è stato già acquistato da un utente.");
             }
             else if (data.msgError['errorBurn'] != null){
