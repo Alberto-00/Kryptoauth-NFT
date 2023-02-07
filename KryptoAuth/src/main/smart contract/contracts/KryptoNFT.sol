@@ -144,9 +144,15 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         require(balanceOf(msg.sender, _tokenId)  > 0 , "This address not have this NFT");
         require(isValid(_tokenId), "NFT is expired");
 
-        nft.sold = false;
-        nft.owner = nft.seller;
-        safeTransferFrom(msg.sender, nft.seller, _tokenId, 1, bytes(nft.name));
+        if(isAdmin(nft.seller)){
+            nft.sold = false;
+            nft.owner = nft.seller;
+            safeTransferFrom(msg.sender, nft.seller, _tokenId, 1, bytes(nft.name));
+        }
+        else{
+            nft.burned = true;
+            _burn(msg.sender, _tokenId, 1);
+        }
         _mint(msg.sender, 0, nft.price, "KryptoToken");
     }
 
@@ -158,22 +164,25 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         require(balanceOf(msg.sender, _tokenId)  > 0 , "This address not have this NFT");
         require(isValid(_tokenId), "NFT is expired");
 
-        nft.sold = false;
-        nft.owner = nft.seller;
-        safeTransferFrom(msg.sender, nft.seller, _tokenId, 1, bytes(nft.name));
+        if(isAdmin(nft.seller)){
+            nft.sold = false;
+            nft.owner = nft.seller;
+            safeTransferFrom(msg.sender, nft.seller, _tokenId, 1, bytes(nft.name));
+        }
+        else{
+            nft.burned = true;
+            _burn(msg.sender, _tokenId, 1);
+        }
     }
 
     /* User burn his NFT expired */
-    function burnNFTexpired(uint256 _tokenId) public onlyUser {
+    function burnNFTUser(uint256 _tokenId) public onlyUser {
         require(_tokenId > 0, "This is not an NFT");
 
         NFT storage nft = _idToNFT[_tokenId];
         require(balanceOf(msg.sender, _tokenId)  > 0 , "This address not have this NFT");
-        require(!isValid(_tokenId), "NFT isn't expired");
 
-        nft.sold = false;
         nft.burned = true;
-        nft.owner = nft.seller;
         _burn(msg.sender, _tokenId, 1);
     }
 
@@ -189,6 +198,11 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         isSaleActive = _flag;
     }
 
+    /* Returns the state of the sale */
+    function isMarketplaceActive() public view returns (bool) {
+        return isSaleActive;
+    }
+
     /* Updates the price of the Token coin */
     function setTokenPrice(uint256 _priceToken) public onlyAdmin {
         priceToken = _priceToken;
@@ -199,17 +213,41 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         return balanceOf(msg.sender, 0);
     }
 
+    /* Returns NFTs of all Admins */
+    function getNftsAllAdmin() public view returns (string memory) {
+        string memory data = "[";
+        uint size = _nftCount.current();
+        bool flag = false;
+
+        for (uint i = 0; i < size; i++) {
+            if (_idToNFT[i + 1].owner == _idToNFT[i + 1].seller &&
+                balanceOf(_idToNFT[i + 1].owner, _idToNFT[i + 1].tokenId) == 1){
+                if(!flag)
+                    data = string.concat(data, getNft(i + 1));
+                else{
+                    flag = true;
+                    data = string.concat(data, ',', getNft(i + 1));
+                }
+            }
+        }
+        data = string.concat(data, "]");
+        return data;
+    }
+
     /* Returns NFTs of an address  */
     function getMyNfts() public view returns (string memory) {
         string memory data = string(abi.encodePacked("["));
         uint size = _nftCount.current();
+        bool flag = false;
 
         for (uint i = 0; i < size; i++) {
             if (balanceOf(msg.sender, _idToNFT[i + 1].tokenId) == 1){
-                if(i == size - 1)
+                if(!flag)
                     data = string.concat(data, getNft(i + 1));
-                else
-                    data = string.concat(data, getNft(i + 1), ',');
+                else{
+                    flag = true;
+                    data = string.concat(data, ',', getNft(i + 1));
+                }
             }
         }
         data = string.concat(data, "]");

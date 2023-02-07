@@ -266,9 +266,9 @@ function ajaxCreateNft($userAddress){
                                 for(let i = 0;  i < nfts.length; i++) {
                                     if (nfts[i].metadata.name === data.msgError['name']) {
                                         uploadNft(nfts[i].ipfs_pin_hash, data);
-                                        appendNftPinata(nfts);
                                         ajaxSaveOnBlockchain(data, nfts[i].ipfs_pin_hash);
                                         nfts.splice(i, 1);
+                                        appendNftPinata(nfts);
                                         cleanInput();
                                         return;
                                     }
@@ -377,7 +377,7 @@ function uploadNft(cid, data){
    pinata.hashMetadata(cid, metadata).then((result) => {
         openPopupSuccess()
         $('div.success-p').children('p').eq(1)
-            .html("Il tuo NFT è stato caricato <br> con successo.");
+            .html("Il tuo NFT è stato creato <br> con successo.");
     }).catch((err) => {
         openPopupError()
         $('div.error-p').children('p').eq(1)

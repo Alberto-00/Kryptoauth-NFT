@@ -79,10 +79,15 @@ public class KryptoController {
         return "/error/500";
     }
 
+    /*=============================================== Admin Page =====================================================*/
     @GetMapping("/amministrazione")
-    public String administration(Model model, HttpServletRequest request) {
+    public String administration(Model model, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("admin") != null && currentService != null &&
+                currentService.isAdmin(session.getAttribute("admin").toString())) {
+
             model.addAttribute( "listAddress", readFileAddress());
             return "/page/admin";
         } else if (session.getAttribute("user") != null) {
@@ -93,9 +98,12 @@ public class KryptoController {
     }
 
     @GetMapping("/marketplace")
-    public String adminMarketplace(HttpServletRequest request){
+    public String adminMarketplace(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("admin") != null && currentService != null &&
+                currentService.isAdmin(session.getAttribute("admin").toString())) {
             return "/page/NFT-marketplace/admin/admin-marketplace";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
@@ -106,10 +114,12 @@ public class KryptoController {
 
     @GetMapping("/marketplace/info-nft")
     public String infoNft(@RequestParam("id") String id,
-                          Model model, HttpServletRequest request){
+                          Model model, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
-            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("admin") != null && currentService != null &&
+                currentService.isAdmin(session.getAttribute("admin").toString())) {
             try {
                 String jsonString = currentService.getNftById(session.getAttribute("admin").toString(), new BigInteger(id));
                 if (jsonString.compareTo("[]") == 0){
@@ -141,9 +151,12 @@ public class KryptoController {
     }
 
     @GetMapping("/marketplace/create-nft")
-    public String createNft(Model model, HttpServletRequest request){
+    public String createNft(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null && session.getAttribute("service") != null) {
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("admin") != null && currentService != null &&
+                currentService.isAdmin(session.getAttribute("admin").toString())) {
             return "/page/NFT-marketplace/admin/create-nft";
         } else if (session.getAttribute("user") != null) {
             return "/error/401";
@@ -185,5 +198,37 @@ public class KryptoController {
             e.printStackTrace();
         }
         return address;
+    }
+
+
+    /*================================================ User Page =====================================================*/
+    @GetMapping("/marketplace-user")
+    public String userMarketplace(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("user") != null && currentService != null &&
+                currentService.isUser(session.getAttribute("user").toString())) {
+            return "/page/NFT-marketplace/user/user-marketplace";
+        } else if (session.getAttribute("admin") != null) {
+            return "/error/401";
+        }
+        invalidateSession(session);
+        return "/error/500";
+    }
+
+    @GetMapping("/profile")
+    public String userProfile(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+
+        if (session.getAttribute("user") != null && currentService != null &&
+                currentService.isUser(session.getAttribute("user").toString())) {
+            return "/page/NFT-marketplace/user/user-profile";
+        } else if (session.getAttribute("admin") != null) {
+            return "/error/401";
+        }
+        invalidateSession(session);
+        return "/error/500";
     }
 }

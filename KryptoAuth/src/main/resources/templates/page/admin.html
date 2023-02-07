@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
     <script th:src="@{/js/scrollUp.js}"></script>
-    <script th:src="@{/js/admin.js}" defer></script>
+    <script th:src="@{/js/pinata_IPFS/scripts/admin/browserify_scripts/amministrazione_bundle.js}" defer></script>
 </head>
 <body>
     <div th:replace="partials/header :: #pageloader"></div>
@@ -99,15 +99,21 @@
                                 </div>
                             </td>
                             <td>
-                                <a th:attr="onclick=|activeAddress('${userInfo[0]}', '${userInfo[3]}', '${iter.index}')|"  style="padding: 0!important; min-width: 100px;"
-                                   class="size button k-button k-primary raised has-gradient-table is-fat is-bold">
+                                <a style="padding: 0!important; min-width: 100px;"
+                                   class="activeAddress size button k-button k-primary raised has-gradient-table is-fat is-bold">
+                                    <label th:text="${userInfo[0]}" hidden></label>
+                                    <label th:text="${userInfo[3]}" hidden></label>
+                                    <label th:text="${iter.index}" hidden></label>
                                     <span class="text">Attiva</span>
                                     <span class="front-gradient"></span>
                                 </a>
                             </td>
                             <td>
-                                <a th:attr="onclick=|disactiveAddress('${userInfo[0]}', '${userInfo[3]}', '${iter.index}')|"  style="padding: 0!important; min-width: 100px;"
-                                   class="size button k-button k-primary raised has-gradient-table-error is-fat is-bold">
+                                <a style="padding: 0!important; min-width: 100px;"
+                                   class="disactiveAddress size button k-button k-primary raised has-gradient-table-error is-fat is-bold">
+                                    <label th:text="${userInfo[0]}" hidden></label>
+                                    <label th:text="${userInfo[3]}" hidden></label>
+                                    <label th:text="${iter.index}" hidden></label>
                                     <span class="text">Disattiva</span>
                                     <span class="front-gradient"></span>
                                 </a>

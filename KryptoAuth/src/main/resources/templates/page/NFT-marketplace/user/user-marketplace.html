@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <th:block th:include="partials/head :: head"></th:block>
+  <title>Kryptoauth - NFT Marketplace</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/user/show-marketplace.css}">
+  <script th:src="@{/js/scrollUp.js}"></script>
+  <script th:src="@{/js/technologies.js}"></script>
+  <script th:src="@{/js/pinata_IPFS/scripts/user/show-marketplace.js}"></script>
+</head>
+<body>
+<div th:replace="partials/header :: #pageloader"></div>
+<div th:replace="partials/header :: #infraloader"></div>
+<div th:replace="partials/header :: #scrollUp"></div>
+
+<div class="media-wrapper">
+  <!-- Landing page Hero -->
+  <section class="hero">
+    <div th:replace="partials/header :: header"></div>
+
+    <!-- Hero Image and Title -->
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-vcentered">
+
+          <!-- Landing page Title -->
+          <div class="column is-5 is-offset-1 landing-caption">
+            <div class="divider"></div>
+            <h1 class="title is-1 is-light is-semibold is-spaced main-title">Negozio NFT</h1>
+            <h2 class="subtitle is-6 is-light is-thin">
+              Benvenuto nel Kryptoauth Store.<br>
+              Qui puoi comprare diversi NFT per ottenere fantastici sconti.
+            </h2>
+
+          </div>
+          <!-- Hero image -->
+          <div class="column is-6">
+            <figure class="image">
+              <img th:src="@{/img/illustrations/bounty.svg}" alt="">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-9">
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+
+            <!-- Here we show NTF by show-marketplace.js-->
+
+            <!-- CTA -->
+            <div class="cta-wrapper has-text-centered">
+              <a href="#" id="loadMore" class="button k-button k-primary raised has-gradient is-bold">
+                <span class="text">Carica Altro</span>
+                <span class="front-gradient"></span>
+              </a>
+            </div>
+          </div>
+          <!-- /Content wrapper -->
+        </div>
+        <div class="column is-3">
+          <div class="categories-widget">
+            <div class="widget-title">Categorie</div>
+            <ul class="categories-list">
+              <li>
+                <a class="category is-active">
+                  <span>Tutti NFT</span>
+                  <span class="tag allnfts"></span>
+                </a>
+              </li>
+              <li><a class="category">Accessori</a></li>
+              <li><a class="category">Corsi</a></li>
+              <li><a class="category">Documentazione</a></li>
+              <li><a class="category">Incontri</a></li>
+            </ul>
+          </div>
+
+          <div class="tags-widget">
+            <div class="widget-title">Tags</div>
+            <div class="tags">
+              <span class="tag">Blockchain</span>
+              <span class="tag">Ethereum</span>
+              <span class="tag">NFT</span>
+              <span class="tag">FT</span>
+              <span class="tag">KryptoToken</span>
+              <span class="tag">ERC-1155</span>
+              <span class="tag">Wallet</span>
+              <span class="tag">Metamask</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- send address to backend -->
+<input hidden name="userAddress" value="">
+<div th:replace="partials/footer :: footer"></div>
+<div th:replace="partials/popupError :: popupError"></div>
+<div id="false" class="shadow"></div>
+</body>
+</html>

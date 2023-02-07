@@ -17,7 +17,7 @@ import java.math.BigInteger;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0xbef9de2fBfF86E2c12eB007D5A89e9D910462228";
+    private final static String CONTRACT_ADDRESS = "0x4B87D62489c82A75cf49279cfdfd9EC2E0c5156e";
     private final static String ipfs = "https://gateway.pinata.cloud/ipfs/";
     private final KryptoNFT kryptoNFT;
 
@@ -86,7 +86,8 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     /*======================================= KryptoNFT contract ==============================================*/
     @Override
-    public boolean mintNft(String name, String category, String description, String url, BigInteger price, BigInteger validUntil, BigInteger sale) throws Exception {
+    public boolean mintNft(String name, String category, String description,
+                           String url, BigInteger price, BigInteger validUntil, BigInteger sale) throws Exception {
         return kryptoNFT.mintNft(name, category, description, ipfs + url, price, validUntil, sale).send().isStatusOK();
     }
 
@@ -126,8 +127,8 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     @Override
-    public boolean burnNftExpired(BigInteger id) throws Exception {
-        return kryptoNFT.burnNFTexpired(id).send().isStatusOK();
+    public boolean burnNftUser(BigInteger id) throws Exception {
+        return kryptoNFT.burnNFTUser(id).send().isStatusOK();
     }
 
     @Override
@@ -138,6 +139,11 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public boolean flipSaleState(boolean flag) throws Exception {
         return kryptoNFT.flipSaleState(flag).send().isStatusOK();
+    }
+
+    @Override
+    public boolean isMarketplaceActive() throws Exception {
+        return kryptoNFT.isMarketplaceActive().send();
     }
 
     @Override
@@ -163,10 +169,12 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public String getNftById(String address, BigInteger id) throws Exception{
-        if (kryptoNFT.balanceOf(address, id).send().compareTo(BigInteger.valueOf(1)) == 0){
-            return kryptoNFT.getNft(id).send();
-        }
-        return "[]";
+        return kryptoNFT.getNft(id).send();
+    }
+
+    @Override
+    public String getNftsAllAdmin() throws Exception {
+        return kryptoNFT.getNftsAllAdmin().send();
     }
 
     @Override

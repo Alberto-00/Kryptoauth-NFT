@@ -69,7 +69,7 @@ function ajaxDeleteNft(addr){
                 flag = false;
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("Impossibile eliminare: questo NFT" +
+                    .html("Eliminazione fallita: questo NFT" +
                         "<br>è stato già acquistato da un utente.");
             }
             else if (data.msgError['errorBurn'] != null){
@@ -99,8 +99,6 @@ function ajaxDeleteNft(addr){
 function deleteNft(ipfsPinHash){
     pinata.unpin(ipfsPinHash).then((result) => {
         openPopupSuccess()
-        $('div.success-p p:nth-child(2)')
-            .html("Eliminazione completata <br>con successo.");
         flag = true;
     }).catch((err) => {
         flag = false;
@@ -169,6 +167,9 @@ function closePopupError(){
 }
 
 function openPopupSuccess(){
+    $('div.success-p p:nth-child(2)')
+        .html("Eliminazione completata <br>con successo.");
+
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
     $("html, body").animate({scrollTop: 0}, 700);

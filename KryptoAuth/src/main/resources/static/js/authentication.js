@@ -256,7 +256,6 @@ function ajaxLogin($privateKey, $userAddress){
             }
 
             if (data.msgError['email'] != null) {
-                console.log("hhhh")
                 if ($emailInput.length)
                     $emailInput.remove()
                 $('input[name="email"]').after('<label id="email-error" class="error" for="email">' + data.msgError['email'] + '</label>')
@@ -420,6 +419,7 @@ function ajaxRegister($privateKey, $userAddress){
 
             if (data.msgError['success'] != null){
                 openPopupSuccess();
+                $('div.icon-box-success').remove()
             }
 
             if (data.msgError['adminActive'] != null){

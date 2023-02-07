@@ -1,3 +1,5 @@
+const pinataSDK = require('@pinata/sdk');
+var pinata;
 var globalAddress, globalStatus, globalRole, operation
 window.userWalletAddress = null
 
@@ -33,46 +35,45 @@ $(document).ready(function (){
         else if (operation === "user")
             ajaxRevokeAdmin(globalAddress)
     })
+
+    $('a.activeAddress').click(function (){
+        globalStatus = $(this).children('label').eq(1).text()
+        globalAddress = $(this).children('label').eq(0).text()
+        globalRole = $(this).children('label').eq(2).text()
+        operation = 'user'
+
+        if (sendAddressToBackend().localeCompare("ok") === 0){
+            const $userAddress = $("input[name='userAddress']")
+
+            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
+            } else {
+                ajaxActiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
+            }
+        }
+    })
+
+    $('a.disactiveAddress').click(function (){
+        globalStatus = $(this).children('label').eq(1).text()
+        globalAddress = $(this).children('label').eq(0).text()
+        globalRole = $(this).children('label').eq(2).text()
+        operation = "disactive"
+
+        if (sendAddressToBackend().localeCompare("ok") === 0){
+            const $userAddress = $("input[name='userAddress']")
+
+            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
+            } else {
+                ajaxDisactiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
+            }
+        }
+    })
 })
-
-function activeAddress(address, status, role){
-    globalStatus = status
-    globalAddress = address
-    globalRole = role
-    operation = 'user'
-
-    if (sendAddressToBackend().localeCompare("ok") === 0){
-        const $userAddress = $("input[name='userAddress']")
-
-        if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Nessun account rilevato. <br>Accedere a Metamask.");
-        } else {
-            ajaxActiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
-        }
-    }
-}
-
-function disactiveAddress(address, status, role){
-    globalStatus = status
-    globalAddress = address
-    globalRole = role
-    operation = "disactive"
-
-    if (sendAddressToBackend().localeCompare("ok") === 0){
-        const $userAddress = $("input[name='userAddress']")
-
-        if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Nessun account rilevato. <br>Accedere a Metamask.");
-        } else {
-            ajaxDisactiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
-        }
-    }
-
-}
 
 function ajaxActiveAddress(address, status, role, addressMetamask){
     var $role
@@ -123,6 +124,7 @@ function ajaxActiveAddress(address, status, role, addressMetamask){
 
             if (data.msgError['success'] != null){
                 openPopupSuccess()
+                $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
 
                 const datas = data.msgError['success'].split(",")
                 const $radios = $('input:radio[name="user"]')
@@ -200,6 +202,7 @@ function ajaxDisactiveAddress(address, status, role, addressMetamask){
                     const datas = data.msgError['success'].split(",")
                     const $radios = $('input:radio[name="user"]')
                     openPopupSuccess()
+                    $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
 
                     if (datas[0] === "Non Attivo"){
                         const $active = $('#active' + role)
@@ -233,14 +236,44 @@ function ajaxRevokeAllRoles(address){
         url: "/kryptoauth/revokeRoles",
         data: {
             address: address,
+            role: globalStatus
         },
         dataType: 'json',
         success: function (data) {
             if (data.msgError['redirect'] != null) {
-                window.location.href = "/kryptoauth/logout"
-            }
+                const burned = data.msgError['burned'].split(",");
 
-            if (data.msgError['error'] != null){
+                if (burned[0] !== ""){
+                    const PINATA_API_KEY = data.msgError['pinata_key'];
+                    const PINATA_API_SECRET = data.msgError['pinata_secret'];
+                    pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
+
+                    pinata.testAuthentication().then((result) => {
+                        openPopupSuccess()
+                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(2)')
+                            .html("A breve verrai reindirizzato<br> all'HomePage")
+                        $('#confirmPopupSuccess').remove()
+
+                        deleteNft(burned).then((result) => {
+                            window.location.href = "/kryptoauth/logout"
+                        });
+                    }).catch((err) => {
+                        console.log(err)
+                        openPopupError()
+                        $('div.error-p').children('p').eq(1)
+                            .html("Qualcosa è andato storto.<br>Riprovare.");
+                    });
+                }
+            }
+            else if (data.msgError['nftToBeAssigned'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Impossibile disattivare l'account:<br>NFT <i>" +
+                        data.msgError['nftToBeAssigned'] + "</i> da assegnare.");
+            }
+            else if (data.msgError['error'] != null){
                 closePopupErrorRevokeRole()
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
@@ -259,13 +292,43 @@ function ajaxRevokeAdmin(address){
         url: "/kryptoauth/revokeAdmin",
         data: {
             address: address,
+            role: globalStatus
         },
         dataType: 'json',
         success: function (data) {
             if (data.msgError['redirect'] != null) {
-                window.location.href = "/kryptoauth/logout"
-            }
+                const burned = data.msgError['burned'].split(",");
 
+                if (burned[0] !== ""){
+                    const PINATA_API_KEY = data.msgError['pinata_key'];
+                    const PINATA_API_SECRET = data.msgError['pinata_secret'];
+                    pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
+
+                    pinata.testAuthentication().then((result) => {
+                        openPopupSuccess()
+                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(2)')
+                            .html("A breve verrai reindirizzato<br> all'HomePage")
+                        $('#confirmPopupSuccess').remove()
+
+                        deleteNft(burned).then((result) => {
+                            window.location.href = "/kryptoauth/logout"
+                        });
+                    }).catch((err) => {
+                        console.log(err)
+                        openPopupError()
+                        $('div.error-p').children('p').eq(1)
+                            .html("Qualcosa è andato storto.<br>Riprovare.");
+                    });
+                }
+            }
+            if (data.msgError['nftToBeAssigned'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Impossibile disattivare l'account:<br>NFT <i>" +
+                        data.msgError['nftToBeAssigned'] + "</i> da assegnare.");
+            }
             if (data.msgError['error'] != null){
                 closePopupErrorRevokeRole()
                 openPopupError()
@@ -279,9 +342,14 @@ function ajaxRevokeAdmin(address){
     });
 }
 
+async function deleteNft(ipfsPinHash){
+    for (let i = 0; i < ipfsPinHash.length - 1; i++) {
+        await pinata.unpin(ipfsPinHash[i]);
+    }
+}
+
 function openPopupError(){
-    $(".shadow").fadeIn();
-    $(".shadow").css("display", "block");
+    $(".shadow").fadeIn().css("display", "block");
     $("#popupError").css("display", "block");
 }
 
@@ -291,11 +359,6 @@ function closePopupError(){
 }
 
 function openPopupSuccess(){
-    $('#popupSuccess').children('div').eq(1)
-        .children('p').eq(1).html("Salvataggio effettuato." +
-        "<div class='icon-box-success'>" +
-        "   <img src='/img/icons/check-solid.svg' alt='check'>" +
-        "</div>");
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
 }

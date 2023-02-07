@@ -68,6 +68,18 @@
               <a class="is-centered-responsive" href="/kryptoauth/amministrazione">Amministrazione</a>
             </div>
           </th:block>
+          <!-- Menu item -->
+          <th:block th:if="${session.user} != null">
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" href="/kryptoauth/marketplace-user">Marketplace</a>
+            </div>
+          </th:block>
+          <!-- Menu item -->
+          <th:block th:if="${session.user} != null">
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" href="/kryptoauth/profile">Profilo</a>
+            </div>
+          </th:block>
           <!-- Sign up -->
           <div class="navbar-item is-nav-link">
             <th:block th:if="${session.user} == null AND ${session.admin} == null">
@@ -141,6 +153,18 @@
           <th:block th:if="${session.admin} != null">
             <div class="navbar-item is-nav-link">
               <a class="is-centered-responsive" href="/kryptoauth/amministrazione">Amministrazione</a>
+            </div>
+          </th:block>
+          <!-- Menu item -->
+          <th:block th:if="${session.user} != null">
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" href="/kryptoauth/marketplace-user">Marketplace</a>
+            </div>
+          </th:block>
+          <!-- Menu item -->
+          <th:block th:if="${session.user} != null">
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" href="/kryptoauth/profile">Profilo</a>
             </div>
           </th:block>
           <!-- Sign up -->

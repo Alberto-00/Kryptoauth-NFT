@@ -1,5 +1,3 @@
-const pinataSDK = require('@pinata/sdk');
-var pinata;
 window.userWalletAddress = null
 
 $(document).ready(function (){
@@ -13,17 +11,12 @@ $(document).ready(function (){
 
     $(".shadow").click(function () {
         closePopupError()
-        closePopupSuccess()
 
         if ($('#true').length) {
             closePopupError()
             window.location.href = "/kryptoauth"
         }
     });
-
-    $('#confirmPopupSuccess').click(function () {
-        closePopupSuccess()
-    })
 
     $('#confirmPopupError').click(function () {
         closePopupError()
@@ -46,99 +39,12 @@ $(document).ready(function (){
             }
         }
     })
-
-    $('#burnNftExpired').click(function (){
-        if (sendAddressToBackend().localeCompare("ok") === 0){
-            const $userAddress = $("input[name='userAddress']")
-
-            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
-            } else {
-                ajaxBurnNftExpired($userAddress.val())
-            }
-        }
-    })
-
-    $('#openMarketplace').click(function (){
-        if (sendAddressToBackend().localeCompare("ok") === 0){
-            const $userAddress = $("input[name='userAddress']")
-
-            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
-            } else {
-                ajaxoFlipMarketplace($userAddress.val(), true);
-            }
-        }
-    })
-
-    $('#closeMarketplace').click(function (){
-        if (sendAddressToBackend().localeCompare("ok") === 0){
-            const $userAddress = $("input[name='userAddress']")
-
-            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
-            } else {
-                ajaxoFlipMarketplace($userAddress.val(), false)
-            }
-        }
-    })
 })
-
-function ajaxoFlipMarketplace(userAddress, flag){
-    $.ajax({
-        type: "POST",
-        url: "/kryptoauth/marketplace/open-marketplace",
-        data: {
-            addressMetamask: userAddress,
-            flag: flag
-        },
-        dataType: 'json',
-        success: function (data) {
-            if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/500"
-            }
-            else if (data.msgError['invalidUser'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Hai cambiato account in Metamask." +
-                        "<br>Seleziona quello corretto.");
-            }
-            else if (data.msgError['error'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Qualcosa è andato storto.<br>Riprovare.");
-            }
-            else if (data.msgError['flag'] != null){
-                let flag = "Negozio chiuso";
-
-                if (data.msgError['flag'] === "true")
-                    flag = "Negozio aperto";
-
-                $('#flipMarketplace').fadeIn(800).html(flag)
-                    .delay(1000).fadeOut(800)
-            }
-        },
-        error: function (e) {
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Qualcosa è andato storto.<br>Riprovare.");
-
-            if ($('#false').length)
-                $('#false').attr("id", "true");
-        }
-    });
-}
 
 function ajaxGetNftByCategory($category, addrMetamask){
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/marketplace",
+        url: "/kryptoauth/marketplace-user",
         data: {
             addressMetamask: addrMetamask
         },
@@ -157,15 +63,16 @@ function ajaxGetNftByCategory($category, addrMetamask){
                 var nftArr = JSON.parse(data.msgError['jsonData']);
                 if ($category === "all" || $category.children(":first").text() === "Tutti NFT" ||
                     $category.text() === "Tutti NFT"){
-                   if ($category === "all")
+                    if ($category === "all")
                         $('.allnfts').text(nftArr.length);
                     else
                         cssCategory($category, nftArr.length)
 
                     $('div.blog-post').remove()
                     if (nftArr.length !== 0){
-                        for (let i = 0; i < nftArr.length; i++)
+                        for (let i = 0; i < nftArr.length; i++){
                             appendNft(nftArr, i);
+                        }
                     }
                 }
                 else {
@@ -175,7 +82,7 @@ function ajaxGetNftByCategory($category, addrMetamask){
                         for (let i = 0; i < nftArr.length; i++) {
                             if (nftArr[i].seller.toLowerCase() === data.msgError['adminAddress'].toLowerCase()
                                 && (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
-                                || nftArr[i].category.toLowerCase() === $category.text().toLowerCase())){
+                                    || nftArr[i].category.toLowerCase() === $category.text().toLowerCase())){
                                 appendNft(nftArr, i);
                                 count++;
                             }
@@ -195,78 +102,6 @@ function ajaxGetNftByCategory($category, addrMetamask){
                 $('#false').attr("id", "true");
         }
     });
-}
-
-function ajaxBurnNftExpired(userAddress){
-    $.ajax({
-        type: "POST",
-        url: "/kryptoauth/marketplace/delete-nft-expired",
-        data: {
-            addressMetamask: userAddress
-        },
-        dataType: 'json',
-        success: function (data) {
-            if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/500"
-            }
-            else if (data.msgError['invalidUser'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Hai cambiato account in Metamask." +
-                        "<br>Seleziona quello corretto.");
-            }
-            else {
-                var nftArr = JSON.parse(data.msgError['jsonData']);
-                const burned = data.msgError['burned'].split(",");
-
-                if (burned[0] !== ""){
-                    const PINATA_API_KEY = data.msgError['pinata_key'];
-                    const PINATA_API_SECRET = data.msgError['pinata_secret'];
-                    pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
-
-                    pinata.testAuthentication().then((result) => {
-                        for (let i = 0; i < burned.length - 1; i++){
-                            deleteNft(burned[i]);
-                        }
-                        openPopupSuccess()
-                        $('div.success-p p:nth-child(2)')
-                            .html("Gli NFT scaduti sono stati <br> eliminati con successo.");
-
-                        cssCategory($('ul.categories-list li:nth-child(1) a'), nftArr.length)
-                        $('div.blog-post').remove()
-                        if (nftArr.length !== 0){
-                            for (let i = 0; i < nftArr.length; i++)
-                                appendNft(nftArr, i);
-                        }
-                    }).catch((err) => {
-                        console.log(err)
-                        openPopupError()
-                        $('div.error-p').children('p').eq(1)
-                            .html("Qualcosa è andato storto.<br>Riprovare.");
-                    });
-                }
-                else {
-                    openPopupError()
-                    $('div.error-p').children('p').eq(1)
-                        .html("Nessun NFT scaduto.");
-                }
-            }
-        },
-        error: function (e) {
-            console.log(e);
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Qualcosa è andato storto.<br>Riprovare.");
-
-            if ($('#false').length)
-                $('#false').attr("id", "true");
-        }
-    });
-}
-
-function deleteNft(ipfsPinHash){
-    pinata.unpin(ipfsPinHash).then((result) => {
-    }).catch((err) => {});
 }
 
 function appendNft(pin, i) {
@@ -323,17 +158,6 @@ function cssCategory($category, size){
 function openPopupError(){
     $(".shadow").css("display", "block");
     $("#popupError").css("display", "block");
-}
-
-function openPopupSuccess(){
-    $(".shadow").css("display","block");
-    $("#popupSuccess").css("display","block");
-    $("html, body").animate({scrollTop: 0}, 700);
-}
-
-function closePopupSuccess(){
-    $(".shadow").fadeOut();
-    $("#popupSuccess").fadeOut();
 }
 
 function openPopupErrorMetamask(){

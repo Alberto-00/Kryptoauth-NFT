@@ -43958,284 +43958,265 @@ module.exports = require("zlib");
 },{"_process":46,"assert":2,"buffer":11,"fs":1,"http":67,"https":25,"os":33,"path":45,"stream":52,"timers":87,"tty":88,"url":89,"util":94,"zlib":10}],98:[function(require,module,exports){
 const pinataSDK = require('@pinata/sdk');
 var pinata;
-
+var globalAddress, globalStatus, globalRole, operation
 window.userWalletAddress = null
 
 $(document).ready(function (){
-    $("input[name='validUntil']").val(moment().format('YYYY-MM-DD'))
     sendAddressToBackend();
 
     ethereum.on('accountsChanged', function (accounts) {
         sendAddressToBackend();
     })
 
-    ajaxShowNftCreatedOnPinata();
-
     $(".shadow").click(function () {
         closePopupError()
         closePopupSuccess()
+        closePopupErrorRevokeRole()
     });
 
     $('#confirmPopupError').click(function () {
         closePopupError()
     });
 
-    $('#confirmPopupSuccess').click(function (){
+    $('#confirmPopupSuccess').click(function () {
         closePopupSuccess()
-    })
-
-    $('a.category').click(function (){
-        var copyText = $(this);
-
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.text());
-    })
-
-    $.validator.addMethod("categoryName", function (value){
-        let $categories = $('#categories')
-            $categories.empty();
-
-        if (value.toLowerCase() === "accessori" || value.toLowerCase() === "corsi"
-            || value.toLowerCase() === "documentazione" || value.toLowerCase() === "incontri") {
-            $categories.text("Categoria (Accessori - Corsi - Documentazione - Incontri)");
-            return true;
-        } return false;
-    }, "Categoria non trovata.");
-
-    $.validator.addMethod("checkDate", function(value) {
-        return moment(value, "YYYY-MM-DD", true).isValid();
-    },'Scadenza non valida.');
-
-    $.validator.addMethod("sameOrAfter", function(value) {
-        return moment(value, "YYYY-MM-DD", true).isSameOrAfter(moment());
-    },'Scadenza non valida.');
-
-    $.validator.addMethod("ext", function(value) {
-        const ext = value.substring(value.length - 4);
-        const jpeg = value.substring(value.length - 5);
-        return ext.localeCompare(".png") === 0 || ext.localeCompare(".jpg") === 0 ||
-            ext.localeCompare(".svg") === 0 || jpeg.localeCompare(".jpeg") === 0
-    },'Path immagine non valido.');
-
-
-    $("form[name='create-nft']").validate({
-        rules: {
-            description:{
-                required: true,
-                maxlength: 2001
-            },
-            name: {
-                required: true,
-            },
-            category: {
-                required: true,
-                categoryName: true,
-            },
-            price: {
-                required: true,
-                digits: true,
-                min: 1,
-                max: 99999
-            },
-            validUntil: {
-                required: true,
-                checkDate: true,
-                sameOrAfter: true
-            },
-            sale: {
-                required: true,
-                digits: true,
-                min: 5,
-                max: 50
-            },
-            image: {
-                required: true,
-                ext: true
-            }
-        },
-        messages: {
-            description: {
-                required: "Descrizione non inserita.",
-                maxlength: "Descrizione massima di 2000 caratteri."
-            },
-            name: {
-                required: "Nome non inserito."
-            },
-            category: {
-                required: "Categoria non inserita."
-            },
-            price: {
-                required: "Prezzo non inserito.",
-                digits: "Prezzo non valido.",
-                min: "Prezzo non valido.",
-                max: "Prezzo non valido."
-            },
-            validUntil: {
-                required: "Scadenza non inserita.",
-            },
-            sale: {
-                required: "Sconto non inserito.",
-                digits: "Sconto non valido: solo numeri.",
-                min: "Sconto minimo 5%.",
-                max: "Sconto massimo 50%."
-            },
-            image: {
-                required: "Path immagine non inserito.",
-            }
-        },
-        submitHandler: function(form) {
-            if (sendAddressToBackend().localeCompare("ok") === 0){
-                const $userAddress = $("input[name='userAddress']")
-
-                if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                    openPopupError()
-                    $('div.error-p').children('p').eq(1)
-                        .html("Nessun account rilevato. <br>Accedere a Metamask.");
-                } else
-                    ajaxCreateNft($userAddress);
-            }
-            return false;
-        }
     });
-})
 
-function ajaxShowNftCreatedOnPinata(){
-    $.ajax({
-        type: "POST",
-        url: "/kryptoauth/marketplace/pinata/create-nft",
-        dataType: 'json',
-        success: function (data) {
-            const PINATA_API_KEY = data.msgError['pinata_key'];
-            const PINATA_API_SECRET = data.msgError['pinata_secret'];
-            pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
+    $('#closePopupRevokeError').on('click', function (){
+        closePopupErrorRevokeRole()
+    })
 
-            pinata.testAuthentication().then((result) => {
-                getMyCreatedNfts(data.msgError['adminAddress']).then((nfts) => {
-                    appendNftPinata(nfts);
-                })
-            }).catch((err) => {
+    $('#revokeRole').on('click', function (){
+        if (operation === "disactive")
+            ajaxRevokeAllRoles(globalAddress)
+
+        else if (operation === "user")
+            ajaxRevokeAdmin(globalAddress)
+    })
+
+    $('a.activeAddress').click(function (){
+        globalStatus = $(this).children('label').eq(1).text()
+        globalAddress = $(this).children('label').eq(0).text()
+        globalRole = $(this).children('label').eq(2).text()
+        operation = 'user'
+
+        if (sendAddressToBackend().localeCompare("ok") === 0){
+            const $userAddress = $("input[name='userAddress']")
+
+            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("Qualcosa è andato storto.<br>Riprovare.");
-            });
+                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
+            } else {
+                ajaxActiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
+            }
         }
-    });
-}
+    })
 
-function ajaxCreateNft($userAddress){
+    $('a.disactiveAddress').click(function (){
+        globalStatus = $(this).children('label').eq(1).text()
+        globalAddress = $(this).children('label').eq(0).text()
+        globalRole = $(this).children('label').eq(2).text()
+        operation = "disactive"
+
+        if (sendAddressToBackend().localeCompare("ok") === 0){
+            const $userAddress = $("input[name='userAddress']")
+
+            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
+            } else {
+                ajaxDisactiveAddress(globalAddress, globalStatus, globalRole, $userAddress.val())
+            }
+        }
+    })
+})
+
+function ajaxActiveAddress(address, status, role, addressMetamask){
+    var $role
+    if (role.localeCompare("User") === 0)
+        $role = "User"
+    else {
+        const name = "input[name='role" + role + "']:checked"
+        $role = $(name).val()
+    }
+
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/marketplace/create-nft",
+        url: "/kryptoauth/activeAddress",
         data: {
-            name: $("input[name='name']").val(),
-            category: $("input[name='category']").val(),
-            price: $("input[name='price']").val(),
-            validUntil: $("input[name='validUntil']").val(),
-            sale: $("input[name='sale']").val(),
-            description: $("#description").val(),
-            addressMetamask: $userAddress.val()
+            address: address,
+            role: $role,
+            status: status,
+            addressMetamask: addressMetamask
         },
         dataType: 'json',
         success: function (data) {
             if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/500"
+                window.location.href = "/kryptoauth/404"
             }
-            else if (data.msgError['invalidUser'] != null){
+
+            if (data.msgError['notEqualsAddress'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Hai cambiato account in Metamask." +
                         "<br>Seleziona quello corretto.");
             }
-            else {
-                var flag = false
-                if (data.msgError['name'] === "error") {
-                    flag = true
-                    let $name = $('#name-error');
-                    if ($name.length !== 0) $name.remove()
 
-                    $('input[name="name"]').after(
-                        '<label id="name-error" class="error" for="name">Nome non valido.</label>'
-                    )
+            if (data.msgError['revokeAdmin'] != null){
+                openPopupErrorRevokeRole()
+            }
+
+            if (data.msgError['notRevoke'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Solo l'account proprietario può rinunciare al suo ruolo di <i>Admin</i>.");
+            }
+
+            if (data.msgError['alreadyActive'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Account già attivato.");
+            }
+
+            if (data.msgError['success'] != null){
+                openPopupSuccess("Salvataggio effettuato.")
+
+                const datas = data.msgError['success'].split(",")
+                const $radios = $('input:radio[name="user"]')
+
+                if (datas[0] === "Attivo"){
+                    const $notActive = $('#notActive' + role)
+                    if ($notActive.length){
+                        $notActive.attr('class', 'active-reg')
+                        $notActive.attr('id', 'active' + role)
+                        $notActive.html("Attivo")
+                    }
                 }
 
-                if (data.msgError['category'] === "error") {
-                    flag = true
-                    let $category = $('#category-error');
-                    if ($category.length !== 0) $category.remove()
+                if(!$radios.is(':checked')) {
+                    $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                }
+                $('#roles' + role).html(datas[1])
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
 
-                    $('input[name="category"]').after(
-                        '<label id="category-error" class="error" for="category">Categoria non trovata.</label>'
-                    )
+function ajaxDisactiveAddress(address, status, role, addressMetamask){
+    const $statusActive = $('#active' + role)
+    const $statusNotActive = $('#notActive' + role)
+
+    if (!$statusNotActive.length || ($statusActive.length && $statusActive.val().localeCompare("Attivo") === 0)){
+        let $role
+        if (role.localeCompare("User") === 0)
+            $role = "User"
+        else {
+            const name = "input[name='role" + role + "']:checked"
+            $role = $(name).val()
+        }
+        $.ajax({
+            type: "POST",
+            url: "/kryptoauth/disactiveAddress",
+            data: {
+                address: address,
+                role: $role,
+                status: status,
+                addressMetamask: addressMetamask
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.msgError['sessionEmpty'] != null) {
+                    window.location.href = "/kryptoauth/500"
                 }
 
-                if (data.msgError['price'] === "error") {
-                    flag = true
-                    let $price = $('#price-error');
-                    if ($price.length !== 0) $price.remove()
-
-                    $('input[name="price"]').after(
-                        '<label id="price-error" class="error" for="price">Prezzo non valido.</label>'
-                    )
+                if (data.msgError['errorPage'] != null) {
+                    window.location.href = "/kryptoauth/404"
                 }
 
-                if (data.msgError['validUntil'] === "error") {
-                    flag = true
-                    let $validUntil = $('#price-error');
-                    if ($validUntil.length !== 0) $validUntil.remove()
-
-                    $('input[name="validUntil"]').after(
-                        '<label id="validUntil-error" class="error" for="validUntil">Scadenza non valida.</label>'
-                    )
-                }
-
-                if (data.msgError['sale'] === "error") {
-                    flag = true
-                    let $sale = $('#sale-error');
-                    if ($sale.length !== 0) $sale.remove()
-
-                    $('input[name="sale"]').after(
-                        '<label id="sale-error" class="error" for="sale">Sconto non valido.</label>'
-                    )
-                }
-                if (data.msgError['description'] === "error") {
-                    flag = true
-                    let $description = $('#description-error');
-                    if ($description.length !== 0) $description.remove()
-
-                    $('input[name="description"]').after(
-                        '<label id="description-error" class="error" for="description">Descrizione non inserita.</label>'
-                    )
-                }
-                if (data.msgError['errorMint'] === "error"){
+                if (data.msgError['notEqualsAddress'] != null){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
-                        .html("Impossibile effettuare il <i>mint</i> sulla Blockchain.<br>Riprovare.");
-                    return
+                        .html("Hai cambiato account in Metamask." +
+                            "<br>Seleziona quello corretto.");
                 }
-                if (data.msgError['ok'] === "ok") {
+
+                if (data.msgError['revoke'] != null){
+                    openPopupErrorRevokeRole()
+                }
+
+                if (data.msgError['notRevoke'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Non sei l'account proprietario.<br>Non puoi disattivarlo.");
+                }
+
+                if (data.msgError['success'] != null){
+                    const datas = data.msgError['success'].split(",")
+                    const $radios = $('input:radio[name="user"]')
+                    openPopupSuccess("Salvataggio effettuato.")
+
+                    if (datas[0] === "Non Attivo"){
+                        const $active = $('#active' + role)
+                        if ($active.length){
+                            $active.attr('class', 'not-active-reg')
+                            $active.attr('id', 'notActive' + role)
+                            $active.html("Non Attivo")
+                        }
+                    }
+
+                    if(!$radios.is(':checked')) {
+                        $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                    }
+                    $('#roles' + role).html(datas[1])
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    } else {
+        openPopupError()
+        $('div.error-p').children('p').eq(1)
+            .html("Account già disattivato.");
+    }
+}
+
+function ajaxRevokeAllRoles(address){
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/revokeRoles",
+        data: {
+            address: address,
+            role: globalStatus
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['redirect'] != null) {
+                const burned = data.msgError['burned'].split(",");
+
+                if (burned[0] !== ""){
                     const PINATA_API_KEY = data.msgError['pinata_key'];
                     const PINATA_API_SECRET = data.msgError['pinata_secret'];
                     pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
                     pinata.testAuthentication().then((result) => {
-                        getMyCreatedNfts(data.msgError['seller']).then((nfts) => {
-                            if (nfts.length !== 0) {
-                                for(let i = 0;  i < nfts.length; i++) {
-                                    if (nfts[i].metadata.name === data.msgError['name']) {
-                                        uploadNft(nfts[i].ipfs_pin_hash, data);
-                                        ajaxSaveOnBlockchain(data, nfts[i].ipfs_pin_hash);
-                                        nfts.splice(i, 1);
-                                        appendNftPinata(nfts);
-                                        cleanInput();
-                                        return;
-                                    }
-                                }
-                            }
-                            openPopupError()
-                            $('div.error-p').children('p').eq(1)
-                                .html("NFT non creato su Pinata, oppure nome errato.<br>Riprovare.");
-                        })
+                        openPopupSuccess("")
+
+                        $('#popupSuccess').children('div').eq(1)
+                            .children('p').eq(0).html("Attendi...").eq(1).
+                        html("A breve verrai reindirizzato<br> all'HomePage" +
+                            "<div class='icon-box-success'>" +
+                            "   <img src='/img/icons/check-solid.svg' alt='check'>" +
+                            "</div>");
+
+                        deleteNft(burned).then((result) => {
+                            window.location.href = "/kryptoauth/logout"
+                        });
                     }).catch((err) => {
                         console.log(err)
                         openPopupError()
@@ -44243,136 +44224,95 @@ function ajaxCreateNft($userAddress){
                             .html("Qualcosa è andato storto.<br>Riprovare.");
                     });
                 }
-                else if (flag){
-                    openPopupError()
-                    $('div.error-p').children('p').eq(1)
-                        .html("Qualcosa è andato storto.<br>Riprovare.");
-                }
+            }
+            else if (data.msgError['nftToBeAssigned'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Impossibile disattivare l'account:<br>NFT <i>" +
+                        data.msgError['nftToBeAssigned'] + "</i> da assegnare.");
+            }
+            else if (data.msgError['error'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Qualcosa è andato storto.<br>Riprovare.");
             }
         },
         error: function (e) {
             console.log(e)
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Qualcosa è andato storto.<br>Riprovare.");
         }
     });
 }
 
-function ajaxSaveOnBlockchain(data, url){
+function ajaxRevokeAdmin(address){
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/marketplace/save-nft",
+        url: "/kryptoauth/revokeAdmin",
         data: {
-            name: data.msgError['name'],
-            category: data.msgError['category'],
-            description: data.msgError['description'],
-            url: url,
-            price: data.msgError['price'],
-            validUntil: data.msgError['validUntil'],
-            sale: data.msgError['sale'],
-            address: data.msgError['seller']
+            address: address,
+            role: globalStatus
         },
         dataType: 'json',
         success: function (data) {
-            if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/500"
+            if (data.msgError['redirect'] != null) {
+                const burned = data.msgError['burned'].split(",");
+
+                if (burned[0] !== ""){
+                    const PINATA_API_KEY = data.msgError['pinata_key'];
+                    const PINATA_API_SECRET = data.msgError['pinata_secret'];
+                    pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
+
+                    pinata.testAuthentication().then((result) => {
+                        openPopupSuccess("")
+
+                        $('#popupSuccess').children('div').eq(1)
+                            .children('p').eq(0).html("Attendi...").eq(1).
+                            html("A breve verrai reindirizzato<br> all'HomePage" +
+                            "<div class='icon-box-success'>" +
+                            "   <img src='/img/icons/check-solid.svg' alt='check'>" +
+                            "</div>");
+
+                        deleteNft(burned).then((result) => {
+                            window.location.href = "/kryptoauth/logout"
+                        });
+                    }).catch((err) => {
+                        console.log(err)
+                        openPopupError()
+                        $('div.error-p').children('p').eq(1)
+                            .html("Qualcosa è andato storto.<br>Riprovare.");
+                    });
+                }
             }
-            else if (data.msgError['invalidUser'] != null){
+            if (data.msgError['nftToBeAssigned'] != null){
+                closePopupErrorRevokeRole()
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
-                    .html("Hai cambiato account in Metamask." +
-                        "<br>Seleziona quello corretto.");
+                    .html("Impossibile disattivare l'account:<br>NFT <i>" +
+                        data.msgError['nftToBeAssigned'] + "</i> da assegnare.");
+            }
+            if (data.msgError['error'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Qualcosa è andato storto.<br>Riprovare.");
             }
         },
         error: function (e) {
-            openPopupError()
-            $('div.error-p').children('p').eq(1)
-                .html("Qualcosa è andato storto.<br>Riprovare.");
+            console.log(e)
         }
     });
 }
 
-async function getMyCreatedNfts(address){
-    const metadataFilter = {
-        keyvalues: {
-            seller: {
-                value: address,
-                op: 'iLike'
-            },
-            created: {
-                value: "1",
-                op: 'eq'
-            }
-        }
-    };
-
-    const filters = {
-        status : "pinned",
-        pageLimit : 1000,
-        metadata : metadataFilter
-    };
-
-    const pin = await pinata.pinList(filters);
-    return pin.rows;
-}
-
-function uploadNft(cid, data){
-    const metadata = {
-        name: data.msgError['name'].toString(),
-        keyvalues: {
-            category: data.msgError['category'].toString(),
-            owner: data.msgError['owner'].toString(),
-            price: data.msgError['price'].toString(),
-            validUntil: data.msgError['validUntil'].toString(),
-            description: data.msgError['description'].toString(),
-            sale: data.msgError['sale'].toString(),
-            sold: "false",
-            created: null
-        }
-    };
-
-   pinata.hashMetadata(cid, metadata).then((result) => {
-        openPopupSuccess()
-        $('div.success-p').children('p').eq(1)
-            .html("Il tuo NFT è stato creato <br> con successo.");
-    }).catch((err) => {
-        openPopupError()
-        $('div.error-p').children('p').eq(1)
-            .html("Qualcosa è andato storto.<br>Riprovare.");
-    });
-}
-
-function appendNftPinata(nfts){
-    var $category_list = $('.categories-list');
-    $category_list.empty();
-
-    if (nfts.length !== 0) {
-        for (let i = 0; i < nfts.length; i++) {
-            $category_list.append(
-                '<li><a class="category">' + nfts[i].metadata.name + '</a></li>'
-            )
-        }
-    } else {
-        $category_list.append(
-            '<li><a class="category">Nessun NFT disponibile</a></li>'
-        )
+async function deleteNft(ipfsPinHash){
+    for (let i = 0; i < ipfsPinHash.length - 1; i++) {
+        await pinata.unpin(ipfsPinHash[i]);
     }
 }
 
-function cleanInput(){
-    $('input[name="name"]').val('')
-    $('input[name="category"]').val('')
-    $('input[name="price"]').val('')
-    $("input[name='validUntil']").val(moment().format('YYYY-MM-DD'))
-    $('input[name="sale"]').val('')
-    $('#description').val('')
-}
-
 function openPopupError(){
-    $(".shadow").css("display", "block");
+    $(".shadow").fadeIn().css("display", "block");
     $("#popupError").css("display", "block");
-    $("html, body").animate({scrollTop: 0}, 700);
 }
 
 function closePopupError(){
@@ -44380,15 +44320,29 @@ function closePopupError(){
     $("#popupError").fadeOut();
 }
 
-function openPopupSuccess(){
+function openPopupSuccess(text){
+    $('#popupSuccess').children('div').eq(1)
+        .children('p').eq(1).html(text +
+        "<div class='icon-box-success'>" +
+        "   <img src='/img/icons/check-solid.svg' alt='check'>" +
+        "</div>");
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
-    $("html, body").animate({scrollTop: 0}, 700);
 }
 
 function closePopupSuccess(){
     $(".shadow").fadeOut();
     $("#popupSuccess").fadeOut();
+}
+
+function openPopupErrorRevokeRole(){
+    $(".shadow").css("display","block");
+    $("#popupErrorRevokeRole").css("display","block");
+}
+
+function closePopupErrorRevokeRole(){
+    $(".shadow").fadeOut();
+    $("#popupErrorRevokeRole").fadeOut();
 }
 
 function openPopupErrorMetamask(){

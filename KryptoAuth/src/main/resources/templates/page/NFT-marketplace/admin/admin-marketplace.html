@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/admin/show-marketplace.css}">
   <script th:src="@{/js/scrollUp.js}"></script>
   <script th:src="@{/js/technologies.js}"></script>
-  <script th:src="@{/js/pinata_IPFS/scripts/admin/show-marketplace.js}"></script>
+  <script th:src="@{/js/pinata_IPFS/scripts/admin/browserify_scripts/show-marketplace_bundle.js}"></script>
 </head>
 <body>
   <div th:replace="partials/header :: #pageloader"></div>
@@ -34,7 +34,17 @@
                 Benvenuto. Qui puoi gestire il negozio <br>
                 di NFT per i clienti di Kryptoauth.
               </h2>
-
+              <p class="buttons">
+                <a id="openMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                  <span class="text">Apri il Negozio</span>
+                  <span class="front-gradient"></span>
+                </a>
+                <a id="closeMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                  <span class="text">Chiudi il Negozio</span>
+                  <span class="front-gradient"></span>
+                </a>
+              </p>
+              <label id="flipMarketplace" style="color: #FFF;"></label>
             </div>
             <!-- Hero image -->
             <div class="column is-6">
@@ -76,6 +86,12 @@
                       <span class="front-gradient"></span>
                     </button>
                   </form>
+                  <div style="margin-bottom: 35px;"></div>
+
+                  <button id="burnNftExpired" type="button" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                    <span class="text">Elimina NFT scaduti</span>
+                    <span class="front-red-gradient">Elimina NFT scaduti</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -115,6 +131,7 @@
   <input hidden name="userAddress" value="">
   <div th:replace="partials/footer :: footer"></div>
   <div th:replace="partials/popupError :: popupError"></div>
+  <div th:replace="partials/popupSuccess :: popupSuccess"></div>
   <div id="false" class="shadow"></div>
 </body>
 </html>

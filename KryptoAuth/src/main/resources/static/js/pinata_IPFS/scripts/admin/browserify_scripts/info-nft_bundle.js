@@ -44044,7 +44044,6 @@ function ajaxDeleteNft(addr){
                 pinata.testAuthentication().then((result) => {
                     deleteNft(data.msgError['hash'])
                 }).catch((err) => {
-                    console.log(err)
                     flag = false;
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
@@ -44058,11 +44057,8 @@ function ajaxDeleteNft(addr){
 function deleteNft(ipfsPinHash){
     pinata.unpin(ipfsPinHash).then((result) => {
         openPopupSuccess()
-        $('div.success-p').children('p').eq(1)
-            .html("Eliminazione completata <br>con successo.");
         flag = true;
     }).catch((err) => {
-        console.log(err)
         flag = false;
         openPopupError()
         $('div.error-p').children('p').eq(1)
@@ -44074,7 +44070,6 @@ function getRequestParam(name){
     if(name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
         return decodeURIComponent(name[1]);
 }
-
 
 function sendAddressToBackend() {
     if (typeof window.ethereum === 'undefined') {
@@ -44130,6 +44125,9 @@ function closePopupError(){
 }
 
 function openPopupSuccess(){
+    $('div.success-p p:nth-child(2)')
+        .html("Eliminazione completata <br>con successo.");
+
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
     $("html, body").animate({scrollTop: 0}, 700);
