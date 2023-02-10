@@ -57,9 +57,9 @@
             <a class="is-centered-responsive" href="/kryptoauth/technologies">Tecnologie</a>
           </div>
           <!-- Menu item -->
-          <th:block th:if="${session.admin} != null">
+          <th:block th:if="${session.admin} != null OR ${session.user} != null">
             <div class="navbar-item is-nav-link">
-              <a class="is-centered-responsive" href="/kryptoauth/marketplace">Marketplace</a>
+              <a class="is-centered-responsive" href="/kryptoauth/shop">Marketplace</a>
             </div>
           </th:block>
           <!-- Menu item -->
@@ -71,13 +71,13 @@
           <!-- Menu item -->
           <th:block th:if="${session.user} != null">
             <div class="navbar-item is-nav-link">
-              <a class="is-centered-responsive" href="/kryptoauth/marketplace-user">Marketplace</a>
-            </div>
-          </th:block>
-          <!-- Menu item -->
-          <th:block th:if="${session.user} != null">
-            <div class="navbar-item is-nav-link">
               <a class="is-centered-responsive" href="/kryptoauth/profile">Profilo</a>
+            </div>
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" style="cursor: default">
+                <img src="/img/token/FT/Token.png">
+                <span th:text="${token} + ' KT'" class="token"></span>
+              </a>
             </div>
           </th:block>
           <!-- Sign up -->
@@ -144,9 +144,9 @@
             <a class="is-centered-responsive" href="/kryptoauth/technologies">Tecnologie</a>
           </div>
           <!-- Menu item -->
-          <th:block th:if="${session.admin} != null">
+          <th:block th:if="${session.admin} != null OR ${session.user} != null">
             <div class="navbar-item is-nav-link">
-              <a class="is-centered-responsive" href="/kryptoauth/marketplace">Marketplace</a>
+              <a class="is-centered-responsive" href="/kryptoauth/shop">Marketplace</a>
             </div>
           </th:block>
           <!-- Menu item -->
@@ -158,13 +158,13 @@
           <!-- Menu item -->
           <th:block th:if="${session.user} != null">
             <div class="navbar-item is-nav-link">
-              <a class="is-centered-responsive" href="/kryptoauth/marketplace-user">Marketplace</a>
-            </div>
-          </th:block>
-          <!-- Menu item -->
-          <th:block th:if="${session.user} != null">
-            <div class="navbar-item is-nav-link">
               <a class="is-centered-responsive" href="/kryptoauth/profile">Profilo</a>
+            </div>
+            <div class="navbar-item is-nav-link">
+              <a class="is-centered-responsive" style="cursor: default">
+                <img src="/img/token/FT/Token.png">
+                <span th:text="${token} + ' KT'" class="token"></span>
+              </a>
             </div>
           </th:block>
           <!-- Sign up -->

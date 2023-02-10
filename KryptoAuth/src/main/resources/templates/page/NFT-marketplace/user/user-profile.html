@@ -1,10 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:include="partials/head :: head"></th:block>
+    <title>Kryptoauth - Profilo Utente</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/library.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/admin/show-marketplace.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/user/user-profile.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+    <script th:src="@{/js/scrollUp.js}"></script>
+    <script th:src="@{/js/technologies.js}"></script>
+    <script th:src="@{/js/lib/jquery-validate-plugin.js}"></script>
+    <script th:src="@{/js/pinata_IPFS/scripts/user/browserify_scripts/user-profile_bundle.js}"></script>
 </head>
 <body>
+<div th:replace="partials/header :: #pageloader"></div>
+<div th:replace="partials/header :: #infraloader"></div>
+<div th:replace="partials/header :: #scrollUp"></div>
 
+<div class="media-wrapper">
+    <!-- Landing page Hero -->
+    <section class="hero is-fullheight">
+        <div th:replace="partials/header :: header"></div>
+
+        <!-- Animated particles -->
+        <div x-data="initHero()" x-init="initParticles()" id="particles-js"></div>
+
+        <!-- Hero Image and Title -->
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-vcentered">
+
+                    <!-- Landing page Title -->
+                    <div class="column is-5 is-offset-1 landing-caption">
+                        <div class="divider"></div>
+                        <h1 class="title is-1 is-light is-semibold is-spaced main-title">Profilo Utente</h1>
+                        <h2 class="subtitle is-6 is-light is-thin">
+                            Benvenuto, qui puoi controllare i tuoi dati personali,
+                            vendere o usare i tuoi NFT e comprare nuovi KryptoToken.
+                        </h2>
+                        <!-- CTA -->
+                        <p class="buttons">
+                            <a id="profile" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                                <span class="text">Esplora</span>
+                                <span class="front-gradient"></span>
+                            </a>
+                        </p>
+                    </div>
+                    <!-- Hero image -->
+                    <div class="column is-6">
+                        <figure class="image">
+                            <img th:src="@{/img/illustrations/charts.svg}" alt="">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero footer -->
+        <div class="hero-foot">
+            <div class="container">
+                <div class="tabs is-centered">
+                    <!-- Client / partner list -->
+                    <ul>
+                        <li><a><img style="filter: invert(14%) sepia(1%) saturate(17%) hue-rotate(314deg) brightness(101%) contrast(79%);"
+                                    class="hero-logo" th:src="@{/img/logo/ethereum.svg}" alt=""></a></li>
+                        <li><a><img class="hero-logo" th:src="@{/img/token/FT/Token.png}" alt=""></a></li>
+                        <li><a><img class="hero-logo" th:src="@{/img/logo/metamask.svg}" alt=""></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <!-- Divider -->
+            <div class="divider is-centered"></div>
+            <div class="content-wrapper is-large">
+                <div class="columns is-vcentered">
+                    <!-- Feature image desktop -->
+                    <div class="column is-4 is-hidden-mobile">
+                        <img class="side-feature" style="box-shadow: 0 15px 26px rgba(0,0,0,.4); border-radius: 40px;"
+                             th:src="@{/img/token/FT/Token-background.svg}" alt="">
+
+                        <div class="column">
+                            <span class="tagCategory" th:text="'Accessori - ' + ${category[0]} + '%'"></span>
+                            <progress class="progress ico-progress" th:value="${category[0]}" max="50"></progress>
+                        </div>
+
+                        <div class="column">
+                            <span class="tagCategory" th:text="'Corsi - ' + ${category[1]} + '%'"></span>
+                            <progress class="progress ico-progress" th:value="${category[1]}" max="50"></progress>
+                        </div>
+
+                        <div class="column">
+                            <span class="tagCategory" th:text="'Documentazione - ' + ${category[2]} + '%'"></span>
+                            <progress class="progress ico-progress" th:value="${category[2]}" max="50"></progress>
+                        </div>
+
+                        <div class="column">
+                            <span class="tagCategory" th:text="'Incontri - ' + ${category[3]} + '%'"></span>
+                            <progress class="progress ico-progress" th:value="${category[3]}" max="50"></progress>
+                        </div>
+                    </div>
+
+                    <!-- Feature content -->
+                    <div class="column is-7">
+                        <div class="post-body">
+                            <form name="buy-ft" novalidate="novalidate">
+                                <!-- Field Address -->
+                                <div class="control-material is-primary" style="margin-bottom: 4em;">
+                                    <input class="material-input" type="text" id="address" name="address" th:value="${address}">
+                                    <span class="material-highlight"></span>
+                                    <span class="bar"></span>
+                                    <label style="font-size: 15px; color: #7f00ff;">Address</label>
+                                </div>
+
+                                <!-- Field Name -->
+                                <div class="control-material is-primary" style="margin-bottom: 4em;">
+                                    <input class="material-input" type="text" id="name" name="name" th:value="${name}">
+                                    <span class="material-highlight"></span>
+                                    <span class="bar"></span>
+                                    <label style="font-size: 15px; color: #7f00ff;">Nome / E-mail</label>
+                                </div>
+
+                                <!-- Field Role -->
+                                <div class="control-material is-primary" style="margin-bottom: 4em;">
+                                    <input class="material-input" type="text" id="role" name="role" value="Utente">
+                                    <span class="material-highlight"></span>
+                                    <span class="bar"></span>
+                                    <label style="font-size: 15px; color: #7f00ff;">Ruolo</label>
+                                </div>
+
+                                <!-- Field Token -->
+                                <div class="control-material is-primary" style="margin-bottom: 4em;">
+                                    <input class="material-input" type="number" min="1" value="1" id="token" name="token" required>
+                                    <span class="material-highlight"></span>
+                                    <span class="bar"></span>
+                                    <label style="font-size: 15px; color: #7f00ff;">Token da acquistare / vendere</label>
+                                </div>
+                                <div style="display: flex">
+                                    <button id="buyFt" type="submit" style="transform: skew(-25deg);"
+                                            class="button is-button k-button k-primary raised green-gradient is-bold is-fullwidth">
+                                        <span class="text" style="transform: skew(25deg);">Acquista - KT</span>
+                                        <span class="front-green-gradient">
+                                        <span style="transform: skew(25deg);">Acquista - KT</span>
+                                    </span>
+                                    </button>
+                                    <button id="burnFt" type="submit" style="margin-left: 9em;" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                                        <span class="text">Vendi - KT</span>
+                                        <span class="front-red-gradient">Vendi - KT</span>
+                                    </button>
+                                </div>
+                            </form>
+                            <!-- send address to backend -->
+                            <input name="userAddress" value="" hidden="">
+                        </div>
+                    </div>
+
+                    <!-- Feature image only for mobile -->
+                    <div class="column is-7 is-hidden-desktop is-hidden-tablet">
+                        <img class="side-feature" src="/img/illustrations/blockchain-blocks.svg" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider is-centered" style="margin-top: 3em;"></div>
+            <div class="content-wrapper is-large">
+                <div class="columns">
+                    <div class="column is-9">
+                        <!-- Content wrapper -->
+                        <div class="content-wrapper">
+
+                            <!-- Here we show NTF by show-marketplace.js-->
+
+                            <!-- CTA -->
+                            <div class="cta-wrapper has-text-centered">
+                                <a href="#" id="loadMore" class="button k-button k-primary raised has-gradient is-bold">
+                                    <span class="text">Carica Altro</span>
+                                    <span class="front-gradient"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- /Content wrapper -->
+                    </div>
+                    <div class="column is-3">
+                        <div class="search-widget">
+                            <div class="control">
+                                <div class="control-material is-primary">
+                                    <button id="burnNftExpired" type="button" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                                        <span class="text">Elimina NFT scaduti</span>
+                                        <span class="front-red-gradient">Elimina NFT scaduti</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="categories-widget">
+                            <div class="widget-title">Categorie</div>
+                            <ul class="categories-list">
+                                <li>
+                                    <a class="category is-active">
+                                        <span>Tutti NFT</span>
+                                        <span class="tag allnfts"></span>
+                                    </a>
+                                </li>
+                                <li><a class="category">Accessori</a></li>
+                                <li><a class="category">Corsi</a></li>
+                                <li><a class="category">Documentazione</a></li>
+                                <li><a class="category">Incontri</a></li>
+                                <li><a class="category">Da assegnare</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="tags-widget">
+                            <div class="widget-title">Tags</div>
+                            <div class="tags">
+                                <span class="tag">Blockchain</span>
+                                <span class="tag">Ethereum</span>
+                                <span class="tag">NFT</span>
+                                <span class="tag">FT</span>
+                                <span class="tag">KryptoToken</span>
+                                <span class="tag">ERC-1155</span>
+                                <span class="tag">Wallet</span>
+                                <span class="tag">Metamask</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- send address to backend -->
+<input hidden name="userAddress" value="">
+<div th:replace="partials/footer :: footer"></div>
+<div th:replace="partials/popupError :: popupError"></div>
+<div th:replace="partials/popupSuccess :: popupSuccess"></div>
+<div id="false" class="shadow"></div>
 </body>
 </html>

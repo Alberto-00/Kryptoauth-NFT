@@ -43984,14 +43984,6 @@ $(document).ready(function (){
         closePopupSuccess()
     })
 
-    $('a.category').click(function (){
-        var copyText = $(this);
-
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.text());
-    })
-
     $.validator.addMethod("categoryName", function (value){
         let $categories = $('#categories')
             $categories.empty();

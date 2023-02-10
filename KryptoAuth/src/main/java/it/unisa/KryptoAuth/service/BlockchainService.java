@@ -8,6 +8,7 @@ public interface BlockchainService {
     boolean isContractLoaded(String address) throws Exception;
     boolean addressEquals(String address) throws Exception;
 
+
     /*============================== Access Control contract ====================================*/
     boolean isAdmin(String address) throws Exception;
     boolean isUser(String address) throws Exception;
@@ -18,6 +19,8 @@ public interface BlockchainService {
     boolean addAdmin(String address) throws Exception;
     boolean removeUser(String address) throws Exception;
     boolean removeAdmin(String address) throws Exception;
+    String getName(String address) throws Exception;
+
 
     /*================================== KryptoNFT contract =====================================*/
     boolean mintNft(String name, String category, String description, String url,
@@ -38,6 +41,7 @@ public interface BlockchainService {
     JSONArray getMyNfts_json() throws Exception;
     String getMyNfts_string() throws Exception;
     String getNftsAllAdmin() throws Exception;
-    String getNftById(String address, BigInteger id) throws Exception;
+    String getNftById(BigInteger id) throws Exception;
+    JSONArray getNftsAddr(String address) throws Exception;
     long balanceOf(String address, BigInteger id) throws Exception;
 }

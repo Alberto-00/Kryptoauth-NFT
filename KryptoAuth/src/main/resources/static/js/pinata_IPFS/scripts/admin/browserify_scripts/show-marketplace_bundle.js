@@ -44130,12 +44130,23 @@ function ajaxGetNftByCategory($category, addrMetamask){
                     $('div.blog-post').remove()
                     let count = 0;
                     if (nftArr.length !== 0) {
-                        for (let i = 0; i < nftArr.length; i++) {
-                            if (nftArr[i].seller.toLowerCase() === data.msgError['adminAddress'].toLowerCase()
-                                && (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
-                                || nftArr[i].category.toLowerCase() === $category.text().toLowerCase())){
-                                appendNft(nftArr, i);
-                                count++;
+                        if ($category.children(":first").text().toLowerCase() === "Da assegnare".toLowerCase()
+                            || $category.text().toLowerCase() === "Da assegnare".toLowerCase()){
+                            for (let i = 0; i < nftArr.length; i++) {
+                                if (nftArr[i].seller.toLowerCase() !== nftArr[i].owner.toLowerCase()
+                                    && nftArr[i].sold === "false"){
+                                    appendNft(nftArr, i);
+                                    count++;
+                                }
+                            }
+                        }
+                        else {
+                            for (let i = 0; i < nftArr.length; i++) {
+                                if (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
+                                    || nftArr[i].category.toLowerCase() === $category.text().toLowerCase()){
+                                    appendNft(nftArr, i);
+                                    count++;
+                                }
                             }
                         }
                     }
@@ -44233,9 +44244,9 @@ function appendNft(pin, i) {
     else hide = ""
 
     if ((pin[i].description).length > 144)
-        description = (pin[i].description).substring(0, 144);
+        description = (pin[i].description).substring(0, 144) + "...";
     else
-        description = pin[i].description + "...";
+        description = pin[i].description;
 
     $('div.cta-wrapper').before(
         '<div class="blog-post '+ hide +'">' +

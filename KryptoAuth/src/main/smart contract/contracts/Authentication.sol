@@ -13,7 +13,6 @@
 *                                                                                             *
 * Quando un utente o un admin si registrano entrambi non hanno un ruolo che verrà asseggnato  *
 * in seguito dall'admin con "addUser" o "addAdmin".                                           *
-*                                                                                             *
 ***********************************************************************************************/
 
 pragma solidity ^0.8.0;
@@ -95,6 +94,12 @@ contract Authentication is AccessControl {
     /* Returns the address that call this function */
     function getAddress() public view returns (address) {
         return msg.sender;
+    }
+
+    /* Returns the name of an address registered */
+    function getName(address account) public view returns (string memory) {
+        require(isAdmin(account) || isUser(account), "Address without role");
+        return user[account].name;
     }
 
 

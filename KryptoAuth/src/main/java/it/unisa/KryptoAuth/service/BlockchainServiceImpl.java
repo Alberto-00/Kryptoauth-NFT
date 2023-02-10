@@ -2,6 +2,7 @@ package it.unisa.KryptoAuth.service;
 
 import it.unisa.KryptoAuth.contracts.KryptoNFT;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -17,7 +18,7 @@ import java.math.BigInteger;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0x4B87D62489c82A75cf49279cfdfd9EC2E0c5156e";
+    private final static String CONTRACT_ADDRESS = "0xb70B38D97E51C8A8D83cc3Dad7fD6892e27dE09c";
     private final static String ipfs = "https://gateway.pinata.cloud/ipfs/";
     private final KryptoNFT kryptoNFT;
 
@@ -83,6 +84,11 @@ public class BlockchainServiceImpl implements BlockchainService {
         return kryptoNFT.getAddress().send().compareToIgnoreCase(address) == 0;
     }
 
+    @Override
+    public String getName(String address) throws Exception {
+        return kryptoNFT.getName(address).send();
+    }
+
 
     /*======================================= KryptoNFT contract ==============================================*/
     @Override
@@ -113,7 +119,9 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public boolean buyNft(BigInteger id) throws Exception {
-        return kryptoNFT.buyNFT(id).send().isStatusOK();
+        Object obj = new JSONParser().parse(kryptoNFT.getNft(id).send());
+        JSONObject nft = (JSONObject) obj;
+        return kryptoNFT.buyNFT(id, new BigInteger(nft.get("price").toString())).send().isStatusOK();
     }
 
     @Override
@@ -168,13 +176,19 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     @Override
-    public String getNftById(String address, BigInteger id) throws Exception{
+    public String getNftById(BigInteger id) throws Exception{
         return kryptoNFT.getNft(id).send();
     }
 
     @Override
     public String getNftsAllAdmin() throws Exception {
         return kryptoNFT.getNftsAllAdmin().send();
+    }
+
+    @Override
+    public JSONArray getNftsAddr(String address) throws Exception {
+        Object obj = new JSONParser().parse(kryptoNFT.getNftsAddr(address).send());
+        return  (JSONArray) obj;
     }
 
     @Override

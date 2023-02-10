@@ -25,6 +25,9 @@ $(document).ready(function (){
         $("html, body").animate({ scrollTop: 750 }, 800);
     });
 
+    $('#profile').on('click', function() {
+        $("html, body").animate({ scrollTop: 910 }, 800);
+    });
     // set dynamic sticky navbar
     $(window).on("load", function () {
         setWidthNav();

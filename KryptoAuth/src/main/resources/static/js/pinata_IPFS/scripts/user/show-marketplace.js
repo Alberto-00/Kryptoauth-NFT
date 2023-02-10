@@ -46,7 +46,7 @@ function ajaxGetNftByCategory($category, addrMetamask){
         type: "POST",
         url: "/kryptoauth/marketplace-user",
         data: {
-            addressMetamask: addrMetamask
+            addressMetamask: addrMetamask,
         },
         dataType: 'json',
         success: function (data) {
@@ -80,9 +80,8 @@ function ajaxGetNftByCategory($category, addrMetamask){
                     let count = 0;
                     if (nftArr.length !== 0) {
                         for (let i = 0; i < nftArr.length; i++) {
-                            if (nftArr[i].seller.toLowerCase() === data.msgError['adminAddress'].toLowerCase()
-                                && (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
-                                    || nftArr[i].category.toLowerCase() === $category.text().toLowerCase())){
+                            if (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
+                                || nftArr[i].category.toLowerCase() === $category.text().toLowerCase()){
                                 appendNft(nftArr, i);
                                 count++;
                             }
@@ -110,9 +109,9 @@ function appendNft(pin, i) {
     else hide = ""
 
     if ((pin[i].description).length > 144)
-        description = (pin[i].description).substring(0, 144);
+        description = (pin[i].description).substring(0, 144) + "...";
     else
-        description = pin[i].description + "...";
+        description = pin[i].description;
 
     $('div.cta-wrapper').before(
         '<div class="blog-post '+ hide +'">' +

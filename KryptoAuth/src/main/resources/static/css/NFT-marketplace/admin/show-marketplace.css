@@ -1,4 +1,14 @@
 .backgroundImage{
-    background-image: url("/img/media/media.svg");
+    background: rgb(127,0,255);
+    background: -moz-linear-gradient(90deg, rgba(127,0,255,1) 0%, rgba(124,0,255,1) 28%, rgba(114,0,255,1) 49%, rgba(97,0,255,1) 69%, rgba(74,0,255,1) 87%, rgba(52,0,255,1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(127,0,255,1) 0%, rgba(124,0,255,1) 28%, rgba(114,0,255,1) 49%, rgba(97,0,255,1) 69%, rgba(74,0,255,1) 87%, rgba(52,0,255,1) 100%);
+    background: linear-gradient(90deg, rgba(127,0,255,1) 0%, rgba(124,0,255,1) 28%, rgba(114,0,255,1) 49%, rgba(97,0,255,1) 69%, rgba(74,0,255,1) 87%, rgba(52,0,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#7f00ff",endColorstr="#3400ff",GradientType=1);
     height: 155px;
+}
+
+.backgroundImage img{
+    width: 70%;
+    height: auto;
+    margin: -10px auto auto auto;
 }

@@ -4,6 +4,7 @@ import it.unisa.KryptoAuth.model.AjaxResponse;
 import it.unisa.KryptoAuth.model.User;
 import it.unisa.KryptoAuth.service.BlockchainServiceImpl;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,7 +34,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  *     <li>login;</li>
  *     <li>attivazione account;</li>
  *     <li>disattivazione account;</li>
- *     <li>cambio privilegi ad un account.</li>
+ *     <li>cambio privilegi ad un account;</li>
+ *     <li>gestione di NFT: visualizzazione, creazione, eliminazione, assegnazione.</li>
  * </ul>
  */
 @Controller
@@ -41,6 +43,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class BlockchainController {
     private final static String PINATA_KEY = "1eeb0837f8d0ae21e000";
     private final static String PINATA_SECRET = "f638ab8f499066727efb6eab377503fb30bd0a797c732cfbfbdada4c89f4f890";
+    private final static String ipfs = "https://gateway.pinata.cloud/ipfs/";
 
 
     /*========================================== Authentication Servlet ==============================================*/
@@ -165,6 +168,7 @@ public class BlockchainController {
                 session.setAttribute("noRole", address);
                 ajaxResponse.addMsg("success", "user");
                 writeAddress(address + "," + user.getEmail() + "," + user.getRole() + ",Non Attivo,");
+                writeCategoryDiscount(address);
                 return ajaxResponse;
             }
             else if (user.getRole().compareToIgnoreCase("Admin") == 0 && !service.isUser(address)) {
@@ -219,7 +223,7 @@ public class BlockchainController {
                 }
                 if (role.compareToIgnoreCase("user") == 0){
                     if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
-                        ajaxResponse.addMsg("revokeAdmin", "ok");
+                        ajaxResponse.addMsg("adminToUser", "ok");
                         return ajaxResponse;
                     } else if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
                         ajaxResponse.addMsg("notRevoke", "error");
@@ -231,7 +235,7 @@ public class BlockchainController {
                     currentService.addUser(address);
                     if (status.compareToIgnoreCase("non attivo") == 0)
                         status = "Attivo";
-                    updateAddress(address, status, role);
+                    writeCategoryDiscount(address);
                     ajaxResponse.addMsg("success", status + "," + role);
                     return ajaxResponse;
                 }
@@ -240,9 +244,13 @@ public class BlockchainController {
                         ajaxResponse.addMsg("alreadyActive", "error");
                         return ajaxResponse;
                     }
-                    if (currentService.isUser(address))
-                        currentService.removeUser(address);
+                    if (currentService.isUser(address)){
+                        if (hasNftsUser(address, ajaxResponse, currentService) != null)
+                            return ajaxResponse;
 
+                        currentService.removeUser(address);
+                        removeCategoryDiscount(address);
+                    }
                     currentService.addAdmin(address);
                     if (status.compareToIgnoreCase("non attivo") == 0)
                         status = "Attivo";
@@ -280,7 +288,7 @@ public class BlockchainController {
                     ajaxResponse.addMsg("notEqualsAddress", "error");
                     return ajaxResponse;
                 }
-                return checkRevokeRole(address, role, status, addressMetamask, ajaxResponse, session);
+                return checkRevokeRole(address, addressMetamask, ajaxResponse, session);
             } else
                 ajaxResponse.addMsg("errorPage", "error");
         } else
@@ -289,16 +297,23 @@ public class BlockchainController {
     }
 
     @ResponseBody
-    @PostMapping("/revokeAdmin")
-    public AjaxResponse renounceAdmin(@RequestParam(value = "address") String address,
-                                      HttpServletRequest request) {
+    @PostMapping("/adminToUser")
+    public AjaxResponse adminToUser(@RequestParam(value = "address") String address,
+                                    @RequestParam(value = "addressMetamask") String addrMeta,
+                                    HttpServletRequest request) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
 
         try {
             if (session.getAttribute("admin") != null && session.getAttribute("service") != null
                     && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+
                 BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                        addrMeta.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                    ajaxResponse.addMsg("notEqualsAddress", "error");
+                    return ajaxResponse;
+                }
 
                 JSONArray jsonNfts = currentService.getMyNfts_json();
                 String nftToBeAssigned = nftToBeAssigned(currentService, jsonNfts,address);
@@ -309,16 +324,18 @@ public class BlockchainController {
                 StringBuilder burned = new StringBuilder();
                 for (Object jsonObject: jsonNfts){
                     JSONObject element = (JSONObject) jsonObject;
-                    burned.append((element.get("url").toString()).split("https://gateway.pinata.cloud/ipfs/")[1]).append(",");
+                    burned.append((element.get("url").toString()).split(ipfs)[1]).append(",");
                 }
                 currentService.addUser(address);
                 currentService.removeAdmin(address);
                 session.removeAttribute("admin");
                 session.setAttribute("user", address);
+
                 ajaxResponse.addMsg("burned", burned.toString());
                 ajaxResponse.addMsg("pinata_key", PINATA_KEY);
                 ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
                 ajaxResponse.addMsg("redirect", "ok");
+                writeCategoryDiscount(address);
                 updateAddress(address, "Attivo", "User");
             } else  ajaxResponse.addMsg("error", "error");
             return ajaxResponse;
@@ -329,8 +346,9 @@ public class BlockchainController {
     }
 
     @ResponseBody
-    @PostMapping("/revokeRoles")
-    public AjaxResponse renounceRoles(@RequestParam(value = "address") String address,
+    @PostMapping("/revokeAdmin")
+    public AjaxResponse revokeAdmin(@RequestParam(value = "address") String address,
+                                      @RequestParam(value = "addressMetamask") String addrMeta,
                                       HttpServletRequest request) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         HttpSession session = request.getSession();
@@ -338,35 +356,33 @@ public class BlockchainController {
         try {
             if (session.getAttribute("admin") != null && session.getAttribute("service") != null
                     && session.getAttribute("admin").toString().compareToIgnoreCase(address) == 0){
+
                 BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
-                if (currentService.isUser(address)) {
-                    /*
-                    Rimuovere NFT user
-                     */
-                    currentService.removeUser(address);
-                    session.removeAttribute("user");
+                if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                        addrMeta.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                    ajaxResponse.addMsg("notEqualsAddress", "error");
+                    return ajaxResponse;
                 }
 
-                if (currentService.isAdmin(address)) {
-                    JSONArray jsonNfts = currentService.getMyNfts_json();
-                    String nftToBeAssigned = nftToBeAssigned(currentService, jsonNfts, address);
-                    if (nftToBeAssigned != null){
-                        ajaxResponse.addMsg("nftToBeAssigned", nftToBeAssigned);
-                        return ajaxResponse;
-                    }
-                    StringBuilder burned = new StringBuilder();
-                    for (Object jsonObject: jsonNfts){
-                        JSONObject element = (JSONObject) jsonObject;
-                        burned.append((element.get("url").toString()).split("https://gateway.pinata.cloud/ipfs/")[1]).append(",");
-                    }
-                    ajaxResponse.addMsg("burned", burned.toString());
-                    ajaxResponse.addMsg("pinata_key", PINATA_KEY);
-                    ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
-                    currentService.removeAdmin(address);
-                    session.removeAttribute("admin");
+                JSONArray jsonNfts = currentService.getMyNfts_json();
+                String nftToBeAssigned = nftToBeAssigned(currentService, jsonNfts,address);
+                if (nftToBeAssigned != null){
+                    ajaxResponse.addMsg("nftToBeAssigned", nftToBeAssigned);
+                    return ajaxResponse;
                 }
+                StringBuilder burned = new StringBuilder();
+                for (Object jsonObject: jsonNfts){
+                    JSONObject element = (JSONObject) jsonObject;
+                    burned.append((element.get("url").toString()).split(ipfs)[1]).append(",");
+                }
+                currentService.removeAdmin(address);
+                session.removeAttribute("admin");
+
+                ajaxResponse.addMsg("burned", burned.toString());
+                ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+                ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
                 ajaxResponse.addMsg("redirect", "ok");
-                updateAddress(address, "Non Attivo", null);
+                updateAddress(address, "Non Attivo", "Admin");
             } else  ajaxResponse.addMsg("error", "error");
             return ajaxResponse;
         } catch (Exception e) {
@@ -375,12 +391,66 @@ public class BlockchainController {
         return ajaxResponse;
     }
 
+    @ResponseBody
+    @PostMapping("/revokeUser")
+    public AjaxResponse revokeUser(@RequestParam(value = "address") String address,
+                                   @RequestParam(value = "addressMetamask") String addrMeta,
+                                   @RequestParam(value = "role") String role,
+                                   HttpServletRequest request) throws Exception {
+
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+        if (session.getAttribute("admin") != null && session.getAttribute("service") != null){
+            if (address != null && !address.isEmpty() &&
+                    role != null && !role.isEmpty() &&
+                    addrMeta != null && !addrMeta.isEmpty()) {
+
+                BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+                if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                        addrMeta.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
+                    ajaxResponse.addMsg("notEqualsAddress", "error");
+                    return ajaxResponse;
+                }
+
+                if (hasNftsUser(address, ajaxResponse, currentService) != null)
+                    return ajaxResponse;
+
+                currentService.removeUser(address);
+                session.removeAttribute("user");
+                removeCategoryDiscount(address);
+                ajaxResponse.addMsg("success", "Non Attivo," + "User");
+                return ajaxResponse;
+            } else
+                ajaxResponse.addMsg("errorPage", "error");
+        } else
+            ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @Nullable
+    private static AjaxResponse hasNftsUser(String address, AjaxResponse ajaxResponse,
+                                            BlockchainServiceImpl currentService) throws Exception {
+        Object obj = new JSONParser().parse(currentService.getNftsAllAdmin());
+        for (Object elem : (JSONArray) obj){
+            JSONObject nft = (JSONObject) elem;
+            if (nft.get("owner").toString().compareToIgnoreCase(address) == 0){
+                ajaxResponse.addMsg("userHaveNftToAssigned", "error");
+                return ajaxResponse;
+            }
+        }
+        if (currentService.getNftsAddr(address).size() > 0){
+            ajaxResponse.addMsg("userHaveNft", "error");
+            return ajaxResponse;
+        }
+        return null;
+    }
+
+    /* Verifica quale cambio ruolo effettuare tra [Disattivazione Admin] - [Disattivazione User]. */
     @NotNull
     private AjaxResponse checkRevokeRole(@RequestParam("address") String address,
-                                         @RequestParam("role") String role,
-                                         @RequestParam("status") String status,
                                          @RequestParam("addressMetamask") String addressMetamask,
                                          AjaxResponse ajaxResponse, HttpSession session) throws Exception {
+
         BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
         if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
                 addressMetamask.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
@@ -388,20 +458,18 @@ public class BlockchainController {
             return ajaxResponse;
         }
         if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) == 0){
-            ajaxResponse.addMsg("revoke", "ok");
+            ajaxResponse.addMsg("revokeAdmin", "ok");
             return ajaxResponse;
         }
         else if (currentService.isAdmin(address) && address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0){
             ajaxResponse.addMsg("notRevoke", "error");
             return ajaxResponse;
         }
-        currentService.removeUser(address);
-        if (status.compareToIgnoreCase("Attivo") == 0)
-            status = "Non Attivo";
-
-        session.removeAttribute("user");
-        updateAddress(address, status, role);
-        ajaxResponse.addMsg("success", status + "," + role);
+        else if (currentService.isUser(address)) {
+            ajaxResponse.addMsg("disactiveUser", "ok");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("alreadyDisactived", "error");
         return ajaxResponse;
     }
 
@@ -438,6 +506,33 @@ public class BlockchainController {
         }
     }
 
+    private void writeCategoryDiscount(String address) {
+        try {
+            Object obj = new JSONParser().parse(new FileReader("src/main/resources/static/txt/categoryDiscount.json"));
+            JSONArray root = (JSONArray) obj;
+
+            JSONObject categoryAddress = new JSONObject();
+            JSONObject listCategories = new JSONObject();
+
+            listCategories.put("Accessories", 0);
+            listCategories.put("Courses", 0);
+            listCategories.put("Documentation", 0);
+            listCategories.put("Exhibition", 0);
+
+            categoryAddress.put("address", address);
+            categoryAddress.put("categories", listCategories);
+
+            root.add(categoryAddress);
+
+            FileWriter file = new FileWriter("src/main/resources/static/txt/categoryDiscount.json");
+            file.write(root.toJSONString());
+            file.flush();
+            file.close();
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateAddress(String address, String status, String role){
         JSONParser jsonParser = new JSONParser();
         try {
@@ -447,7 +542,7 @@ public class BlockchainController {
             for (Object o : root) {
                 JSONObject element = (JSONObject) o;
 
-                if (element.get("address").toString().compareTo(address) == 0){
+                if (element.get("address").toString().compareToIgnoreCase(address) == 0){
                     element.put("status", status);
 
                     if (role != null)
@@ -461,6 +556,90 @@ public class BlockchainController {
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateCategoryDiscount(String address, String category, int discount){
+        try {
+            Object obj =  new JSONParser().parse(new FileReader("src/main/resources/static/txt/categoryDiscount.json"));
+            JSONArray root = (JSONArray) obj;
+
+            for (Object o : root) {
+                JSONObject addressCategories = (JSONObject) o;
+
+                if (addressCategories.get("address").toString().compareToIgnoreCase(address) == 0) {
+                    JSONObject categories = (JSONObject) addressCategories.get("categories");
+
+                    switch (category) {
+                        case "Accessori" -> categories.put("Accessories", discount);
+                        case "Corsi" -> categories.put("Courses", discount);
+                        case "Documentazione" -> categories.put("Documentation", discount);
+                        case "Incontri" -> categories.put("Exhibition", discount);
+                    }
+                }
+            }
+            FileWriter file = new FileWriter("src/main/resources/static/txt/categoryDiscount.json");
+            file.write(root.toJSONString());
+            file.flush();
+            file.close();
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeCategoryDiscount(String address){
+        try {
+            Object obj =  new JSONParser().parse(new FileReader("src/main/resources/static/txt/categoryDiscount.json"));
+            JSONArray root = (JSONArray) obj;
+
+            for (int i = 0; i < root.size(); i++){
+                JSONObject addressCategories = (JSONObject) root.get(i);
+                if (addressCategories.get("address").toString().compareToIgnoreCase(address) == 0) {
+                    root.remove(i);
+                    break;
+                }
+            }
+            FileWriter file = new FileWriter("src/main/resources/static/txt/categoryDiscount.json");
+            file.write(root.toJSONString());
+            file.flush();
+            file.close();
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getCategoryDiscount(String address, String category){
+        try {
+            Object obj =  new JSONParser().parse(new FileReader("src/main/resources/static/txt/categoryDiscount.json"));
+            JSONArray root = (JSONArray) obj;
+
+            for (Object o : root) {
+                JSONObject element = (JSONObject) o;
+
+                if (element.get("address").toString().compareToIgnoreCase(address) == 0){
+                    switch (category) {
+                        case "Accessori" -> {
+                            JSONObject sale = (JSONObject) element.get("categories");
+                            return Integer.parseInt(sale.get("Accessories").toString());
+                        }
+                        case "Corsi" -> {
+                            JSONObject sale = (JSONObject) element.get("categories");
+                            return Integer.parseInt(sale.get("Courses").toString());
+                        }
+                        case "Documentazione" -> {
+                            JSONObject sale = (JSONObject) element.get("categories");
+                            return Integer.parseInt(sale.get("Documentation").toString());
+                        }
+                        case "Incontri" -> {
+                            JSONObject sale = (JSONObject) element.get("categories");
+                            return Integer.parseInt(sale.get("Exhibition").toString());
+                        }
+                    }
+                }
+            }
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /* Se un Admin ha un NFT ancora da assegnare, allora non può perdere il ruolo di Admin */
@@ -687,14 +866,13 @@ public class BlockchainController {
                 return ajaxResponse;
             }
             if (currentService.balanceOf(session.getAttribute("admin").toString(), new BigInteger(id)) == 1L){
-                String jsonString = currentService.getNftById(
-                        session.getAttribute("admin").toString(), new BigInteger(id));
+                String jsonString = currentService.getNftById(new BigInteger(id));
                 JSONObject obj = (JSONObject) new JSONParser().parse(jsonString);
 
                 if (obj.get("sold").toString().compareTo("false") == 0 &&
                     obj.get("owner").toString().compareToIgnoreCase(address) == 0){
                     if (currentService.burnNft(new BigInteger(id))){
-                        String[] url = (obj.get("url").toString()).split("https://gateway.pinata.cloud/ipfs/");
+                        String[] url = (obj.get("url").toString()).split(ipfs);
                         ajaxResponse.addMsg("hash", url[1]);
                         ajaxResponse.addMsg("pinata_key", PINATA_KEY);
                         ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
@@ -725,12 +903,17 @@ public class BlockchainController {
         HttpSession session = request.getSession();
         AjaxResponse ajaxResponse = new AjaxResponse();
 
-        if (address != null && session.getAttribute("admin") != null &&
-                session.getAttribute("service") != null) {
+        if (address != null && session.getAttribute("service") != null &&
+                (session.getAttribute("admin") != null || session.getAttribute("service") != null)) {
 
             BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
-            if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
-                    address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0 ) {
+            if (session.getAttribute("admin") != null && (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                    address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0)){
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            else if (session.getAttribute("user") != null && (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                            address.compareToIgnoreCase(session.getAttribute("user").toString()) != 0)){
                 ajaxResponse.addMsg("invalidUser", "error");
                 return ajaxResponse;
             }
@@ -745,13 +928,54 @@ public class BlockchainController {
                     element.get("owner").toString().compareToIgnoreCase(element.get("seller").toString()) == 0){
 
                     currentService.burnNft(new BigInteger(element.get("tokenId").toString()));
-                    burned.append(element.get("url").toString().split("https://gateway.pinata.cloud/ipfs/")[1]).append(",");
+                    burned.append(element.get("url").toString().split(ipfs)[1]).append(",");
                 }
             }
             ajaxResponse.addMsg("burned", burned.toString());
             ajaxResponse.addMsg("jsonData", currentService.getMyNfts_string());
             ajaxResponse.addMsg("pinata_key", PINATA_KEY);
             ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/assign-nft")
+    public AjaxResponse assignNft(@RequestParam(value = "id") String id,
+                                  @RequestParam(value = "address") String address,
+                                  HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (address != null && session.getAttribute("admin") != null &&
+                session.getAttribute("service") != null) {
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("admin").toString()) ||
+                    address.compareToIgnoreCase(session.getAttribute("admin").toString()) != 0 ) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            String jsonString = currentService.getNftById(new BigInteger(id));
+            JSONObject obj = (JSONObject) new JSONParser().parse(jsonString);
+
+            if (currentService.balanceOf(address, new BigInteger(id)) == 1L && currentService.isUser(obj.get("owner").toString())
+            && obj.get("sold").toString().compareTo("false") == 0){
+                currentService.assignNft(new BigInteger(id), obj.get("owner").toString());
+                String[] url = (obj.get("url").toString()).split(ipfs);
+                ajaxResponse.addMsg("hash", url[1]);
+                ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+                ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+                return ajaxResponse;
+            }
+            ajaxResponse.addMsg("errorTransfer", "error");
             return ajaxResponse;
         }
         else if (session.getAttribute("user") != null) {
@@ -804,7 +1028,232 @@ public class BlockchainController {
                 ajaxResponse.addMsg("invalidUser", "error");
                 return ajaxResponse;
             }
-            ajaxResponse.addMsg("jsonData", currentService.getNftsAllAdmin());
+            Object obj = new JSONParser().parse(currentService.getNftsAllAdmin());
+            JSONArray tempNfts = new JSONArray();
+            JSONArray arrNfts = (JSONArray) obj;
+
+            for (Object arrNft : arrNfts) {
+                JSONObject element = (JSONObject) arrNft;
+
+                if (currentService.isValidNft(new BigInteger(element.get("tokenId").toString())) &&
+                        element.get("owner").toString().compareToIgnoreCase(element.get("seller").toString()) == 0)
+                    tempNfts.add(element);
+            }
+            ajaxResponse.addMsg("jsonData", tempNfts.toJSONString());
+        }
+        else
+            ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/buy-nft")
+    public AjaxResponse buyNft(@RequestParam(value = "id") String id,
+                                  @RequestParam(value = "address") String address,
+                                  HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (session.getAttribute("user") != null &&
+                session.getAttribute("service") != null && address != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                    !currentService.addressEquals(address)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            if (!currentService.isMarketplaceActive()){
+                ajaxResponse.addMsg("shopClosed", "closed");
+                return ajaxResponse;
+            }
+            Object obj = new JSONParser().parse(currentService.getNftById(new BigInteger(id)));
+            JSONObject nft = (JSONObject) obj;
+            if (nft.get("owner").toString().compareToIgnoreCase(nft.get("seller").toString()) != 0){
+                ajaxResponse.addMsg("alreadyBought", "error");
+                return ajaxResponse;
+            }
+            if (new BigInteger(nft.get("price").toString()).compareTo(currentService.getTokensUser()) > 0){
+                ajaxResponse.addMsg("notEnoughMoney", "error");
+                return ajaxResponse;
+            }
+            if ((Integer.parseInt(nft.get("sale").toString()) + getCategoryDiscount(address, nft.get("category").toString())) > 50){
+                ajaxResponse.addMsg("saleError", "error");
+                return ajaxResponse;
+            }
+            String hash = nft.get("url").toString().split(ipfs)[1];
+            ajaxResponse.addMsg("hash", hash);
+            ajaxResponse.addMsg("owner", address);
+            ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+            ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+            currentService.buyNft(new BigInteger(id));
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/use-or-sell-nft")
+    public AjaxResponse useNft(@RequestParam(value = "id") String id,
+                               @RequestParam(value = "address") String address,
+                               @RequestParam(value = "choice") String choice,
+                               HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (session.getAttribute("user") != null &&
+                session.getAttribute("service") != null && address != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                    !currentService.addressEquals(address)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            Object obj = new JSONParser().parse(currentService.getNftById(new BigInteger(id)));
+            JSONObject nft = (JSONObject) obj;
+            if (nft.get("owner").toString().compareToIgnoreCase(address) != 0){
+                ajaxResponse.addMsg("errorOwner", "error");
+                return ajaxResponse;
+            }
+            if (!currentService.isValidNft(new BigInteger(id))){
+                ajaxResponse.addMsg("expired", "error");
+                return ajaxResponse;
+            }
+            if (currentService.isAdmin(nft.get("seller").toString()))
+                ajaxResponse.addMsg("newOwner", nft.get("seller").toString());
+
+            String hash = nft.get("url").toString().split(ipfs)[1];
+            ajaxResponse.addMsg("hash", hash);
+            ajaxResponse.addMsg("owner", address);
+            ajaxResponse.addMsg("pinata_key", PINATA_KEY);
+            ajaxResponse.addMsg("pinata_secret", PINATA_SECRET);
+
+            if (choice.compareTo("use") == 0) {
+                int mySale = getCategoryDiscount(address, nft.get("category").toString());
+                currentService.useNft(new BigInteger(id));
+                updateCategoryDiscount(address, nft.get("category").toString(),
+                        mySale + Integer.parseInt(nft.get("sale").toString()));
+            }
+            else
+                currentService.sellNftUser(new BigInteger(id));
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/buy-ft")
+    public AjaxResponse buyFt(@RequestParam(value = "token") String token,
+                               @RequestParam(value = "address") String address,
+                               HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (session.getAttribute("user") != null &&
+                session.getAttribute("service") != null && address != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                    !currentService.addressEquals(address)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            if (Integer.parseInt(token) <= 0) {
+                ajaxResponse.addMsg("tokenError", "error");
+                return ajaxResponse;
+            }
+            currentService.buyFt(new BigInteger(token));
+            ajaxResponse.addMsg("token", currentService.getTokensUser().toString());
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/sell-ft")
+    public AjaxResponse sellFt(@RequestParam(value = "token") String token,
+                              @RequestParam(value = "address") String address,
+                              HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        AjaxResponse ajaxResponse = new AjaxResponse();
+
+        if (session.getAttribute("user") != null &&
+                session.getAttribute("service") != null && address != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                    !currentService.addressEquals(address)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            if (Integer.parseInt(token) <= 0) {
+                ajaxResponse.addMsg("tokenError", "error");
+                return ajaxResponse;
+            }
+            if (new BigInteger(token).compareTo(currentService.getTokensUser()) > 0) {
+                ajaxResponse.addMsg("notToken", "error");
+                return ajaxResponse;
+            }
+            currentService.sellFt(new BigInteger(token));
+            ajaxResponse.addMsg("token", currentService.getTokensUser().toString());
+            return ajaxResponse;
+        }
+        else if (session.getAttribute("user") != null) {
+            ajaxResponse.addMsg("invalidUser", "error");
+            return ajaxResponse;
+        }
+        ajaxResponse.addMsg("sessionEmpty", "error");
+        return ajaxResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/marketplace/profile")
+    public AjaxResponse profileUser(@RequestParam(value = "address") String address,
+                               HttpServletRequest request) throws Exception {
+
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") != null &&
+                session.getAttribute("service") != null && address != null){
+
+            BlockchainServiceImpl currentService = (BlockchainServiceImpl) session.getAttribute("service");
+            if (!currentService.addressEquals(session.getAttribute("user").toString()) ||
+                    (!currentService.addressEquals(address) && address.compareTo("start") != 0)) {
+                ajaxResponse.addMsg("invalidUser", "error");
+                return ajaxResponse;
+            }
+            Object obj = new JSONParser().parse(currentService.getNftsAllAdmin());
+            JSONArray arrNfts = (JSONArray) obj;
+            JSONArray tempNfts = new JSONArray();
+
+            for (Object arrNft : arrNfts) {
+                JSONObject element = (JSONObject) arrNft;
+
+                if (element.get("owner").toString().compareToIgnoreCase(element.get("seller").toString()) != 0)
+                    tempNfts.add(element);
+            }
+            ajaxResponse.addMsg("jsonToAssign", tempNfts.toJSONString());
+            ajaxResponse.addMsg("jsonData", currentService.getMyNfts_string());
         }
         else
             ajaxResponse.addMsg("sessionEmpty", "error");

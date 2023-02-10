@@ -12,10 +12,10 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _nftCount;
 
-    uint256 private priceToken = 0.04 ether; // prezzo di un KryproToken (KT)
-    bool private isSaleActive = false; // marketplace è aperto oppure chiuso
+    uint256 private priceToken = 0.04 ether; // KryproToken (KT) price
+    bool private isSaleActive = false; // opened or closed marketplace
 
-    mapping(uint256 => NFT) private _idToNFT; // associa il tokenId univoco a una struttura NFT.
+    mapping(uint256 => NFT) private _idToNFT; // associates the unique tokenId with an NFT structure
 
     struct NFT {
         uint256 tokenId;
@@ -39,7 +39,8 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         return super.supportsInterface(interfaceId);
     }
 
-    /*================================ Admin functions =====================================*/
+
+    /*================================ Admin Functions =====================================*/
     /* Only Admin can create a new NFT in Blockchain */
     function mintNft(
         string memory _name,
@@ -102,7 +103,7 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
     }
 
 
-    /*================================ User functions =====================================*/
+    /*================================ User Functions =====================================*/
     /* Only User can buy KryptoToken (KT) */
     function buyFt(uint256 _amounts) public payable onlyUser nonReentrant{
         require(_amounts > 0, "Amounts must be greater than zero");
@@ -120,11 +121,12 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         require(!nft.burned, "NFT doesn't exist");
         require(balanceOf(msg.sender, 0) >= nft.price, "Not enough tokens");
         require(nft.owner == nft.seller, "NFT already sold");
+        require(isAdmin(nft.seller), "Seller is not an Admin");
         require(isValid(_tokenId), "NFT is expired");
 
         nft.owner = msg.sender;
         _burn(msg.sender, 0, nft.price);
-        payable(nft.seller).transfer(priceToken);
+        payable(nft.seller).transfer(priceToken * nft.price);
     }
 
     /* Assigns the ether to the User that sold his coins */
@@ -156,7 +158,7 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         _mint(msg.sender, 0, nft.price, "KryptoToken");
     }
 
-    /* User burn his NFT and transfers its to seller */
+    /* User burn his NFT and transfers its to seller if he still has the Admin role */
     function useNFT(uint256 _tokenId) public onlyUser {
         require(_tokenId > 0, "This is not an NFT");
 
@@ -185,6 +187,7 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         nft.burned = true;
         _burn(msg.sender, _tokenId, 1);
     }
+
 
     /*================================= Other Functions ====================================*/
     /* Returns true if NFT doesn't expired */
@@ -220,21 +223,40 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         bool flag = false;
 
         for (uint i = 0; i < size; i++) {
-            if (_idToNFT[i + 1].owner == _idToNFT[i + 1].seller &&
-                balanceOf(_idToNFT[i + 1].owner, _idToNFT[i + 1].tokenId) == 1){
-                if(!flag)
-                    data = string.concat(data, getNft(i + 1));
-                else{
+            if (!_idToNFT[i + 1].sold && balanceOf(_idToNFT[i + 1].seller, _idToNFT[i + 1].tokenId) == 1){
+                if(!flag){
                     flag = true;
-                    data = string.concat(data, ',', getNft(i + 1));
+                    data = string.concat(data, getNft(i + 1));
                 }
+                else
+                    data = string.concat(data, ',', getNft(i + 1));
             }
         }
         data = string.concat(data, "]");
         return data;
     }
 
-    /* Returns NFTs of an address  */
+    /* Returns NFTs of an address */
+    function getNftsAddr(address _addr) public view returns (string memory) {
+        string memory data = "[";
+        uint size = _nftCount.current();
+        bool flag = false;
+
+        for (uint i = 0; i < size; i++) {
+            if (balanceOf(_addr, _idToNFT[i + 1].tokenId) == 1){
+                if(!flag){
+                    flag = true;
+                    data = string.concat(data, getNft(i + 1));
+                }
+                else
+                    data = string.concat(data, ',', getNft(i + 1));
+            }
+        }
+        data = string.concat(data, "]");
+        return data;
+    }
+
+    /* Returns NFTs of the address that load this contract  */
     function getMyNfts() public view returns (string memory) {
         string memory data = string(abi.encodePacked("["));
         uint size = _nftCount.current();
@@ -242,12 +264,12 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
 
         for (uint i = 0; i < size; i++) {
             if (balanceOf(msg.sender, _idToNFT[i + 1].tokenId) == 1){
-                if(!flag)
-                    data = string.concat(data, getNft(i + 1));
-                else{
+                if(!flag){
                     flag = true;
-                    data = string.concat(data, ',', getNft(i + 1));
+                    data = string.concat(data, getNft(i + 1));
                 }
+                else
+                    data = string.concat(data, ',', getNft(i + 1));
             }
         }
         data = string.concat(data, "]");
@@ -284,6 +306,8 @@ contract KryptoNFT is ERC1155, Authentication, ReentrancyGuard {
         return data;
     }
 
+
+    /*================================= Private Functions ====================================*/
     /* Converts address type to string type */
     function _addressToString(address addr) private pure returns(string memory) {
         bytes memory addressBytes = abi.encodePacked(addr);

@@ -1,6 +1,6 @@
-const pinataSDK = require('@pinata/sdk');
+const pinataSDK = require("@pinata/sdk");
 var pinata;
-window.userWalletAddress = null
+var flag = true;
 
 $(document).ready(function (){
     sendAddressToBackend();
@@ -14,24 +14,23 @@ $(document).ready(function (){
     $(".shadow").click(function () {
         closePopupError()
         closePopupSuccess()
-
-        if ($('#true').length) {
-            closePopupError()
-            window.location.href = "/kryptoauth"
-        }
     });
-
-    $('#confirmPopupSuccess').click(function () {
-        closePopupSuccess()
-    })
 
     $('#confirmPopupError').click(function () {
         closePopupError()
-        if ($('#true').length) {
-            closePopupError()
-            window.location.href = "/kryptoauth"
-        }
     });
+
+    $('#confirmPopupSuccess').click(function (){
+        closePopupSuccess()
+    })
+
+    $('#buyFt').click(function (){
+        flag = true
+    })
+
+    $('#burnFt').click(function (){
+        flag = false
+    })
 
     $('a.category').click(function (){
         if (sendAddressToBackend().localeCompare("ok") === 0){
@@ -56,47 +55,49 @@ $(document).ready(function (){
                 $('div.error-p').children('p').eq(1)
                     .html("Nessun account rilevato. <br>Accedere a Metamask.");
             } else {
-                ajaxBurnNftExpired($userAddress.val())
+                ajaxBurnExpired($userAddress.val())
             }
         }
     })
 
-    $('#openMarketplace').click(function (){
-        if (sendAddressToBackend().localeCompare("ok") === 0){
-            const $userAddress = $("input[name='userAddress']")
-
-            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
-            } else {
-                ajaxoFlipMarketplace($userAddress.val(), true);
+    $("form[name='buy-ft']").validate({
+        rules: {
+            token:{
+                required: true,
+                min: 1
             }
-        }
-    })
+        },
+        messages: {
+            token: {
+                required: "Token da acquistare / vendere non selezionati",
+                min: "Token da acquistare / vendere: quantità minima 1"
+            },
+        },
+        submitHandler: function(form) {
+            if (sendAddressToBackend().localeCompare("ok") === 0){
+                const $userAddress = $("input[name='userAddress']")
 
-    $('#closeMarketplace').click(function (){
-        if (sendAddressToBackend().localeCompare("ok") === 0){
-            const $userAddress = $("input[name='userAddress']")
-
-            if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Nessun account rilevato. <br>Accedere a Metamask.");
-            } else {
-                ajaxoFlipMarketplace($userAddress.val(), false)
+                if (typeof $userAddress.val() === "undefined" || $userAddress.val() === ''){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Nessun account rilevato. <br>Accedere a Metamask.");
+                } else{
+                    if (flag) ajaxBuyFt($userAddress.val(), $("input[name='token']").val())
+                    else ajaxSellFt($userAddress.val(), $("input[name='token']").val())
+                }
             }
+            return false;
         }
-    })
+    });
 })
 
-function ajaxoFlipMarketplace(userAddress, flag){
+function ajaxBuyFt(address, token){
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/marketplace/open-marketplace",
+        url: "/kryptoauth/marketplace/buy-ft",
         data: {
-            addressMetamask: userAddress,
-            flag: flag
+            address: address,
+            token: token
         },
         dataType: 'json',
         success: function (data) {
@@ -109,28 +110,75 @@ function ajaxoFlipMarketplace(userAddress, flag){
                     .html("Hai cambiato account in Metamask." +
                         "<br>Seleziona quello corretto.");
             }
-            else if (data.msgError['error'] != null){
-                openPopupError()
-                $('div.error-p').children('p').eq(1)
-                    .html("Qualcosa è andato storto.<br>Riprovare.");
+            else if (data.msgError['tokenError'] != null){
+                let $token = $('#token-error');
+                if ($token.length !== 0) $token.remove()
+
+                $('input[name="token"]').after(
+                    '<label id="token-error" class="error" for="token">Token da acquistare: quantità minima 1</label>'
+                )
             }
-            else if (data.msgError['flag'] != null){
-                let flag = "Negozio chiuso";
-
-                if (data.msgError['flag'] === "true")
-                    flag = "Negozio aperto";
-
-                $('#flipMarketplace').fadeIn(800).html(flag)
-                    .delay(1000).fadeOut(800)
+            else {
+                let token = data.msgError['token'];
+                $('span.token').text(token + " KT");
+                openPopupSuccess();
+                $('div.success-p').children('p').eq(1)
+                    .html("Acquisto completato.<br> " +
+                        "Adesso possiedi " + token + " KT.");
             }
         },
         error: function (e) {
+            console.log(e)
             openPopupError()
             $('div.error-p').children('p').eq(1)
                 .html("Qualcosa è andato storto.<br>Riprovare.");
+        }
+    });
+}
 
-            if ($('#false').length)
-                $('#false').attr("id", "true");
+function ajaxSellFt(address, token){
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/marketplace/sell-ft",
+        data: {
+            address: address,
+            token: token
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['sessionEmpty'] != null) {
+                window.location.href = "/kryptoauth/500"
+            }
+            else if (data.msgError['invalidUser'] != null){
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Hai cambiato account in Metamask." +
+                        "<br>Seleziona quello corretto.");
+            }
+            else if (data.msgError['tokenError'] != null){
+                let $token = $('#token-error');
+                if ($token.length !== 0) $token.remove()
+
+                $('input[name="token"]').after(
+                    '<label id="token-error" class="error" for="token">Token da acquistare / vendere: quantità minima 1</label>'
+                )
+            }
+            else if (data.msgError['notToken'] != null){
+                let $token = $('#token-error');
+                if ($token.length !== 0) $token.remove()
+
+                $('input[name="token"]').after(
+                    '<label id="token-error" class="error" for="token">Token da acquistare / vendere: non possiedi questi token</label>'
+                )
+            }
+            else {
+                let token = data.msgError['token'];
+                $('span.token').text(token + " KT");
+                openPopupSuccess();
+                $('div.success-p').children('p').eq(1)
+                    .html("Operazione completata.<br> " +
+                        "Adesso possiedi " + token + " KT.");
+            }
         }
     });
 }
@@ -138,9 +186,9 @@ function ajaxoFlipMarketplace(userAddress, flag){
 function ajaxGetNftByCategory($category, addrMetamask){
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/marketplace",
+        url: "/kryptoauth/marketplace/profile",
         data: {
-            addressMetamask: addrMetamask
+            address: addrMetamask
         },
         dataType: 'json',
         success: function (data) {
@@ -157,32 +205,34 @@ function ajaxGetNftByCategory($category, addrMetamask){
                 var nftArr = JSON.parse(data.msgError['jsonData']);
                 if ($category === "all" || $category.children(":first").text() === "Tutti NFT" ||
                     $category.text() === "Tutti NFT"){
-                   if ($category === "all")
+                    if ($category === "all")
                         $('.allnfts').text(nftArr.length);
                     else
                         cssCategory($category, nftArr.length)
 
                     $('div.blog-post').remove()
                     if (nftArr.length !== 0){
-                        for (let i = 0; i < nftArr.length; i++)
+                        for (let i = 0; i < nftArr.length; i++){
                             appendNft(nftArr, i);
+                        }
                     }
                 }
                 else {
                     $('div.blog-post').remove()
                     let count = 0;
-                    if (nftArr.length !== 0) {
-                        if ($category.children(":first").text().toLowerCase() === "Da assegnare".toLowerCase()
-                            || $category.text().toLowerCase() === "Da assegnare".toLowerCase()){
-                            for (let i = 0; i < nftArr.length; i++) {
-                                if (nftArr[i].seller.toLowerCase() !== nftArr[i].owner.toLowerCase()
-                                    && nftArr[i].sold === "false"){
-                                    appendNft(nftArr, i);
-                                    count++;
-                                }
+                    if ($category.children(":first").text().toLowerCase() === "Da assegnare".toLowerCase()
+                        || $category.text().toLowerCase() === "Da assegnare".toLowerCase()){
+
+                        var jsonToAssign = JSON.parse(data.msgError['jsonToAssign']);
+                        if (jsonToAssign.length !== 0){
+                            for (let i = 0; i < jsonToAssign.length; i++) {
+                                appendNft(jsonToAssign, i);
+                                count++;
                             }
                         }
-                        else {
+                    }
+                    else{
+                        if (nftArr.length !== 0){
                             for (let i = 0; i < nftArr.length; i++) {
                                 if (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
                                     || nftArr[i].category.toLowerCase() === $category.text().toLowerCase()){
@@ -201,19 +251,16 @@ function ajaxGetNftByCategory($category, addrMetamask){
             openPopupError()
             $('div.error-p').children('p').eq(1)
                 .html("Qualcosa è andato storto.<br>Riprovare.");
-
-            if ($('#false').length)
-                $('#false').attr("id", "true");
         }
     });
 }
 
-function ajaxBurnNftExpired(userAddress){
+function ajaxBurnExpired(address){
     $.ajax({
         type: "POST",
         url: "/kryptoauth/marketplace/delete-nft-expired",
         data: {
-            addressMetamask: userAddress
+            addressMetamask: address
         },
         dataType: 'json',
         success: function (data) {
@@ -268,9 +315,6 @@ function ajaxBurnNftExpired(userAddress){
             openPopupError()
             $('div.error-p').children('p').eq(1)
                 .html("Qualcosa è andato storto.<br>Riprovare.");
-
-            if ($('#false').length)
-                $('#false').attr("id", "true");
         }
     });
 }
@@ -292,19 +336,19 @@ function appendNft(pin, i) {
 
     $('div.cta-wrapper').before(
         '<div class="blog-post '+ hide +'">' +
-            '<a href="/kryptoauth/marketplace/info-nft?id=' + pin[i].tokenId + '">' +
-                <!-- Featured image -->
-                '<div class="featured-image backgroundImage">' +
-                    '<img src="' + pin[i].url + '" ' + 'alt="">' +
-                '</div>' +
-                <!-- Content -->
-                '<div class="content">' +
-                    '<div class="post-title">' + pin[i].name +
-                        '<span class="blog-date">' + pin[i].validUntil +'</span>' +
-                    '</div>' +
-                    '<p>' + description + '</p>' +
-                '</div>' +
-            '</a>' +
+        '<a href="/kryptoauth/marketplace/info-nft?id=' + pin[i].tokenId + '">' +
+        <!-- Featured image -->
+        '<div class="featured-image backgroundImage">' +
+        '<img src="' + pin[i].url + '" ' + 'alt="">' +
+        '</div>' +
+        <!-- Content -->
+        '<div class="content">' +
+        '<div class="post-title">' + pin[i].name +
+        '<span class="blog-date">' + pin[i].validUntil +'</span>' +
+        '</div>' +
+        '<p>' + description + '</p>' +
+        '</div>' +
+        '</a>' +
         '</div>'
     )
 }
@@ -336,10 +380,14 @@ function openPopupError(){
     $("#popupError").css("display", "block");
 }
 
+function closePopupError(){
+    $(".shadow").fadeOut();
+    $("#popupError").fadeOut();
+}
+
 function openPopupSuccess(){
     $(".shadow").css("display","block");
     $("#popupSuccess").css("display","block");
-    $("html, body").animate({scrollTop: 0}, 700);
 }
 
 function closePopupSuccess(){
@@ -355,11 +403,6 @@ function openPopupErrorMetamask(){
     $(".shadow").css("display", "block");
     $("#popupError").css("display", "block");
     $("html, body").animate({scrollTop: 0}, 700);
-}
-
-function closePopupError(){
-    $(".shadow").fadeOut();
-    $("#popupError").fadeOut();
 }
 
 function sendAddressToBackend() {

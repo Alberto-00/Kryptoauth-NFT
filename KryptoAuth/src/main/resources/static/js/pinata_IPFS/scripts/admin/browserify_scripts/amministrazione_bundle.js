@@ -43987,18 +43987,20 @@ $(document).ready(function (){
     })
 
     $('#revokeRole').on('click', function (){
-        if (operation === "disactive")
-            ajaxRevokeAllRoles(globalAddress)
+        if (operation === "disactiveAdmin")
+            ajaxRevokeAdmin(globalAddress, $("input[name='userAddress']").val())
 
-        else if (operation === "user")
-            ajaxRevokeAdmin(globalAddress)
+        else if (operation === "disactiveUser")
+            ajaxRevokeUser(globalAddress, $("input[name='userAddress']").val())
+
+        else if (operation === "adminToUser")
+            ajaxAdminToUser(globalAddress, $("input[name='userAddress']").val())
     })
 
     $('a.activeAddress').click(function (){
         globalStatus = $(this).children('label').eq(1).text()
         globalAddress = $(this).children('label').eq(0).text()
         globalRole = $(this).children('label').eq(2).text()
-        operation = 'user'
 
         if (sendAddressToBackend().localeCompare("ok") === 0){
             const $userAddress = $("input[name='userAddress']")
@@ -44017,7 +44019,6 @@ $(document).ready(function (){
         globalStatus = $(this).children('label').eq(1).text()
         globalAddress = $(this).children('label').eq(0).text()
         globalRole = $(this).children('label').eq(2).text()
-        operation = "disactive"
 
         if (sendAddressToBackend().localeCompare("ok") === 0){
             const $userAddress = $("input[name='userAddress']")
@@ -44054,33 +44055,50 @@ function ajaxActiveAddress(address, status, role, addressMetamask){
         dataType: 'json',
         success: function (data) {
             if (data.msgError['sessionEmpty'] != null) {
-                window.location.href = "/kryptoauth/404"
+                window.location.href = "/kryptoauth/500"
             }
 
-            if (data.msgError['notEqualsAddress'] != null){
+            else if (data.msgError['notEqualsAddress'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Hai cambiato account in Metamask." +
                         "<br>Seleziona quello corretto.");
             }
 
-            if (data.msgError['revokeAdmin'] != null){
-                openPopupErrorRevokeRole()
-            }
-
-            if (data.msgError['notRevoke'] != null){
+            else if (data.msgError['notRevoke'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Solo l'account proprietario può rinunciare al suo ruolo di <i>Admin</i>.");
             }
 
-            if (data.msgError['alreadyActive'] != null){
+            else if (data.msgError['alreadyActive'] != null){
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Account già attivato.");
             }
 
-            if (data.msgError['success'] != null){
+            else if (data.msgError['adminToUser'] != null){
+                openPopupErrorRevokeRole()
+                $('div.error-p p:nth-child(2)')
+                    .html("Sei sicuro di voler rinunciare al ruolo di <i>Admin</i>?<br>" +
+                        "Perderai tutti i tuoi NFT.");
+                operation = "adminToUser"
+            }
+            else if (data.msgError['userHaveNftToAssigned'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("L'account non può essere disattivato." +
+                        "<br>L'utente ha acquistato degli NFT.");
+            }
+            else if (data.msgError['userHaveNft'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("L'account non può essere disattivato." +
+                        "<br>L'utente possiede degli NFT.");
+            }
+            else if (data.msgError['success'] != null){
                 openPopupSuccess()
                 $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
 
@@ -44095,7 +44113,6 @@ function ajaxActiveAddress(address, status, role, addressMetamask){
                         $notActive.html("Attivo")
                     }
                 }
-
                 if(!$radios.is(':checked')) {
                     $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
                 }
@@ -44135,46 +44152,43 @@ function ajaxDisactiveAddress(address, status, role, addressMetamask){
                     window.location.href = "/kryptoauth/500"
                 }
 
-                if (data.msgError['errorPage'] != null) {
+                else if (data.msgError['errorPage'] != null) {
                     window.location.href = "/kryptoauth/404"
                 }
 
-                if (data.msgError['notEqualsAddress'] != null){
+                else if (data.msgError['notEqualsAddress'] != null){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
                         .html("Hai cambiato account in Metamask." +
                             "<br>Seleziona quello corretto.");
                 }
 
-                if (data.msgError['revoke'] != null){
+                else if (data.msgError['revokeAdmin'] != null){
                     openPopupErrorRevokeRole()
+                    $('div.error-p p:nth-child(2)')
+                        .html("Sei sicuro di voler rinunciare al ruolo di <i>Admin</i>?<br>" +
+                            "Perderai tutti i tuoi NFT.");
+
+                    operation = "disactiveAdmin"
                 }
 
-                if (data.msgError['notRevoke'] != null){
+                else if (data.msgError['notRevoke'] != null){
                     openPopupError()
                     $('div.error-p').children('p').eq(1)
                         .html("Non sei l'account proprietario.<br>Non puoi disattivarlo.");
                 }
 
-                if (data.msgError['success'] != null){
-                    const datas = data.msgError['success'].split(",")
-                    const $radios = $('input:radio[name="user"]')
-                    openPopupSuccess()
-                    $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
+                else if (data.msgError['alreadyDisactived'] != null){
+                    openPopupError()
+                    $('div.error-p').children('p').eq(1)
+                        .html("Account già disattivato.");
+                }
 
-                    if (datas[0] === "Non Attivo"){
-                        const $active = $('#active' + role)
-                        if ($active.length){
-                            $active.attr('class', 'not-active-reg')
-                            $active.attr('id', 'notActive' + role)
-                            $active.html("Non Attivo")
-                        }
-                    }
-
-                    if(!$radios.is(':checked')) {
-                        $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
-                    }
-                    $('#roles' + role).html(datas[1])
+                else if (data.msgError['disactiveUser'] != null){
+                    openPopupErrorRevokeRole()
+                    $('div.error-p p:nth-child(2)')
+                        .html("Sei sicuro di voler disattivare <br> questo Utente?");
+                    operation = "disactiveUser"
                 }
             },
             error: function (e) {
@@ -44188,13 +44202,13 @@ function ajaxDisactiveAddress(address, status, role, addressMetamask){
     }
 }
 
-function ajaxRevokeAllRoles(address){
+function ajaxAdminToUser(address, addrMeta){
     $.ajax({
         type: "POST",
-        url: "/kryptoauth/revokeRoles",
+        url: "/kryptoauth/adminToUser",
         data: {
             address: address,
-            role: globalStatus
+            addressMetamask: addrMeta,
         },
         dataType: 'json',
         success: function (data) {
@@ -44208,7 +44222,7 @@ function ajaxRevokeAllRoles(address){
 
                     pinata.testAuthentication().then((result) => {
                         openPopupSuccess()
-                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(1)').text("Attendi...")
                         $('div.success-p p:nth-child(2)')
                             .html("A breve verrai reindirizzato<br> all'HomePage")
                         $('#confirmPopupSuccess').remove()
@@ -44223,6 +44237,8 @@ function ajaxRevokeAllRoles(address){
                             .html("Qualcosa è andato storto.<br>Riprovare.");
                     });
                 }
+                else
+                    window.location.href = "/kryptoauth/logout"
             }
             else if (data.msgError['nftToBeAssigned'] != null){
                 closePopupErrorRevokeRole()
@@ -44244,12 +44260,13 @@ function ajaxRevokeAllRoles(address){
     });
 }
 
-function ajaxRevokeAdmin(address){
+function ajaxRevokeAdmin(address, addrMeta){
     $.ajax({
         type: "POST",
         url: "/kryptoauth/revokeAdmin",
         data: {
             address: address,
+            addressMetamask: addrMeta,
             role: globalStatus
         },
         dataType: 'json',
@@ -44264,7 +44281,7 @@ function ajaxRevokeAdmin(address){
 
                     pinata.testAuthentication().then((result) => {
                         openPopupSuccess()
-                        $('div.success-p p:nth-child(1)').text("Attend...")
+                        $('div.success-p p:nth-child(1)').text("Attendi...")
                         $('div.success-p p:nth-child(2)')
                             .html("A breve verrai reindirizzato<br> all'HomePage")
                         $('#confirmPopupSuccess').remove()
@@ -44279,19 +44296,98 @@ function ajaxRevokeAdmin(address){
                             .html("Qualcosa è andato storto.<br>Riprovare.");
                     });
                 }
+                else
+                    window.location.href = "/kryptoauth/logout"
             }
-            if (data.msgError['nftToBeAssigned'] != null){
+            else if (data.msgError['nftToBeAssigned'] != null){
                 closePopupErrorRevokeRole()
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Impossibile disattivare l'account:<br>NFT <i>" +
                         data.msgError['nftToBeAssigned'] + "</i> da assegnare.");
             }
-            if (data.msgError['error'] != null){
+            else if (data.msgError['notEqualsAddress'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Hai cambiato account in Metamask." +
+                        "<br>Seleziona quello corretto.");
+            }
+            else if (data.msgError['error'] != null){
                 closePopupErrorRevokeRole()
                 openPopupError()
                 $('div.error-p').children('p').eq(1)
                     .html("Qualcosa è andato storto.<br>Riprovare.");
+            }
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    });
+}
+
+function ajaxRevokeUser(address, addrMeta) {
+    $.ajax({
+        type: "POST",
+        url: "/kryptoauth/revokeUser",
+        data: {
+            address: address,
+            addressMetamask: addrMeta,
+            role: globalRole
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.msgError['sessionEmpty'] != null) {
+                window.location.href = "/kryptoauth/500"
+            }
+            else if (data.msgError['error'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Qualcosa è andato storto.<br>Riprovare.");
+            }
+            else if (data.msgError['notEqualsAddress'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("Hai cambiato account in Metamask." +
+                        "<br>Seleziona quello corretto.");
+            }
+            else if (data.msgError['userHaveNftToAssigned'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("L'account non può essere disattivato." +
+                        "<br>L'utente ha acquistato degli NFT.");
+            }
+            else if (data.msgError['userHaveNft'] != null){
+                closePopupErrorRevokeRole()
+                openPopupError()
+                $('div.error-p').children('p').eq(1)
+                    .html("L'account non può essere disattivato." +
+                        "<br>L'utente possiede degli NFT.");
+            }
+            else {
+                closePopupErrorRevokeRole()
+                const datas = data.msgError['success'].split(",")
+                const $radios = $('input:radio[name="user"]')
+
+                openPopupSuccess()
+                $('div.success-p p:nth-child(2)').text("Salvataggio effettuato.")
+
+                if (datas[0] === "Non Attivo"){
+                    const $active = $('#active' + globalRole)
+                    if ($active.length){
+                        $active.attr('class', 'not-active-reg')
+                        $active.attr('id', 'notActive' + globalRole)
+                        $active.html("Non Attivo")
+                    }
+                }
+
+                if(!$radios.is(':checked')) {
+                    $radios.filter('[value=' + datas[1] + ']').prop('checked', true);
+                }
+                $('#roles' + globalRole).html(datas[1])
             }
         },
         error: function (e) {
@@ -44306,6 +44402,18 @@ async function deleteNft(ipfsPinHash){
     }
 }
 
+async function updateNft(hash, seller){
+    for (let i = 0; i < hash.length - 1; i++) {
+        const metadata = {
+            keyvalues: {
+                owner: seller[i],
+                sold: "false"
+            }
+        };
+        await pinata.hashMetadata(hash[i], metadata);
+    }
+}
+
 function openPopupError(){
     $(".shadow").fadeIn().css("display", "block");
     $("#popupError").css("display", "block");
@@ -44317,7 +44425,7 @@ function closePopupError(){
 }
 
 function openPopupSuccess(){
-    $(".shadow").css("display","block");
+    $(".shadow").fadeIn().css("display","block");
     $("#popupSuccess").css("display","block");
 }
 

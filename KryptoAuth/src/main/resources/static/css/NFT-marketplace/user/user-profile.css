@@ -1,0 +1,20 @@
+.progress {
+    margin-top: 5px;
+}
+
+.tagCategory {
+    font-size: 1em;
+    color: #7f00ff;;
+}
+
+progress::-webkit-progress-value {
+    background: #0f9;
+    background: -webkit-gradient(linear, right top, left top, from(#00ff99), to(#33ccff)) !important;
+    background: linear-gradient(to left, #00ff99, #33ccff) !important;
+}
+
+progress::-moz-progress-bar {
+    background: #0f9;
+    background: -webkit-gradient(linear, right top, left top, from(#00ff99), to(#33ccff)) !important;
+    background: linear-gradient(to left, #00ff99, #33ccff) !important;
+}

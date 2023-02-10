@@ -9,7 +9,12 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/admin/show-marketplace.css}">
   <script th:src="@{/js/scrollUp.js}"></script>
   <script th:src="@{/js/technologies.js}"></script>
-  <script th:src="@{/js/pinata_IPFS/scripts/admin/browserify_scripts/show-marketplace_bundle.js}"></script>
+  <th:block th:if="${session.admin} != null">
+    <script th:src="@{/js/pinata_IPFS/scripts/admin/browserify_scripts/show-marketplace_bundle.js}"></script>
+  </th:block>
+  <th:block th:if="${session.user} != null">
+    <script th:src="@{/js/pinata_IPFS/scripts/user/show-marketplace.js}"></script>
+  </th:block>
 </head>
 <body>
   <div th:replace="partials/header :: #pageloader"></div>
@@ -30,21 +35,31 @@
             <div class="column is-5 is-offset-1 landing-caption">
               <div class="divider"></div>
               <h1 class="title is-1 is-light is-semibold is-spaced main-title">Negozio NFT</h1>
-              <h2 class="subtitle is-6 is-light is-thin">
-                Benvenuto. Qui puoi gestire il negozio <br>
-                di NFT per i clienti di Kryptoauth.
-              </h2>
-              <p class="buttons">
-                <a id="openMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
-                  <span class="text">Apri il Negozio</span>
-                  <span class="front-gradient"></span>
-                </a>
-                <a id="closeMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
-                  <span class="text">Chiudi il Negozio</span>
-                  <span class="front-gradient"></span>
-                </a>
-              </p>
-              <label id="flipMarketplace" style="color: #FFF;"></label>
+              <th:block th:if="${session.admin} != null">
+                <h2 class="subtitle is-6 is-light is-thin">
+                  Benvenuto. Qui puoi gestire il negozio <br>
+                  di NFT per i clienti di Kryptoauth.
+                </h2>
+              </th:block>
+              <th:block th:if="${session.user} != null">
+                <h2 class="subtitle is-6 is-light is-thin">
+                  Benvenuto nel Kryptoauth Store.<br>
+                  Qui puoi comprare diversi NFT per ottenere fantastici sconti.
+                </h2>
+              </th:block>
+              <th:block th:if="${session.admin} != null">
+                <p class="buttons">
+                  <a id="openMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                    <span class="text">Apri il Negozio</span>
+                    <span class="front-gradient"></span>
+                  </a>
+                  <a id="closeMarketplace" class="size button k-button k-primary raised has-gradient is-fat is-bold">
+                    <span class="text">Chiudi il Negozio</span>
+                    <span class="front-gradient"></span>
+                  </a>
+                </p>
+                <label id="flipMarketplace" style="color: #FFF;"></label>
+              </th:block>
             </div>
             <!-- Hero image -->
             <div class="column is-6">
@@ -77,25 +92,26 @@
             <!-- /Content wrapper -->
           </div>
           <div class="column is-3">
-            <div class="search-widget">
-              <div class="control">
-                <div class="control-material is-primary">
-                  <form method="get" th:action="@{/kryptoauth/marketplace/create-nft}">
-                    <button id="addNFT" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
-                      <span class="text">Aggiungi NFT</span>
-                      <span class="front-gradient"></span>
-                    </button>
-                  </form>
-                  <div style="margin-bottom: 35px;"></div>
+            <th:block th:if="${session.admin} != null">
+              <div class="search-widget">
+                <div class="control">
+                  <div class="control-material is-primary">
+                    <form method="get" th:action="@{/kryptoauth/marketplace/create-nft}">
+                      <button id="addNFT" type="submit" class="button is-button k-button k-primary raised has-gradient is-bold is-fullwidth">
+                        <span class="text">Aggiungi NFT</span>
+                        <span class="front-gradient"></span>
+                      </button>
+                    </form>
+                    <div style="margin-bottom: 35px;"></div>
 
-                  <button id="burnNftExpired" type="button" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
-                    <span class="text">Elimina NFT scaduti</span>
-                    <span class="front-red-gradient">Elimina NFT scaduti</span>
-                  </button>
+                    <button id="burnNftExpired" type="button" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                      <span class="text">Elimina NFT scaduti</span>
+                      <span class="front-red-gradient">Elimina NFT scaduti</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
+            </th:block>
             <div class="categories-widget">
               <div class="widget-title">Categorie</div>
               <ul class="categories-list">
@@ -109,6 +125,9 @@
                 <li><a class="category">Corsi</a></li>
                 <li><a class="category">Documentazione</a></li>
                 <li><a class="category">Incontri</a></li>
+                <th:block th:if="${session.admin} != null">
+                  <li><a class="category">Da assegnare</a></li>
+                </th:block>
               </ul>
             </div>
 
@@ -118,8 +137,11 @@
                 <span class="tag">Blockchain</span>
                 <span class="tag">Ethereum</span>
                 <span class="tag">NFT</span>
+                <span class="tag">FT</span>
                 <span class="tag">KryptoToken</span>
                 <span class="tag">ERC-1155</span>
+                <span class="tag">Wallet</span>
+                <span class="tag">Metamask</span>
               </div>
             </div>
           </div>

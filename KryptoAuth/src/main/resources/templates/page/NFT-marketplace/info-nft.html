@@ -5,6 +5,7 @@
     <title>Kryptoauth - NFT</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/technologies.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/NFT-marketplace/admin/show-marketplace.css}">
     <script th:src="@{/js/scrollUp-alternative.js}"></script>
     <script th:src="@{/js/pinata_IPFS/scripts/admin/browserify_scripts/info-nft_bundle.js}"></script>
 </head>
@@ -32,7 +33,7 @@
                     <!-- Hero image -->
                     <div class="column is-5">
                         <figure class="image">
-                            <img class="blog-featured" th:src="${nft[2]}" alt="">
+                            <img class="blog-featured backgroundImage" th:src="${nft[2]}" alt="">
                         </figure>
                     </div>
                 </div>
@@ -88,21 +89,6 @@
 
                         <!-- send address to backend -->
                         <input name="userAddress" value="" hidden="">
-
-                        <div class="modal" id="popupSuccessPrivateKey">
-                            <div class="header-modal-success"></div>
-                            <div class="content-modal success-p">
-                                <p style="font-size: 35px">Abbiamo quasi fatto...</p>
-                                <p>Inserisci la chiave privata del tuo account per completare l'operazione.</p>
-                                <input class="privateKey" type="password" id="privateKey" name="privateKey">
-                            </div>
-                            <div class="footer-modal-success">
-                                <button id="confirmPopupSuccessPrivateKey" type="button" class="button is-button k-button k-primary raised is-bold is-fullwidth">
-                                    <span style="font-size: 16px; font-weight: bolder;" class="text">OK</span>
-                                    <span class="front-gradient"></span>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                     <!-- /Content wrapper -->
                 </div>
@@ -110,22 +96,67 @@
                     <div class="search-widget">
                         <div class="control">
                             <div class="control-material is-primary">
-                                <button id="transferNft" type="submit" style="transform: skew(-25deg);"
-                                        class="button is-button k-button k-primary raised green-gradient is-bold is-fullwidth">
-                                    <span class="text" style="transform: skew(25deg);">Assegna</span>
-                                    <span class="front-green-gradient">
-                                        <span style="transform: skew(25deg);">Assegna</span>
-                                    </span>
-                                </button>
+                                <th:block th:if="${session.admin} != null">
+                                    <button id="transferNft" type="submit" style="transform: skew(-25deg);"
+                                            class="button is-button k-button k-primary raised green-gradient is-bold is-fullwidth">
+                                        <span class="text" style="transform: skew(25deg);">Assegna</span>
+                                        <span class="front-green-gradient">
+                                            <span style="transform: skew(25deg);">Assegna</span>
+                                        </span>
+                                    </button>
+                                </th:block>
+                                <th:block th:if="${session.user} != null AND ${nft[8].compareToIgnoreCase(session.user)} != 0">
+                                    <button id="buyNft" type="submit" style="transform: skew(-25deg);"
+                                            class="button is-button k-button k-primary raised green-gradient is-bold is-fullwidth">
+                                        <span class="text" style="transform: skew(25deg);">Acquista</span>
+                                        <span class="front-green-gradient">
+                                            <span style="transform: skew(25deg);">Acquista</span>
+                                        </span>
+                                    </button>
+                                </th:block>
+                                <th:block th:if="${session.user} != null AND ${nft[8].compareToIgnoreCase(session.user)} == 0
+                                                    AND ${nft[9].compareTo('true') == 0}">
+                                    <button id="useNft" type="submit" style="transform: skew(-25deg);"
+                                            class="button is-button k-button k-primary raised green-gradient is-bold is-fullwidth">
+                                        <span class="text" style="transform: skew(25deg);">Attiva</span>
+                                        <span class="front-green-gradient">
+                                            <span style="transform: skew(25deg);">Attiva</span>
+                                        </span>
+                                    </button>
+                                </th:block>
                             </div>
                         </div>
                     </div>
+                    <th:block th:if="${session.admin} != null">
+                        <div class="categories-widget">
+                            <button id="burn" type="submit" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                                <span class="text">Elimina</span>
+                                <span class="front-red-gradient">Elimina</span>
+                            </button>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${session.user} != null AND ${nft[8].compareToIgnoreCase(session.user)} == 0
+                                        AND ${nft[9].compareTo('true') == 0}">
+                        <div class="categories-widget">
+                            <button id="sellNft" type="submit" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
+                                <span class="text">Vendi</span>
+                                <span class="front-red-gradient">Vendi</span>
+                            </button>
+                        </div>
+                    </th:block>
 
-                    <div class="categories-widget">
-                        <button id="burn" type="submit" class="button is-button k-button k-primary raised red-gradient is-bold is-fullwidth">
-                            <span class="text">Elimina</span>
-                            <span class="front-red-gradient">Elimina</span>
-                        </button>
+                    <div class="tags-widget">
+                        <div class="widget-title">Tags</div>
+                        <div class="tags">
+                            <span class="tag">Blockchain</span>
+                            <span class="tag">Ethereum</span>
+                            <span class="tag">NFT</span>
+                            <span class="tag">FT</span>
+                            <span class="tag">KryptoToken</span>
+                            <span class="tag">ERC-1155</span>
+                            <span class="tag">Wallet</span>
+                            <span class="tag">Metamask</span>
+                        </div>
                     </div>
                 </div>
             </div>
