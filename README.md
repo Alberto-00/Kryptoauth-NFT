@@ -31,6 +31,9 @@
 <p dir="auto">
   🏪 The Web DApp KryptoAuth allows users to purchase NFTs using KryptoTokens (personalized tokens that can be purchased by users by paying ether) and use them to obtain discounts in various categories offered by the Web DApp.
 </p>
+<p align="middle">
+<img width="35%" src="./KryptoAuth/src/main/resources/static/img/token/FT/Token.png"/> 
+</p>
 <h2 dir="auto">
   <a id="user-content-documentation" class="anchor" aria-hidden="true" href="#documentation">
     <svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
