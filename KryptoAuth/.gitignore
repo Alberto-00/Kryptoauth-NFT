@@ -35,7 +35,7 @@ build/
 .vscode/
 
 ### API Pinata Keys ###
-src/main/resources/static/js/pinata_IPFS/scripts/utils/*
+src/main/resources/static/js/pinata_IPFS/scripts/utils/
 
 ### node_modules ###
 src/main/resources/static/js/pinata_IPFS/node_modules/
