@@ -3,9 +3,9 @@
 </p>
 <p align="center" dir="auto">
   <img align="middle" width="85px" src="./KryptoAuth/src/main/resources/static/img/illustrations/token-lock.svg"/> 
-  Web DApp for secure Authentication.
+  Web DApp for secure purchases in NFT.
   <img align="middle" width="65px" src="./KryptoAuth/src/main/resources/static/img/illustrations/world.svg"/><br>
-  A project for my Bachelor's Degree in Computer Science <br>at University of Salerno.
+  A project for my Bachelor's Degree in Computer Science <br>and Data Security course at University of Salerno.
 </p>
 
 <h1 dir="auto">
@@ -28,6 +28,9 @@
 <p dir="auto">
   🎓 The Web DApp KryptoAuth is made with the aim of offering greater security during the authentication operation by exploiting the Ethereum Blockchain technology. The system allows any user to register and wait for a administrator gives him the permissions of "User" or "Admin" to carry out the operation of Login.
 </p>
+<p dir="auto">
+  🏪 The Web DApp KryptoAuth allows users to purchase NFTs using KryptoTokens (personalized tokens that can be purchased by users by paying ether) and use them to obtain discounts in various categories offered by the Web DApp.
+</p>
 <h2 dir="auto">
   <a id="user-content-documentation" class="anchor" aria-hidden="true" href="#documentation">
     <svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
@@ -38,9 +41,10 @@
   Documentation
 </h2>
 <ul dir="auto">
-<li>Project's javadoc can be found in <code>docs/javaDoc</code> directory and at the following link: <a href="https://alberto-00.github.io/Blockchain-Authentication/" rel="nofollow">Javadoc Link</a>.</li>
-<li>Documentation can be found in <code>docs/deliverables</code> directory and at the following link: <a href="https://alberto-00.github.io/Blockchain-Authentication/" rel="nofollow">Documentation</a></li>
+<li>Project's javadoc can be found in <code>docs/javaDoc</code> directory and at the following link: <a href="https://alberto-00.github.io/Kryptoauth-NFT/" rel="nofollow">Javadoc Link</a>.</li>
+<li>Documentation can be found in <code>docs/deliverables</code> directory and at the following link: <a href="https://alberto-00.github.io/Kryptoauth-NFT/" rel="nofollow">Documentation</a></li>
 </ul>
+<br>
 <h1 dir="auto">
   <a id="user-content-technical-informations" class="anchor" aria-hidden="true" href="#technical-informations">
     <svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
