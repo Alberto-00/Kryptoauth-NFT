@@ -29,7 +29,7 @@
   🎓 The Web DApp KryptoAuth is made with the aim of offering greater security during the authentication operation by exploiting the Ethereum Blockchain technology. The system allows any user to register and wait for a administrator gives him the permissions of "User" or "Admin" to carry out the operation of Login.
 </p>
 <p dir="auto">
-  🏪 The Web DApp KryptoAuth allows users to purchase NFTs using <b>KryptoTokens</b> (personalized tokens that can be purchased by users by paying ether) and use them to obtain discounts in various categories offered by the Web DApp.
+  🏪 The Web DApp KryptoAuth allows users to purchase NFTs using <b>KryptoTokens</b> (personalized tokens that can be purchased by users by paying ether) and use NFTs to obtain discounts in various categories offered by the Web DApp.
 </p>
 <p align="middle">
 <img width="35%" src="./KryptoAuth/src/main/resources/static/img/token/FT/Token.png"/> 
