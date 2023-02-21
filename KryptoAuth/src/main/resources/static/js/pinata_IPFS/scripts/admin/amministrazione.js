@@ -444,18 +444,6 @@ async function deleteNft(ipfsPinHash){
     }
 }
 
-async function updateNft(hash, seller){
-    for (let i = 0; i < hash.length - 1; i++) {
-        const metadata = {
-            keyvalues: {
-                owner: seller[i],
-                sold: "false"
-            }
-        };
-        await pinata.hashMetadata(hash[i], metadata);
-    }
-}
-
 function openPopupError(){
     $(".shadow").fadeIn().css("display", "block");
     $("#popupError").css("display", "block");

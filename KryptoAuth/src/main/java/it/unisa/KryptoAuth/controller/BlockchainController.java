@@ -236,6 +236,7 @@ public class BlockchainController {
                     if (status.compareToIgnoreCase("non attivo") == 0)
                         status = "Attivo";
                     writeCategoryDiscount(address);
+                    updateAddress(address, status, role);
                     ajaxResponse.addMsg("success", status + "," + role);
                     return ajaxResponse;
                 }
@@ -418,6 +419,7 @@ public class BlockchainController {
                 currentService.removeUser(address);
                 session.removeAttribute("user");
                 removeCategoryDiscount(address);
+                updateAddress(address, "Non Attivo", "User");
                 ajaxResponse.addMsg("success", "Non Attivo," + "User");
                 return ajaxResponse;
             } else
