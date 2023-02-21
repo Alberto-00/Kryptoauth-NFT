@@ -1,5 +1,5 @@
 const pinataSDK = require('@pinata/sdk');
-var pinata, flagBlog = false;
+var pinata
 window.userWalletAddress = null
 
 $(document).ready(function (){

@@ -1,6 +1,16 @@
 window.userWalletAddress = null
 
 $(document).ready(function (){
+    $(".hide").slice(0, 3).show();
+
+    otherNftsToLoad()
+
+    $("#loadMore").on("click", function(e){
+        e.preventDefault();
+        $(".hide:hidden").slice(0, 2).slideDown();
+        otherNftsToLoad()
+    });
+
     sendAddressToBackend();
 
     ethereum.on('accountsChanged', function (accounts) {
@@ -71,9 +81,10 @@ function ajaxGetNftByCategory($category, addrMetamask){
                     $('div.blog-post').remove()
                     if (nftArr.length !== 0){
                         for (let i = 0; i < nftArr.length; i++){
-                            appendNft(nftArr, i);
+                            appendNft(nftArr, i, i);
                         }
                     }
+                    otherNftsToLoad()
                 }
                 else {
                     $('div.blog-post').remove()
@@ -82,11 +93,12 @@ function ajaxGetNftByCategory($category, addrMetamask){
                         for (let i = 0; i < nftArr.length; i++) {
                             if (nftArr[i].category.toLowerCase() === $category.children(":first").text().toLowerCase()
                                 || nftArr[i].category.toLowerCase() === $category.text().toLowerCase()){
-                                appendNft(nftArr, i);
+                                appendNft(nftArr, i, count);
                                 count++;
                             }
                         }
                     }
+                    otherNftsToLoad()
                     cssCategory($category, count);
                 }
             }
@@ -103,9 +115,9 @@ function ajaxGetNftByCategory($category, addrMetamask){
     });
 }
 
-function appendNft(pin, i) {
+function appendNft(pin, i, count) {
     let hide, description
-    if (i > 2) hide = "hide"
+    if (count < 3) hide = 'style="display: block;"'
     else hide = ""
 
     if ((pin[i].description).length > 144)
@@ -114,20 +126,20 @@ function appendNft(pin, i) {
         description = pin[i].description;
 
     $('div.cta-wrapper').before(
-        '<div class="blog-post '+ hide +'">' +
-            '<a href="/kryptoauth/marketplace/info-nft?id=' + pin[i].tokenId + '">' +
-                <!-- Featured image -->
-                '<div class="featured-image backgroundImage">' +
-                    '<img src="' + pin[i].url + '" ' + 'alt="">' +
-                '</div>' +
-                <!-- Content -->
-                '<div class="content">' +
-                    '<div class="post-title">' + pin[i].name +
-                        '<span class="blog-date">' + pin[i].validUntil +'</span>' +
-                    '</div>' +
-                    '<p>' + description + '</p>' +
-                '</div>' +
-            '</a>' +
+        '<div class="blog-post hide" ' + hide + '>' +
+        '<a href="/kryptoauth/marketplace/info-nft?id=' + pin[i].tokenId + '">' +
+        <!-- Featured image -->
+        '<div class="featured-image backgroundImage">' +
+        '<img src="' + pin[i].url + '" ' + 'alt="">' +
+        '</div>' +
+        <!-- Content -->
+        '<div class="content">' +
+        '<div class="post-title">' + pin[i].name +
+        '<span class="blog-date">' + pin[i].validUntil +'</span>' +
+        '</div>' +
+        '<p>' + description + '</p>' +
+        '</div>' +
+        '</a>' +
         '</div>'
     )
 }
@@ -152,6 +164,23 @@ function cssCategory($category, size){
         '<span>' + text + '</span>' +
         '<span class="tag">' + size + '</span>'
     )
+}
+
+function otherNftsToLoad(){
+    let $blogPost = $("div.blog-post")
+
+    if ($blogPost.length > 0){
+        $blogPost.each(function( index ) {
+            if ($(this).css('display') === 'none') {
+                $("#loadMore").text("Carica Altro");
+                return false
+            }
+            else
+                $("#loadMore").text("Nessun Contenuto");
+        });
+    }
+    else
+        $("#loadMore").text("Nessun Contenuto");
 }
 
 function openPopupError(){

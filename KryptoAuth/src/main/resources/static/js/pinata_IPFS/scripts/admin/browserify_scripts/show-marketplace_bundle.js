@@ -43957,7 +43957,7 @@ module.exports = require("zlib");
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],require("timers").setImmediate)
 },{"_process":46,"assert":2,"buffer":11,"fs":1,"http":67,"https":25,"os":33,"path":45,"stream":52,"timers":87,"tty":88,"url":89,"util":94,"zlib":10}],98:[function(require,module,exports){
 const pinataSDK = require('@pinata/sdk');
-var pinata, flagBlog = false;
+var pinata
 window.userWalletAddress = null
 
 $(document).ready(function (){
