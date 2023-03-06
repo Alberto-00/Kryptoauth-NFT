@@ -18,8 +18,8 @@ import java.math.BigInteger;
 public class BlockchainServiceImpl implements BlockchainService {
 
     private final static Web3j web3j = Web3j.build(new HttpService("HTTP://127.0.0.1:7545"));
-    private final static String CONTRACT_ADDRESS = "0xeC75Acd1eae4C0Fe33b3b5BB3441d152fADf30DF";
-    private final static String ipfs = "https://gateway.pinata.cloud/ipfs/";
+    private final static String CONTRACT_ADDRESS = "0xb6b9450AdfD1cc984C45Ab22c737df98fd88e095";
+    private final static String ipfs = "https://ipfs.io/ipfs/";
     private final KryptoNFT kryptoNFT;
 
     public BlockchainServiceImpl(String privateKey) {

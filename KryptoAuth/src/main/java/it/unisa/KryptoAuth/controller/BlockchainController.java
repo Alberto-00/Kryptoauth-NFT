@@ -43,7 +43,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class BlockchainController {
     private final static String PINATA_KEY = "1eeb0837f8d0ae21e000";
     private final static String PINATA_SECRET = "f638ab8f499066727efb6eab377503fb30bd0a797c732cfbfbdada4c89f4f890";
-    private final static String ipfs = "https://gateway.pinata.cloud/ipfs/";
+    private final static String ipfs = "https://ipfs.io/ipfs/";
 
 
     /*========================================== Authentication Servlet ==============================================*/
